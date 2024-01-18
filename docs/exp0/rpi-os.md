@@ -54,7 +54,7 @@ Our QEMU is based on upstream v4.2 with custom aarch64 debugging support.
 To add it to your execution path: 
 
 ```
-export PATH="/home/cs4414ta/shared/qemu/aarch64-softmmu:${PATH}"
+export PATH="/u/waq9hw/shared/qemu/aarch64-softmmu:${PATH}"
 ```
 
 This command has to be run for each new login. 
