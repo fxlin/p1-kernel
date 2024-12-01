@@ -1,5 +1,7 @@
 # Using GDB to debug kernel 
 
+https://github.com/fxlin/p1-kernel/blob/master/docs/gdb.md
+
 **NOTE**: 
 
 1. Read the whole document before you try. 
@@ -156,8 +158,6 @@ watch *0xffff0000
 The basic GDB UI is too primitive to beginners. We provide you an enhancement called GDB-dashboard. The upstream source is [here](https://github.com/fxlin/gdb-dashboard-aarch64). I adapted it for aarch64. Screenshot: 
 
 ![Screenshot](https://raw.githubusercontent.com/fxlin/gdb-dashboard-aarch64/master/gdb-dash-aarch64.png)
-
-
 
 ### Installation
 
