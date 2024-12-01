@@ -1,0 +1,1487 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../../exp4a/rpi-os/">
+      
+      
+        <link rel="next" href="../../exp5/rpi-os/">
+      
+      
+      <link rel="icon" href="../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
+    
+    
+      
+        <title>exp4b - p1-kernel</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bcfcd587.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#4b-preemptive-multitasking" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="p1-kernel" class="md-header__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            p1-kernel
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              exp4b
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  OVERVIEW
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp0/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp0
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp1/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp1
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp2/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp2
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp3/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp3
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp4a/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4a
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+    
+  
+  exp4b
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp5/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp5
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp6/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp6
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../qemu/" class="md-tabs__link">
+        
+  
+    
+  
+  /qemu
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../gdb/" class="md-tabs__link">
+        
+  
+    
+  
+  /gdb
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../cheatsheet/" class="md-tabs__link">
+        
+  
+    
+  
+  /aarch64
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../ssh-proxy/" class="md-tabs__link">
+        
+  
+    
+  
+  /ssh
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../dump/" class="md-tabs__link">
+        
+  
+    
+  
+  /ker dump
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../jtag/" class="md-tabs__link">
+        
+  
+    
+  
+  /jtag
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp1/workflow/" class="md-tabs__link">
+        
+  
+    
+  
+  /rpi workflow
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="p1-kernel" class="md-nav__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    p1-kernel
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVERVIEW
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp0/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp0
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp1/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp1
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp2/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp3/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp3
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp4a/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4a
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    exp4b
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    exp4b
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Objectives
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get the code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Roadmap
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#turn-on-timer-interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Turn on timer interrupts!
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Turn on timer interrupts!">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#calling-schedule-in-timer-tick" class="md-nav__link">
+    <span class="md-ellipsis">
+      Calling schedule() in timer tick
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-scheduling-works-with-interrupt-entryexit" class="md-nav__link">
+    <span class="md-ellipsis">
+      How scheduling works with interrupt entry/exit?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How scheduling works with interrupt entry/exit?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#an-example-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      An example workflow
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aside-an-alternative-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      Aside: An alternative design
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disable-preemption" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disable preemption
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Disable preemption">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#per-task-preempt_count" class="md-nav__link">
+    <span class="md-ellipsis">
+      Per-task preempt_count
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-a-task_struct-atomically" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating a task_struct atomically
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#making-the-scheduling-algorithm-atomic" class="md-nav__link">
+    <span class="md-ellipsis">
+      Making the scheduling algorithm atomic
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp5/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp5
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp6/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp6
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../qemu/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /qemu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /gdb
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /aarch64
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ssh-proxy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ssh
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dump/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ker dump
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jtag/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /jtag
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp1/workflow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /rpi workflow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Objectives
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get the code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Roadmap
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#turn-on-timer-interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Turn on timer interrupts!
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Turn on timer interrupts!">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#calling-schedule-in-timer-tick" class="md-nav__link">
+    <span class="md-ellipsis">
+      Calling schedule() in timer tick
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-scheduling-works-with-interrupt-entryexit" class="md-nav__link">
+    <span class="md-ellipsis">
+      How scheduling works with interrupt entry/exit?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How scheduling works with interrupt entry/exit?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#an-example-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      An example workflow
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aside-an-alternative-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      Aside: An alternative design
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disable-preemption" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disable preemption
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Disable preemption">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#per-task-preempt_count" class="md-nav__link">
+    <span class="md-ellipsis">
+      Per-task preempt_count
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-a-task_struct-atomically" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating a task_struct atomically
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#making-the-scheduling-algorithm-atomic" class="md-nav__link">
+    <span class="md-ellipsis">
+      Making the scheduling algorithm atomic
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="4b-preemptive-multitasking">4b: Preemptive Multitasking</h1>
+<p><strong>READING TIME: 40MIN</strong></p>
+<h2 id="objectives">Objectives</h2>
+<p><img alt="" src="../qemu-sched.gif" /></p>
+<p>A minimum kernel that can schedule multiple tasks in a preemptive fashion. With this experiment, our tiny kernel is more like a "real-time kernel" commonly seen in embedded systems, e.g. FreeRTOS.</p>
+<ol>
+<li>Preempt tasks with time interrupts</li>
+<li>Understand context switch driven by interrupts, in particular switch to/from interrupt handlers</li>
+<li>Atomic kernel regions where preemption is disallowed </li>
+</ol>
+<h2 id="get-the-code">Get the code</h2>
+<p>Code location: p1-kernel/src/exp4b</p>
+<p>Please: do a <code>git pull</code> even if you have cloned the p1-kenel repo previously, in case of upstream updates. </p>
+<h2 id="roadmap">Roadmap</h2>
+<p>We will turn on timer interrupts. In the interrupt handler, our kernel invokes its scheduler to switch among runnable tasks. </p>
+<p>In addition to <code>switch_to</code>, the kernel should save &amp; restore CPU state upon entering/existing interrupt handling. </p>
+<!--- to complete--->
+
+<h2 id="turn-on-timer-interrupts">Turn on timer interrupts!</h2>
+<p>We turn on timer interrupts in <code>kernel_main</code>. </p>
+<pre><code>void kernel_main(void) {
+    uart_init();
+    init_printf(0, putc);
+    irq_vector_init();
+    timer_init(); 
+    enable_interrupt_controller(); 
+    enable_irq(); /* new addition */
+    ... 
+}
+</code></pre>
+<p>With that, tasks no longer need to call schedule() voluntarily. </p>
+<pre><code>void process(char *array)
+{
+    while (1){
+        for (int i = 0; i &lt; 5; i++){
+            uart_send(array[i]);
+            delay(100000);
+        }
+        // schedule(); // not needed
+    }
+}
+</code></pre>
+<h3 id="calling-schedule-in-timer-tick">Calling <code>schedule()</code> in timer tick</h3>
+<p>With preemptive scheduling, schedule() are called in two places. </p>
+<ol>
+<li>A task can call <code>schedule</code> voluntarily (as in cooperative scheduling). </li>
+<li>On a regular basis from the timer interrupt handler.</li>
+</ol>
+<p>Look at <code>timer_tick()</code>, which is called from the timer interrupt.</p>
+<pre><code>void timer_tick()
+{
+    --current-&gt;counter;
+    if (current-&gt;counter&gt;0 || current-&gt;preempt_count &gt;0) {
+        return;
+    }
+    current-&gt;counter=0;
+    enable_irq();
+    _schedule();
+    disable_irq();
+    ... 
+</code></pre>
+<p>First of all, it decreases current task's counter. If the counter is greater than 0 or preemption is currently disabled the function returns. Otherwise<code>schedule</code> is called with interrupts enabled. (Note: we just came from an interrupt handler and CPU just automatically disabled all interrupts.) </p>
+<p>Why interrupts must be enabled in the scheduler? More on this later. </p>
+<h2 id="how-scheduling-works-with-interrupt-entryexit">How scheduling works with interrupt entry/exit?</h2>
+<p>With preemptive scheduling, the kernel must save &amp; restore CPU contexts for the task being interrupted. This is because, e.g. a task A may be interrupted at any point and get preempted (i.e. "losing CPU"). Later, when the kernel reschedules A, A should resume from where it was interrupted. </p>
+<p><strong>Refresh your memory</strong>: in previous baremetal experiments with no multitasking, we have seen how kernel_entry and kernel_exit macros save and restore general-purpose CPU regs upon switch to/from an interrupt/exception handler. There, we rely on that the hardware automatically saves exception return address and CPU status in registers, <code>elr_el1</code> register and <code>spsr_el</code> register. When <code>eret</code> is executed, CPU restores execution from these registers.</p>
+<p><img alt="" src="../../exp3/images/irq.png" /></p>
+<p><em>Figure above: in previous experiments w/o multitasking, save/restore registers upon entering/leaving irq handlers.</em> </p>
+<p>With multitasking, the kernel now has to create per-task copies of CPU context in memory: ALL general-purpose registers plus <code>elr_el1</code> and <code>spsr_el</code>. </p>
+<p><strong>Where to store the CPU context?</strong> </p>
+<p>We choose to store the CPU context on the current task's stack (NOT in its <code>task_struct.cpu_context</code>). There are alternative designs to be examined later. </p>
+<h4 id="an-example-workflow">An example workflow</h4>
+<p><strong>Kernel boots</strong></p>
+<p>kernel_main function is executed (as init task, task0). The initial stack is configured to start at LOW_MEMORY, which is at 0x0040:0000 (4 MB).</p>
+<h2 id="_1"><img alt="" src="../figures/sched-0.png" /></h2>
+<p><strong>Task 1 creation</strong></p>
+<p><code>kernel_main</code> calls <code>copy_process</code> for the first time. A new 4 KB page is allocated, and <code>task_struct</code> is placed at the bottom of this page. </p>
+<p><img alt="" src="../figures/sched-1.png" /></p>
+<hr />
+<p><strong>Task 2 creation</strong></p>
+<p><code>kernel_main</code> calls <code>copy_process</code> for the second time and the same process repeats. Task 2 is created and added to the task list.
+<img alt="" src="../figures/sched-2.png" /></p>
+<hr />
+<p><strong>Switching to task 1; task 1 runs</strong></p>
+<p><code>kernel_main</code> (as init task) calls the schedule function and it decides to switch to task 1.</p>
+<ul>
+<li><code>cpu_switch_to</code> saves callee-saved registers in the init task <code>cpu_context</code>, which is located inside the kernel image.</li>
+<li><code>cpu_switch_to</code> restores callee-saved registers from task 1's <code>task_struct</code>.  At this point, <code>cpu_context.sp</code> points to <code>0x00401000</code>, lr points to ret_from_fork function, <code>x19</code> contains a pointer to the start of process() and <code>x20</code> a pointer to string "12345", which is located somewhere in the kernel image.</li>
+<li><code>cpu_switch_to</code> executes  <code>ret</code>, which jumps to the <code>ret_from_fork</code> function.</li>
+<li><code>ret_from_fork</code> reads <code>x19</code> and <code>x20</code> registers and  calls <code>process</code> function with the argument "12345". </li>
+<li>After <code>process</code> function starts, the stack of task 1 begins to grow.</li>
+</ul>
+<p><img alt="" src="../figures/sched-3.png" /></p>
+<hr />
+<p><strong>While task 1 runs, a timer interrupt occurred</strong></p>
+<ul>
+<li><code>kernel_entry</code> saves all general purpose registers &amp; <code>elr_el1</code> and <code>spsr_el1</code> to the bottom of task 1 stack ("saved regs" in the figure below).</li>
+<li>The kernel now executes in the irq context. It continues to grow the <em>current</em> stack which belongs to task 1. The growth is below the "saved regs" region and is marked as "irq frame" on the figure (i.e. the stack frame created by the execution in the irq context). </li>
+<li>The kernel proceeds to <code>schedule</code> and picks task 2. </li>
+</ul>
+<p><img alt="" src="../figures/sched-4.png" /></p>
+<hr />
+<p><strong>Switching to task 2; task 2 runs</strong></p>
+<p><code>cpu_switch_to</code> executes exactly the same sequence of steps that it does for task 1. Task 2 started to execute and it stack grows. </p>
+<p><img alt="" src="../figures/sched-5.png" /></p>
+<p><strong>Note:</strong> until now, the kernel has NOT executed <code>eret</code> for the previous timer irq. This is fine as an intentional choice made for this experiment. </p>
+<p>How can we execute task 2 in the context of the previous irq? This is allowed because ARM64 CPU does not differentiate execution in an irq context vs. in an exception (i.e. syscall) context. All the CPU knows is the current EL (we always stay at EL1 before/after the irq) and the irq enable status. And irqs have been enabled previously in timer_tick before <code>schedule</code> was called. </p>
+<blockquote>
+<p>Nevertheless, there's a more common design in which the kernel finishes the previous irq handling (i.e. 'eret') before switching to a new task. See "alternative design" below. </p>
+</blockquote>
+<hr />
+<p><strong>Another timer interrupt occurred while task 2 is running</strong></p>
+<p>Same as above, <code>kernel_entry</code> saves all general purpose registers + <code>elr_el1</code> and <code>spsr_el1</code> at the bottom of task 2's stack. Task 2's irq frame begins to grow.</p>
+<p><img alt="" src="../figures/sched-6.png" /></p>
+<hr />
+<p><strong>Scheduling out task 2</strong></p>
+<p>The kernel calls <code>schedule()</code>. It observes that all tasks have their counters set to 0 and set counters to their tasks priorities.</p>
+<p><code>schedule</code> selects init task to run. (This is because all tasks now have their counters set to 1 and init task is the first in the list). But actually, it would be fully legal for <code>schedule</code> to select task 1 or task 2 at this point, because their counters has equal values. We are more interested in the case when task 1 is selected so let's now assume that this is what had happened.</p>
+<hr />
+<p><strong>Switching to task 1, exiting from the 1st irq</strong></p>
+<ol>
+<li><code>cpu_switch_to</code> is called and it restores previously saved callee-saved registers from task 1 <code>cpu_context</code>. Link register now points to the instruction right after <code>cpu_switch_to</code>, which was called last time when task 1 was executed. <code>sp</code> points to the bottom of task 1 interrupt stack. This is because task 1 finished handling the previous interrupt handler. </li>
+<li>From <code>cpu_switch_to</code>, task1 returns back to <code>switch_to</code>, to <code>_schedule</code>, and then to <code>timer_tick</code>. There, it disables interrupts and finally executes <code>kernel_exit</code>. There, task 1 irq frame (including the save regs) is unwound. </li>
+</ol>
+<p><img alt="" src="../figures/sched-7.png" /></p>
+<hr />
+<p><strong>Task 1 resumes normal execution</strong></p>
+<p><code>kernel_exit</code> restores all general purpose registers as well as <code>elr_el1</code> and <code>spsr_el1</code>. <code>elr_el1</code> now points somewhere in the middle of the <code>process</code> function. <code>sp</code> points to the bottom of task 1 stack. (Note: the remaining task size depends on the size  of local variables in <code>process</code> )</p>
+<p><img alt="" src="../figures/sched-9.png" /></p>
+<p>Finally, <code>kernel_exit</code> executes <code>eret</code> instruction which uses <code>elr_el1</code> register to jump back to <code>process</code> function. Task 1 resumes it normal execution!</p>
+<hr />
+<h4 id="aside-an-alternative-design">Aside: An alternative design</h4>
+<ul>
+<li>
+<p>When an interrupt happens, the CPU saves irq stack frame automatically on the stack of the current task, e.g. A. This is the same as the design above. </p>
+</li>
+<li>
+<p>The kernel copies the auto saved register contents from the irq frame to the current task's <code>task_struct</code>, representing the CPU context when this task was interrupted by irq. </p>
+</li>
+<li>The kernel calls its scheduler and returns from the irq (possibly to a different task). The irq stack on the A's stack is then unwound. Now irq is on. Later, when A is scheduled in, the kernel restores its CPU context from A's <code>task_struct</code>. </li>
+</ul>
+<p>Can you implement the alternative design? </p>
+<h2 id="disable-preemption">Disable preemption</h2>
+<p>The kernel needs mechanism to (temporarily) disable preemption. </p>
+<p>Example: in creating a new <code>task_struct</code>, we do not want rescheduling to happen. Otherwise the scheduler may see an incomplete <code>task_struct</code>. In other words, the creation of <code>task_struct</code> should be <em>atomic</em>. </p>
+<p>To disable preemption, one method is to disable interrupts. Beyond that, the kernel also needs fine-grained control. </p>
+<h3 id="per-task-preempt_count">Per-task <code>preempt_count</code></h3>
+<p>To <code>task_struct</code>, we add: </p>
+<pre><code>struct task_struct {
+    struct cpu_context cpu_context;
+    long state;
+    long counter;
+    long priority;
+    long preempt_count; // new addition
+};
+</code></pre>
+<p><code>preempt_count</code> &gt;0  indicates that right now the current task is non-preemptable. The following two functions operate on it: </p>
+<pre><code>void preempt_disable(void) { current-&gt;preempt_count++;}
+void preempt_enable(void) { current-&gt;preempt_count--;}
+</code></pre>
+<p>Seeing this flag, the kernel will not invoke scheduler() at all, let alone descheduling this task (i.e. switching to a different task). This is done via the following code. </p>
+<pre><code>void timer_tick() {
+    if (current-&gt;counter&gt;0 || current-&gt;preempt_count &gt;0) 
+        return; 
+...
+</code></pre>
+<p>Why a count instead of a binary flag? This again mimics the Linux implementation. Individual kernel functions could increment &amp; decrement <code>preempt_count</code>. If all kernel functions have finished decrementing <code>preempt_count</code>, the count drops to zero and the scheduler is free to deschedule the task. This mechanism is called reference count, which is common in system software. </p>
+<blockquote>
+<p><code>preempt_count</code> does not prevent a task from shooting in its own foot, though. For instance, a misbehaving task calling schedule() when <code>preempt_count</code> &gt; 0 will likely corrupt kernel data structures. Try it out! </p>
+</blockquote>
+<h3 id="creating-a-task_struct-atomically">Creating a <code>task_struct</code> atomically</h3>
+<p>Going back to making <code>copy_process</code> atomic: </p>
+<pre><code>int copy_process(unsigned long fn, unsigned long arg)
+{
+    preempt_disable(); /* new addition */
+    struct task_struct *p;
+
+    p = (struct task_struct *) get_free_page();
+    if (!p)
+        return 1;
+    p-&gt;priority = current-&gt;priority;
+    p-&gt;state = TASK_RUNNING;
+    p-&gt;counter = p-&gt;priority;
+    p-&gt;preempt_count = 1; // new addition 
+
+    p-&gt;cpu_context.x19 = fn;
+    p-&gt;cpu_context.x20 = arg;
+    p-&gt;cpu_context.pc = (unsigned long)ret_from_fork;
+    p-&gt;cpu_context.sp = (unsigned long)p + THREAD_SIZE;
+    int pid = nr_tasks++;
+    task[pid] = p;
+    preempt_enable(); /* new addition */
+    return 0;
+}
+</code></pre>
+<p><code>preempt_count</code> is set to 1, preventing the new task, once it starts to execute, from being preempted until it completes some initialization work. After that, the new task executes <code>ret_from_fork</code>, which calls <code>schedule_tail()</code> which will call <code>preempt_enable()</code> </p>
+<pre><code>// entry.S
+.globl ret_from_fork
+ret_from_fork:
+    bl  schedule_tail
+    ...
+</code></pre>
+<!--- not sure if this is useful as of now. schedule_tail() is the first thing called by ret_from_fork which means the new task will turn on preempt as soon as it runs for the 1st time -->
+
+<h3 id="making-the-scheduling-algorithm-atomic">Making the scheduling algorithm atomic</h3>
+<p>The scheduler is <a href="https://en.wikipedia.org/wiki/Reentrancy_(computing)">non-reentrant</a>. Making it atomic looks easy: we just call <code>preempt_disable/enable()</code> upon entering/leaving the scheduler. </p>
+<pre><code>void _schedule(void)
+{
+    preempt_disable(); /* new addition */
+    int next,c;
+    struct task_struct * p;
+    while (1) {
+        c = -1;
+        next = 0;
+        for (int i = 0; i &lt; NR_TASKS; i++){
+            p = task[i];
+            if (p &amp;&amp; p-&gt;state == TASK_RUNNING &amp;&amp; p-&gt;counter &gt; c) {
+                c = p-&gt;counter;
+                next = i;
+            }
+        }
+        if (c) {
+            break;
+        }
+        for (int i = 0; i &lt; NR_TASKS; i++) {
+            p = task[i];
+            if (p) {
+                p-&gt;counter = (p-&gt;counter &gt;&gt; 1) + p-&gt;priority;
+            }
+        }
+    }
+    switch_to(task[next]);
+    preempt_enable(); /* new addition */
+}
+</code></pre>
+<p><strong>Why does the kernel disable preemption</strong>, instead of disabling all interrupts?</p>
+<p>By design, if no <code>TASK_RUNNING</code> tasks are there, the scheduler will run its while loop over and over again until some of the tasks will move to <code>TASK_RUNNING</code> state. But if we are running on a single CPU, how then a task state can change while this loop is running? The answer is that if some task is waiting for an interrupt, this interrupt can happen while <code>schedule</code> function is executed and interrupt handler can change the state of the task. </p>
+<p>This actually explains why interrupts must be enabled during <code>schedule</code> execution. This also demonstrates an important distinction between disabling interrupts and disabling preemption. <code>schedule</code> disables preemption for the duration of the whole function. This ensures that nested <code>schedule</code> will not be called while we are in the middle of the original function execution. However, interrupts can legally happen during <code>schedule</code> function execution.</p>
+<p>Note: our kernel does not (yet) have the mechanism for tasks to wait for interrupts. It's a important mechanism to be added. </p>
+<blockquote>
+<p>I am not very satisfied with leaving interrupt on during schedule(). There shall be an idle task which does <code>WFI</code> when no other tasks are runnable. In that way, the scheduler can avoid spinning and can run with interrupt off. To implement the idle task, the kernel shall implement task wait state.<br />
+</p>
+</blockquote>
+<h2 id="conclusion">Conclusion</h2>
+<p>We are done with scheduling, but right now our kernel can manage only kernel threads: they are executed at EL1 and can directly access any kernel functions or data. In the next 2 lessons we are going fix this and introduce system calls and virtual memory.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      
+    
+  </body>
+</html>

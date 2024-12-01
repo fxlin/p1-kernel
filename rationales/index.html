@@ -1,0 +1,999 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
+    
+    
+      
+        <title>Rationales - p1-kernel</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.bcfcd587.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#rationale" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="p1-kernel" class="md-header__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            p1-kernel
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Rationales
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+    
+  
+  OVERVIEW
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exp0/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp0
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exp1/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp1
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exp2/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp2
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exp3/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp3
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exp4a/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4a
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exp4b/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4b
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exp5/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp5
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exp6/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp6
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../qemu/" class="md-tabs__link">
+        
+  
+    
+  
+  /qemu
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../gdb/" class="md-tabs__link">
+        
+  
+    
+  
+  /gdb
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../cheatsheet/" class="md-tabs__link">
+        
+  
+    
+  
+  /aarch64
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../ssh-proxy/" class="md-tabs__link">
+        
+  
+    
+  
+  /ssh
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../dump/" class="md-tabs__link">
+        
+  
+    
+  
+  /ker dump
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../jtag/" class="md-tabs__link">
+        
+  
+    
+  
+  /jtag
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exp1/workflow/" class="md-tabs__link">
+        
+  
+    
+  
+  /rpi workflow
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="p1-kernel" class="md-nav__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    p1-kernel
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVERVIEW
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exp0/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp0
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exp1/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp1
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exp2/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exp3/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp3
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exp4a/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4a
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exp4b/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4b
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exp5/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp5
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exp6/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp6
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../qemu/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /qemu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /gdb
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /aarch64
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ssh-proxy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ssh
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dump/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ker dump
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../jtag/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /jtag
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exp1/workflow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /rpi workflow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#rationale" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rationale
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#raspberry-pi-os-project-introduction-or-how-to-efficiently-learn-operating-system-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Raspberry Pi OS project introduction or how to efficiently learn operating system development?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Raspberry Pi OS project introduction or how to efficiently learn operating system development?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#challenges-in-learning-os-development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Challenges in learning OS development
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#os-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      OS requirements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-raspberry-pi-comes-into-play" class="md-nav__link">
+    <span class="md-ellipsis">
+      How Raspberry Pi comes into play
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#working-with-community" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working with community
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  <h1>Rationales</h1>
+
+<h2 id="rationale">Rationale</h2>
+<p>The kernel must run on cheap &amp; modern hardware. </p>
+<p>Showing the kernel's evolution path is important. Along the path, each version must be self-contained runnable. </p>
+<p>We deem the following kernel functions crucial to implement: 
+* protection modes
+* interrupt handling
+* preemptive scheduling
+* virtual memory </p>
+<p>Experimenting with these features is difficult with commodity kernels due to their complexity. </p>
+<h2 id="raspberry-pi-os-project-introduction-or-how-to-efficiently-learn-operating-system-development">Raspberry Pi OS project introduction or how to efficiently learn operating system development?</h2>
+<p>A few years ago, I opened the source code of the Linux kernel for the first time. At that time, I considered myself more or less a skillful software developer: I knew a little bit of assembler and C programming, and had a high-level understanding of major operating system concepts, such as process scheduling and virtual memory management. However, my first attempt was a complete failure - I understood almost nothing.</p>
+<p>For other software projects that I have to deal with, I have a simple approach that usually works very well: I find the entry point of the program and then start reading the source code, going as deep as necessary to understand all the details that I am interested in. This approach works well, but not for something as sophisticated as an operating system. It was not just that it took me more than a week just to find an entry point - the main problem was that I quickly found myself in a situation where I was looking at a few lines of code,  and I had no idea how to find any clues about what those lines were doing. This was especially true for the low-level assembler source code, but it worked no better for any other part of the system that I tried to investigate. </p>
+<p>I don't like the idea of dismissing a problem just because it looks complex from the beginning. Furthermore, I believe that there are no complex problems. Instead, there are a lot of problems we simply don't know how to address efficiently, so I started to look for an effective way to learn OS development in general and Linux in particular.</p>
+<h3 id="challenges-in-learning-os-development">Challenges in learning OS development</h3>
+<p>I know that there are tons of books and documentation written about Linux kernel development, but neither of them provides me with the learning experience that I want. Half of the material are so superficial that I already know it. With the other half I have a very similar problem that I have with exploring the kernel source code: as soon as a book goes deep enough, 90% of the details appear to be irrelevant to the core concepts, but related to some security, performance or legacy considerations as well as to millions of features that the Linux kernel supports. As a result, instead of learning core operating system concepts, you always end up digging into the implementation details of those features.</p>
+<p>You may be wondering why I need to learn operating system development in the first place. For me, the main reason is that I was always interested in how things work under the hood. It is not just curiosity: the more difficult the task you are working on, frequently things begin to trace down to the operating system level. You just can't make fully informed technical decisions if you don't understand how everything works at a lower level. Another thing is that if you really like a technical challenge, working with OS development can be an exciting task for you.</p>
+<p>The next question you may ask is, why Linux? Other operating systems would probably be easier to approach. The answer is that I want my knowledge to be, at least in some way, relevant to what I am currently doing and to something I expect to be doing in the future. Linux is perfect in this regard because nowadays everything from small IoT devices to large servers tend to run Linux.</p>
+<p>When I said that most of the books about Linux kernel development didn't work well for me - I wasn't being quite honest. There was one book that explained some essential concepts using the actual source code that I was capable of fully understanding even though I am a novice in OS development. This book is "Linux Device Drivers", and it's no wonder that it is one of the most famous technical books about the Linux kernel. It starts by introducing source code of a simple driver that you can compile and play around with. Then it begins to introduce new driver related concepts one by one and explains how to modify the source code of the driver to use these new concepts. That is exactly what I refer to as a "good learning experience". The only problem with this book is that it focuses explicitly on driver development and says very little about core kernel implementation details.</p>
+<p>But why has nobody created a similar book for kernel developers? I think this is because if you use the current Linux kernel source code as a base for your book, then it's just not possible. There is no function, structure, or module that can be used as a simple starting point because there is nothing simple about the Linux source. You also can't introduce new concepts one at a time because in the source code, everything is very closely related to one another. After I realized this, an idea came to me: if the Linux kernel is too vast and too complicated to be used as a starting point for learning OS development, why don't I implement my own OS that will be explicitly designed for learning purposes? In this way, I can make the OS simple enough to provide a good learning experience. Also, if this OS will be implemented mostly by copying and simplifying different parts of the Linux kernel source, it would be straightforward to use it as a starting point to learn the Linux kernel as well. In addition to the OS, I decided to write a series of lectures that teaches major OS development concepts and fully explains the OS source code.</p>
+<h3 id="os-requirements">OS requirements</h3>
+<p>I started working on the project, which later became the <a href="https://github.com/s-matyukevich/raspberry-pi-os">RPi OS</a>. The first thing I had to do was to determine what parts of kernel development I considered to be "basic", and what components I considered to be not so essential and can be skipped (at least in the beginning). In my understanding, each operating system has 2 fundamental goals:</p>
+<ol>
+<li>Run user processes in isolation.</li>
+<li>Provide each user process with a unified view of the machine hardware.</li>
+</ol>
+<p>To satisfy the first requirement, the RPi OS needs to have its own scheduler. If I want to implement a scheduler, I also have to handle timer interrupts. {<em>xzl: not necessarily if you consider cooperative scheduling</em>} The second requirement implies that the OS should support some drivers and provide system calls to expose them to user applications. Since this is for beginners, I don't want to work with complicated hardware, so the only drivers I care about are drivers that can write something to screen and read user input from a keyboard. Also, the OS needs to be able to load and execute user programs, so naturally it needs to support some sort of file system and be capable of understanding some sort of executable file format. It would be nice if the OS can support basic networking, but I don't want to focus on that in a text for beginners. So those are basically the things that I can identify as "core concepts of any operating system".</p>
+<p>Now let's take a look at the things that I want to ignore:
+1. <strong>Performance</strong> I don't want to use any sophisticated algorithms in the OS. I am also going to disable all caches and other performance optimization techniques for simplicity.
+1. <strong>Security</strong> It is true that the RPi OS has at least one security feature: virtual memory. Everything else can be safely ignored.
+1. <strong>Multiprocessing and synchronization</strong> I am quite happy with my OS being executed on a single processor core. In particular, this allows me to get rid of a vast source of complexity - synchronization. 
+1. <strong>Support for multiple architectures and different types of devices</strong> More on this in the next section.
+1. <strong>Millions of other features that any production-ready operating system supports</strong></p>
+<h3 id="how-raspberry-pi-comes-into-play">How Raspberry Pi comes into play</h3>
+<p>I already mentioned that I don't want the RPi OS to support multiple computer architectures or a lot of different devices. I felt even stronger about this after I dug into the Linux kernel driver model. It appears that even devices with similar purposes can largely vary in implementation details. This makes it very difficult to come up with simple abstractions around different driver types, and to reuse driver source code. To me, this seems like one of the primary sources of complexity in the Linux kernel, and I definitely want to avoid it in the RPi OS. Ok, but what kind of computer should I use then? I clearly don't want to test my bare metal programs using my working laptop, because I'm honestly not sure that it is going to survive. More importantly, I don't want people to buy an expensive laptop just to follow my OS development exercises (I don't think anybody would do this anyway). <strong>Emulators look like more or less a good choice, but I want to work with a real device because it gives me the feeling that I am doing something real rather than playing with bare metal programming</strong>. {xzl: very true}</p>
+<p>I ended up using the Raspberry Pi, in particular, the <a href="https://www.raspberrypi.org/products/raspberry-pi-3-model-b/">Raspberry Pi 3 Model B</a>. Using this device looks like the ideal choice for a number of reasons:</p>
+<ol>
+<li>It costs something around $35. I think that should be an affordable price.</li>
+<li>This device is specially designed for learning. Its inner architecture is as simple as possible, and that perfectly suits my needs. {xzl: not necessarily. Rpi3 has many hardware quirks. But it's probably one of the few viable choices. More on this later}</li>
+<li>This device uses ARM v8 architecture. This is a simple RISC architecture, is very well adapted to OS authors' needs, and doesn't have so many legacy requirements as, for example, the popular x86 architecture. If you don't believe me, you can compare the amount of source code in the <code>/arch/arm64</code> and <code>/arch/x86</code> folders in the Linux kernel. {xzl: I concur. I want you to learn something new enough and used in real-world. This also explains why I rule out RISC-V}</li>
+</ol>
+<p>The OS is not compatible with the older versions of the Raspberry Pi, because neither of them support 64 bit ARM v8 architecture, though I think that support for all future devices should be trivial.</p>
+<h3 id="working-with-community">Working with community</h3>
+<p>One major drawback of any technical book is that very soon after release each book becomes obsolete. Technology nowadays is evolving so fast that it is almost impossible for book writers to keep up with it. That's why I like the idea of an "open source book" - a book that is freely available on the internet and encourages its readers to participate in content creation and validation. If the book content is available on Github, it is very easy for any reader to fix and develop new code samples, update the book content, and participate in writing new chapters. I understand that right now the project is not perfect, and at the time of writing it is even not finished. But I still want to publish it now, because I hope that with the help of the community I will be able to not only complete the project faster but also to make it much better and much more useful than it was in the beginning. </p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1212 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
+    
+    
+      
+        <title>Accessing the course server(s) --- archived - p1-kernel</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bcfcd587.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#accessing-the-course-servers-archived" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="p1-kernel" class="md-header__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            p1-kernel
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Accessing the course server(s) --- archived
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  OVERVIEW
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp0/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp0
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp1/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp1
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp2/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp2
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp3/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp3
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp4a/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4a
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp4b/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4b
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp5/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp5
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp6/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp6
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../qemu/" class="md-tabs__link">
+        
+  
+    
+  
+  /qemu
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../gdb/" class="md-tabs__link">
+        
+  
+    
+  
+  /gdb
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../cheatsheet/" class="md-tabs__link">
+        
+  
+    
+  
+  /aarch64
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../ssh-proxy/" class="md-tabs__link">
+        
+  
+    
+  
+  /ssh
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../dump/" class="md-tabs__link">
+        
+  
+    
+  
+  /ker dump
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../jtag/" class="md-tabs__link">
+        
+  
+    
+  
+  /jtag
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp1/workflow/" class="md-tabs__link">
+        
+  
+    
+  
+  /rpi workflow
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="p1-kernel" class="md-nav__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    p1-kernel
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVERVIEW
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp0/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp0
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp1/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp1
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp2/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp3/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp3
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp4a/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4a
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp4b/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4b
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp5/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp5
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp6/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp6
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../qemu/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /qemu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /gdb
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /aarch64
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ssh-proxy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ssh
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dump/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ker dump
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jtag/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /jtag
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp1/workflow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /rpi workflow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#terminal-over-ssh" class="md-nav__link">
+    <span class="md-ellipsis">
+      Terminal over SSH
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Terminal over SSH">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-use-key-based-authentication-in-lieu-of-password" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Use key-based authentication in lieu of password
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#troubleshooting-the-server-still-asks-for-password" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting: the server still asks for password?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-save-connection-info-in-ssh-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Save connection info in SSH config
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aside-a-one-liner-for-connecting-to-course-servers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Aside: a one-liner for connecting to course servers
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#remote-development-with-vscode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Remote development with VSCode
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Remote development with VSCode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#windows-caveat-1-ssh-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      Windows caveat 1: ssh keys
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#windows-caveat-2-an-outdated-ssh-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      Windows caveat 2: an outdated ssh client
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#launch-a-terminal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Launch a terminal
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-browsing-editing" class="md-nav__link">
+    <span class="md-ellipsis">
+      File browsing &amp; editing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="accessing-the-course-servers-archived">Accessing the course server(s) --- archived</h1>
+<p>This document describes server resources and how to connect for development. </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Projects</th>
+<th>hardware specs</th>
+<th>OS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>granger1.cs.virginia.edu</td>
+<td>p1-p4</td>
+<td>Dual Xeon 2630v4 Broadwell (10c20t), 20 cores</td>
+<td>Ubuntu 20.04 LTS</td>
+</tr>
+<tr>
+<td>granger2.cs.virginia.edu</td>
+<td>p1-p4</td>
+<td>Dual Xeon 2630v4 Broadwell (10c20t), 20 cores</td>
+<td>Ubuntu 20.04 LTS</td>
+</tr>
+<tr>
+<td>~~labsrv06.cs.virginia.edu (out of service)~~</td>
+<td>All but p2</td>
+<td>Single Xeon Silver 4410 CPU (8c16t), 8 cores</td>
+<td>Ubuntu 20.04 LTS</td>
+</tr>
+</tbody>
+</table>
+<!--- Using your CS credentials (not the UVA ones). See [wiki page](https://www.cs.virginia.edu/wiki/doku.php?id=compute_resources). Contact felixlin@ if you do not have CS credentials.  --->
+
+<p>These servers are behind the campus firewall. If you are off the grounds, you must connect the UVA VPN first. </p>
+<p><strong>(Jan 2023): The above should be it! The following method of SSH jumphost is considered obsoleted. It is kept for archival.</strong></p>
+<p>You need to first SSH to <strong>portal.cs.virginia.edu</strong>, and from there SSH over to the course servers, e.g. labsrv06. This is described <a href="https://www.cs.virginia.edu/wiki/doku.php?id=linux_ssh_access">here</a>. </p>
+<p><strong>WARNING:</strong> portal is managed by the UVA IT. You use your existing computing ID &amp; password. The course server is managed by cs4414 staff. Use the credentials that we share with you. </p>
+<p><img alt="" src="images/servers.png" />
+<em>Figure above: your local machine, the portal, and the server. Texts on the bottom: key files and their purpose.</em> </p>
+<h2 id="terminal-over-ssh">Terminal over SSH</h2>
+<pre><code>$ ssh xl6yq@portal.cs.virginia.edu
+(type in password...)
+Warning: No xauth data; using fake authentication data for X11 forwarding.
+Last login: Sun Jan 24 16:48:29 2021 from c-71-62-166-85.hsd1.va.comcast.net
+********************************** **********************
+Type &quot;module avail&quot; to see software available.
+See: www.cs.virginia.edu/computing for more information.
+
+$ ssh xl6yq@granger1.cs.virginia.edu
+(type in password...)
+Welcome to Ubuntu 20.04 LTS (GNU/Linux 5.4.0-45-generic x86_64)
+</code></pre>
+<p>Connecting to the course servers can be automated. </p>
+<p><img alt="" src="images/ssh-proxy.gif" /></p>
+<p>The picture shows the final results: From a local terminal (e.g. my minibox), connecting to a course server by simply typing <code>ssh granger1</code>. Read on for how to configure.</p>
+<h3 id="1-use-key-based-authentication-in-lieu-of-password">1. Use key-based authentication in lieu of password</h3>
+<p>Applicable local environment: Linux, MacOS, &amp; Windows (WSL)</p>
+<p>The pub key on your local machine is at <code>~/.ssh/id_rsa.pub</code>. Check out the file &amp; its content. If it does not exist, generate a pub key by running <code>ssh-keygen</code>. </p>
+<pre><code># on the local console (Linux or WSL)
+$ ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/xzl/.ssh/id_rsa):
+</code></pre>
+<p>Now, append your public key to both portal and granger1 (<code>~/.ssh/authorized_keys</code>). </p>
+<p>Don't do this manually. Instead, do so by the command <code>ssh-copy-id</code>. For instance: </p>
+<pre><code># copy the pubkey from your local machine to portal
+$ ssh-copy-id xl6yq@portal.cs.virginia.edu
+(... type in password ...)
+
+# connect to &quot;portal&quot;, it should no longer ask for password
+$ ssh xl6yq@portal.cs.virginia.edu
+
+# now we are on &quot;portal&quot;. generate a new pair of public/private keys, which will be used between portal and granger1 
+$ ssh-keygen
+
+# copy the new public key from portal to granger1
+$ ssh-copy-id xl6yq@granger1.cs.virginia.edu
+(... type in password ...)
+
+# it should no longer ask for password
+$ ssh xl6yq@granger1.cs.virginia.edu
+</code></pre>
+<p><strong>An alternative procedure (02/07/21)</strong> Credits Peiyi Yang, TA 2021. </p>
+<p>Started from scratch. First edited the ssh config file on the local computer saying to jump through portal when going to granger1. Then ran ssh-copy-id id@portal and entered the password to install the local's pubkey on portal. Then from local, ran ssh-copy-id id@granger1 and entered the password to install the local's pubkey on granger1.</p>
+<p>So there is only one key pair. The pubkey is copied to portal and then to granger1. </p>
+<h3 id="troubleshooting-the-server-still-asks-for-password">Troubleshooting: the server still asks for password?</h3>
+<p>Let's use granger1 as an example. </p>
+<ul>
+<li>On granger1, check the content of ~/.ssh/authorized_keys. You should see your public key saved there. For instance, mine is: </li>
+</ul>
+<pre><code>$ cat ~/.ssh/authorized_keys
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCkkCZ2PO7GdX5CBL26zcIFz4XgMiHSQjaU32evuidvMXsC
+ZExT9QHl3Ou00QfuagmfebugxB0aruGAsKmBxEBmlj0r1uAVCekYaIn8IPA5jynQnDRDdIABaZBWlsPx9jKo
+KQqLlKgdG4JziQOAr0HaUgr+oIXgRUq7V/W1OhV9SQVF+vcIy8vVwNdLBNdbw/GtU0oKb76yxfXOC/VZM7eZ
+xhovb/J450U5Op8tL/+Lg5x2sJKqR2juCFAicGbVNuXXazEDrXHgDQp+WQS8rYK4Zs95KqAsMfxvsFSbs8lf
+h0pIs+sozBNUt+1noJkcyLfxhzu0yGEsxMULHE/KdAst xl6yq@portal03                        
+</code></pre>
+<p>"xl6yq@portal03" is the textual tag of the pubkey, indicating it is a pubkey generated on portal.cs</p>
+<ul>
+<li>On granger1, check the permission of ~/.ssh. It should be: </li>
+</ul>
+<pre><code>$ ls -la ~ | grep .ssh
+drwx------ 
+</code></pre>
+<p>Check the permission of ~/.ssh/authorized_keys. It should be: </p>
+<pre><code>$ ls -l ~/.ssh/authorized_keys
+-rw------- 
+</code></pre>
+<p>If none of the above works, you can put ssh in the verbose mode to see what's going on. From <code>portal</code>, type</p>
+<pre><code>ssh -vv granger1.cs.virginia.edu
+</code></pre>
+<p>Explanation: -vv tells ssh to dump its interactions with granger1 on negotiating keys. As a reference, my output is <a href="granger1-ssh-output.txt">here</a>. At the end of the output, you can see granger1 accepts my key offered from portal. </p>
+<p>Can do password-less authentication between local/portal and between portal/granger[12], but are still required to enter password between local/granger? From your local machine, type</p>
+<pre><code>ssh -vv granger1.cs.virginia.edu
+</code></pre>
+<p>And compare line-by-line with the output to the reference output <a href="granger1-ssh-local-output.txt">here</a>. </p>
+<p><strong>Note to Windows Users</strong>: if you try to invoke ssh-copy-id that comes with Windows (the one you can invoke in PowerShell, not the one in WSL), there may be some caveats. See <a href="https://www.chrisjhart.com/Windows-10-ssh-copy-id/">here</a>. I would say just invoke ssh-copy-id in WSL. </p>
+<h3 id="2-save-connection-info-in-ssh-config">2. Save connection info in SSH config</h3>
+<p>Append the following to your ssh client configuration (<code>~/.ssh/config</code>). <strong>Replace USERNAME with your actual username</strong>: </p>
+<pre><code>Host granger1
+   User USERNAME
+   HostName granger1.cs.virginia.edu
+   ProxyJump USERNAME@portal.cs.virginia.edu:22
+</code></pre>
+<p>With the configuration, your local ssh client knows that when connecting  to host <code>granger1</code>, use <code>portal</code> as the jump proxy. So you can directly connect to <code>granger1</code> from your local machine: </p>
+<pre><code>$ ssh granger1
+</code></pre>
+<h3 id="aside-a-one-liner-for-connecting-to-course-servers">Aside: a one-liner for connecting to course servers</h3>
+<pre><code>$ ssh -l USERNAME granger1.cs.virginia.edu -J portal.cs.virginia.edu
+</code></pre>
+<p>The -J option is available with your local ssh client OpenSSH &gt;= 7.3p1. See <a href="https://unix.stackexchange.com/questions/423205/can-i-access-ssh-server-by-using-another-ssh-server-as-intermediary/423211#423211">here</a> for more details. For instance, my version: </p>
+<pre><code>$ ssh -V
+OpenSSH_7.6p1 Ubuntu-4ubuntu0.3, OpenSSL 1.0.2n  7 Dec 2017
+</code></pre>
+<h2 id="remote-development-with-vscode">Remote development with VSCode</h2>
+<p>Many students may prefer VSCode. Here is how to make it work for our kernel hacking. </p>
+<p>End results: being able to develop, compile, and do version control from VSCode. See an example screenshot below. </p>
+<p><img alt="image-20210124192213976" src="images/vscode-remote-files.png" /></p>
+<p>So we will use VSCode's official Remote.SSH extension. I do not recommend 3rd party extensions, e.g. sftp. </p>
+<p>An official tutorial is <a href="https://code.visualstudio.com/docs/remote/ssh">here</a>. </p>
+<p>tl;dr: VSCode will connect to the course server (Linux) using SSH under the hood. To do so you install the "Remote development" <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack">package</a> which will install the "Remote.SSH" extension for VSCode. </p>
+<p><img alt="" src="vscode-remove-ssh.png" /></p>
+<blockquote>
+<p><em>Screenshot from Peiyi Yang (py5yy@). Her VSCode color scheme is different from mine.</em> </p>
+</blockquote>
+<h3 id="windows-caveat-1-ssh-keys">Windows caveat 1: ssh keys</h3>
+<p>The extension (Remote.SSH) will invoke Window's ssh client (<code>c:\Windows\System32\OpenSSH\ssh.exe</code>).The Window's ssh client expects its config file at <code>C:\Users\%USERNAME%\.ssh\config</code>. This is NOT the ssh client you run from WSL. </p>
+<p><img alt="" src="images/vscode-ssh-config.png" /></p>
+<p>If you haven't generated your SSH keys so far, you can do so by launching a PowerShell console and run <code>ssh-keygen</code> there. </p>
+<table>
+<thead>
+<tr>
+<th><img alt="" src="images/powershell.png" /></th>
+<th><img alt="" src="images/powershell-sshkeygen.png" /></th>
+<th><img alt="" src="images/wslroot.png" /></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>Launch PowerShell</em></td>
+<td><em>ssh-keygen in PowerShell</em></td>
+<td><em>Access WSL root</em></td>
+</tr>
+</tbody>
+</table>
+<p>Or, you can you copy existing ssh keys and config (e.g. from WSL <code>~/.ssh/</code>) to the location mentioned above. Btw, the way to access WSL's root filesystem is to type <code>\\wsl$</code> in the explorer address bar. See the figure above. </p>
+<h3 id="windows-caveat-2-an-outdated-ssh-client">Windows caveat 2: an outdated ssh client</h3>
+<p>The current VSCode has a bug that breaks ssh with jumphost. You have to manually fix it by following <a href="https://github.com/microsoft/vscode-remote-release/issues/18#issuecomment-507258777">this</a>. In a nutshell, manual download a newer win32 ssh to overwrite the one shipping with Win 10 (it's a good idea to save a back up). Window's security mechanism is in your way. Work around it. </p>
+<p><strong>Note</strong>: 1. Make sure to download the OpenSSH-Win64 version (not Win32). 2. Double check the SSH version. See the screenshot below.</p>
+<table>
+<thead>
+<tr>
+<th><img alt="" src="images/vscode-ssh-override.png" /></th>
+<th><img alt="" src="images/win-ssh-version.png" /></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>Turning off protection on ssh.exe (see link above)</em></td>
+<td><em>The newer ssh client manually installed</em></td>
+</tr>
+</tbody>
+</table>
+<p>Now, you should be good to go with VSCode. </p>
+<p>Make sure you have the Remote.SSH extension installed. Click "Remote Explorer" on the left bar. The extension will pick up your ssh config file (again that's <code>C:/Users/%USERNAME%/.ssh/config</code>) and present a list of hosts recognized. Click one to connect to it. The extension will copy a bunch of stuffs to the host and launch some daemon on the host. Then you are connected. </p>
+<p><strong>Password-less login used to work fine, but suddenly breaks?</strong> A common cause is that VSCode updates automatically, overwriting the ssh client you manually installed. Solution: check your ssh version and use the one we suggested. </p>
+<h3 id="launch-a-terminal">Launch a terminal</h3>
+<p>After connection, click "remote" on the left bar to bring up a remote terminal, in which you can execute commands to build projects, etc. Make sure to click the "+" sign to create a new shell terminal. </p>
+<p><img alt="image-20210124192109456" src="images/vscode-remote-terminal.png" /></p>
+<h3 id="file-browsing-editing">File browsing &amp; editing</h3>
+<p>Then you will specify a remote folder on the server to "open": </p>
+<p><img alt="image-20210124192002504" src="images/vscode-remote-folder.png" /></p>
+<p>To browse &amp; edit files on the server, click "explorer" on the left bar</p>
+<p><img alt="image-20210124192213976" src="images/vscode-remote-files.png" /></p>
+<p>Click  "source control" on the left bar for a handy git interface. </p>
+<h3 id="troubleshooting">Troubleshooting</h3>
+<p>Windows auto update may break VSCode's ssh configuration that worked previously. In this case, deleting (or moving to other places) the .vscode-server folder on granger and portal may solved the problem. </p>
+<p>If things break, report: </p>
+<ul>
+<li>the error message of VSCode</li>
+<li>the PowerShell output when you try to connect to <strong>granger1</strong> from the PowerShell command line</li>
+<li>the PowerShell output when you try to connect to <strong>cs portal</strong> from the PowerShell command line</li>
+<li>any recent Windows/VSCode updates</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      
+    
+  </body>
+</html>

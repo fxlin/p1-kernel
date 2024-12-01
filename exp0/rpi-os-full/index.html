@@ -1,0 +1,1350 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
+    
+    
+      
+        <title>0: Sharpen your tools (PRO VERSION) - p1-kernel</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bcfcd587.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#0-sharpen-your-tools-pro-version" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="p1-kernel" class="md-header__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            p1-kernel
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              0: Sharpen your tools (PRO VERSION)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  OVERVIEW
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp0
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp1/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp1
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp2/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp2
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp3/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp3
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp4a/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4a
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp4b/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4b
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp5/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp5
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp6/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp6
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../qemu/" class="md-tabs__link">
+        
+  
+    
+  
+  /qemu
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../gdb/" class="md-tabs__link">
+        
+  
+    
+  
+  /gdb
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../cheatsheet/" class="md-tabs__link">
+        
+  
+    
+  
+  /aarch64
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../ssh-proxy/" class="md-tabs__link">
+        
+  
+    
+  
+  /ssh
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../dump/" class="md-tabs__link">
+        
+  
+    
+  
+  /ker dump
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../jtag/" class="md-tabs__link">
+        
+  
+    
+  
+  /jtag
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp1/workflow/" class="md-tabs__link">
+        
+  
+    
+  
+  /rpi workflow
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="p1-kernel" class="md-nav__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    p1-kernel
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVERVIEW
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp0
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp1/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp1
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp2/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp3/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp3
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp4a/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4a
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp4b/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4b
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp5/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp5
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp6/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp6
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../qemu/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /qemu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /gdb
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /aarch64
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ssh-proxy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ssh
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dump/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ker dump
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jtag/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /jtag
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp1/workflow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /rpi workflow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#terms" class="md-nav__link">
+    <span class="md-ellipsis">
+      Terms
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dev-platform-where-you-develop-kernel-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dev platform (where you develop kernel code)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dev platform (where you develop kernel code)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#route-1-run-kernel-atop-qemu-emulator-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      Route 1: run kernel atop QEMU (emulator, recommended)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#route-2-run-kernel-atop-rpi3-real-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      Route 2: run kernel atop Rpi3 (real hardware)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#toolchain" class="md-nav__link">
+    <span class="md-ellipsis">
+      Toolchain
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-platform" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test Platform
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Test Platform">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#route-1-qemu-emulator-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      Route 1: QEMU (emulator, recommended)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Route 1: QEMU (emulator, recommended)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#compile-qemu-from-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compile QEMU from source
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-the-compilation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test the compilation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#route-2-rpi3-real-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      Route 2: Rpi3 (real hardware)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Route 2: Rpi3 (real hardware)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#check-list" class="md-nav__link">
+    <span class="md-ellipsis">
+      Check list
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prep-raspberry-pi-3-model-b" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prep Raspberry Pi 3 Model B
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load-raspbian-os-to-the-sd-card" class="md-nav__link">
+    <span class="md-ellipsis">
+      Load Raspbian OS to the SD card
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plug-in-the-serial-cable" class="md-nav__link">
+    <span class="md-ellipsis">
+      Plug in the serial cable
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-the-serial-emulator-on-your-pc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configure the serial emulator on your PC
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#powering-up-rpi3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Powering up RPi3
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#an-example-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      An example setup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-your-dev-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test your dev workflow
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Test your dev workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#background-whats-on-sd-card" class="md-nav__link">
+    <span class="md-ellipsis">
+      Background: what's on SD card?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-configtxt" class="md-nav__link">
+    <span class="md-ellipsis">
+      Update config.txt
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-load-sample-baremetal-program" class="md-nav__link">
+    <span class="md-ellipsis">
+      Build &amp; load sample baremetal program
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="0-sharpen-your-tools-pro-version">0: Sharpen your tools (PRO VERSION)</h1>
+<p>THIS DOCUMENT CONTAINS DESCRIPTION: BOTH QEMU AND RPI3 (ACTUAL HARDARE); ALSO DEVELOP ON YOUR LOCAL MACHINES</p>
+<p><strong>READING TIME: 30 MIN</strong></p>
+<p><strong>Get the code</strong>: </p>
+<pre><code>git clone https://github.com/fxlin/p1-kernel
+</code></pre>
+<h3 id="terms">Terms</h3>
+<ul>
+<li>rpi3: raspberry pi 3, a credit card size computer</li>
+<li>baremetal: write &amp; run code directly on hardware (rpi3, real or emulated)</li>
+<li>kernel: the baremetal code you will develop to run on (real/emulated) hardware</li>
+<li>kernel binary/image: a single file, which contains the compiled kernel program and data</li>
+</ul>
+<h2 id="dev-platform-where-you-develop-kernel-code">Dev platform (where you develop kernel code)</h2>
+<h3 id="route-1-run-kernel-atop-qemu-emulator-recommended">Route 1: run kernel atop QEMU (emulator, recommended)</h3>
+<p>Note: </p>
+<ul>
+<li>
+<p>Recommended configurations are <u>underscored</u>.</p>
+</li>
+<li>
+<p>How to connect to CS server(s): see <a href="../../ssh-proxy/">here</a>. </p>
+</li>
+<li>
+<p>VSCode: optional. It's available on Win/OSX/Linux. It can be used for any configuration below.</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Your local machine runs:</th>
+<th>If develop remotely on CS servers (recommended)</th>
+<th>If develop on local machine (only if you know what you are doing)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td><u>WSL for SSH shell</u></td>
+<td>WSL for toolchain. gdbserver could be tricky.</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td><u>SSH shell</u></td>
+<td><u>Native toolchain + console</u></td>
+</tr>
+<tr>
+<td>Mac</td>
+<td><u>Terminal for SSH shell</u></td>
+<td>HomeBrew</td>
+</tr>
+</tbody>
+</table>
+<h3 id="route-2-run-kernel-atop-rpi3-real-hardware">Route 2: run kernel atop Rpi3 (real hardware)</h3>
+<p>Note: </p>
+<ul>
+<li>
+<p>Recommended configurations are <u>underscored</u>.</p>
+</li>
+<li>
+<p>How to connect to CS server(s): see <a href="../../ssh-proxy/">here</a>. </p>
+</li>
+<li>
+<p>VSCode: optional. It's available on Win/OSX/Linux. It can be used for any configuration below.</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Your local machine runs:</th>
+<th>Develop remotely on CS servers</th>
+<th>Develop locally</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td>WSL for SSH shell; then download (scp) kernel binary to local</td>
+<td><u>WSL for toolchain</u></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>SSH shell; then download (scp) kernel binary to local</td>
+<td><u>Native toolchain + console</u></td>
+</tr>
+<tr>
+<td>Mac</td>
+<td><u>Terminal for SSH shell</u></td>
+<td>HomeBrew (untested)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="toolchain">Toolchain</h3>
+<p>These are compiler, linker, etc. for us to generate the kernel code. Use the one provided by Ubuntu. </p>
+<p><strong>Note:</strong> Below is necessary only when you develop kernel code on your local machine. The server already has the toolchain installed</p>
+<pre><code>$ sudo apt install gcc-aarch64-linux-gnu 
+$ sudo apt install gdb-multiarch
+
+$ aarch64-linux-gnu-gcc --version
+aarch64-linux-gnu-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
+</code></pre>
+<h2 id="test-platform">Test Platform</h2>
+<p>This is where you run the kernel code. </p>
+<h3 id="route-1-qemu-emulator-recommended">Route 1: QEMU (emulator, recommended)</h3>
+<h4 id="compile-qemu-from-source">Compile QEMU from source</h4>
+<p><em>This is required no matter you develop on local machines or on the server.</em> </p>
+<!--Clean any pre-installed qemu and install necessary tools:-->
+<!--sudo apt remove qemu-system-arm-->
+<!--sudo apt install gdb-multiarch build-essential pkg-config-->
+<!--sudo apt install libglib2.0-dev libfdt-dev libpixman-1-dev zlib1g-dev-->
+
+<p>Grab the QEMU source.  Our QEMU is based on upstream v4.2 <strong>with custom aarch64 debugging support.</strong> </p>
+<pre><code>git clone https://github.com/fxlin/qemu-cs4414.git qemu
+cd qemu
+./configure --target-list=aarch64-softmmu -enable-sdl    # -sdl builds in UI support over X 
+make -j`nproc`
+export PATH=&quot;$(pwd)/aarch64-softmmu:${PATH}&quot;
+</code></pre>
+<p>If successful, this will result in QEMU executables in ./aarch64-softmmu/. The last line above adds the path to our search path. </p>
+<p>If you encounter compilation errors (e.g. unmet dependencies), make sure you run all <code>apt get</code> commands above. </p>
+<p>Now try QEMU &amp; check its version. The supported machines should include Rpi3</p>
+<pre><code>$ qemu-system-aarch64  --version                 
+QEMU emulator version 5.0.50 (v5.0.0-1247-gaf6f75d03f-dirty)                   
+Copyright (c) 2003-2020 Fabrice Bellard and the QEMU Project developers        
+patched for cs4414/6456 aarch64 kernel hacking    
+
+$ qemu-system-aarch64 -M help|grep rasp
+raspi2               Raspberry Pi 2B
+raspi3               Raspberry Pi 3B
+</code></pre>
+<h4 id="test-the-compilation">Test the compilation</h4>
+<p>Test QEMU with Rpi3 baremetal code (NOTE: this repo is for validating your toolchain &amp; QEMU build; it is NOT our course project)</p>
+<pre><code>git clone https://github.com/fxlin/raspi3-tutorial.git
+cd raspi3-tutorial
+git checkout b026449
+cd 05_uart0
+make 
+qemu-system-aarch64 -M raspi3 -kernel kernel8.img -serial stdio
+</code></pre>
+<p>If everything works fine, you should see QMEU print out: </p>
+<pre><code>My serial number is: 0000000000000000
+</code></pre>
+<blockquote>
+<p>Note: the test program runs an infinite loop which will cause high CPU usage on your host machine. Kill the test program timely. </p>
+</blockquote>
+<p>On Linux (e.g. connecting to the course server from your local machine):
+<img alt="" src="../test-qemu.gif" /></p>
+<p>On Windows (local WSL, <strong>NOT</strong> using the course server). The emulated display requires the QEMU to be built with graphics support (e.g. a WSL or native Windows build)</p>
+<p><img alt="" src="../test-qemu-wsl.gif" /></p>
+<p>Move to <a href="../../qemu/">the QEMU cheatsheet</a>. </p>
+<h3 id="route-2-rpi3-real-hardware">Route 2: Rpi3 (real hardware)</h3>
+<h4 id="check-list">Check list</h4>
+<table>
+<thead>
+<tr>
+<th><img alt="" src="../figures/rpi3.jpg" /></th>
+<th><img alt="" src="../figures/uartcable.jpg" /></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Required:</strong> An Rpi3 board (Model B or B+) <a href="https://www.raspberrypi.org/products/raspberry-pi-3-model-b/">link</a></td>
+<td><strong>Required:</strong> A USB-serial cable <a href="https://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Daps&amp;field-keywords=usb+to+ttl+serial+cable&amp;rh=i%3Aaps%2Ck%3Ausb+to+ttl+serial+cable">Amazon</a>. Connection <strong>inside</strong> the dongle: black-GND; green-TXD; white-RXD; red-VCC.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p><strong>Required:</strong> A micro SD card. The capacity can be humble (e.g. 4GB). The speed does not matter much. The one I used was $6.  <a href="https://www.raspberrypi.org/documentation/installation/sd-cards.md">Rpi's official page about uSD</a></p>
+</li>
+<li>
+<p><strong>Required:</strong> SD card reader. To be plugged in your PC for loading kernel to the micro SD card. A cheap one can be $7 on <a href="https://www.amazon.com/IOGEAR-MicroSD-Reader-Writer-GFR204SD/dp/B0046TJG1U">Amazon</a></p>
+</li>
+<li>
+<p><strong>Recommended:</strong> A micro USB cable for powering Rpi3. </p>
+</li>
+</ul>
+<h4 id="prep-raspberry-pi-3-model-b">Prep Raspberry Pi 3 Model B</h4>
+<p>Older versions of Raspberry Pi are not going to work with this tutorial because all lessons are designed to use a 64-bit processor that supports ARMv8 architecture, and such processor is only available in the Raspberry Pi 3. Newer versions, including <a href="https://www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/">Raspberry Pi 3 Model B+</a> should work fine. </p>
+<h4 id="load-raspbian-os-to-the-sd-card">Load Raspbian OS to the SD card</h4>
+<p>Raspbian is a Debian-based Linux distro. It's the official OS for Rpi3. Why we need Raspbian? 1. to test USB to TTL cable connectivity initially. 2. after installing Raspbian, the SD card is formatted in the right way. All the proprietary binary blobs needed to boot Rpi3 are also in place. </p>
+<p>Load the SD card with Raspbian OS. Follow the official <a href="https://www.raspberrypi.org/downloads/raspbian/">instructions</a>. </p>
+<h4 id="plug-in-the-serial-cable">Plug in the serial cable</h4>
+<pre><code>Rpi3 &lt;-- a USB-serial cable ---&gt; PC (running a temrinal emulator) 
+</code></pre>
+<p>After you get a serial cable, you need to test your connection. If you never did this before I recommend you to follow <a href="https://cdn-learn.adafruit.com/downloads/pdf/adafruits-raspberry-pi-lesson-5-using-a-console-cable.pdf">this guide</a> It describes the process of connecting your Raspberry PI via a serial cable in great details. Basically, you run Raspberry's official OS to ensure the hardware setup is fine. </p>
+<p><img alt="" src="https://cdn-learn.adafruit.com/assets/assets/000/035/695/small360/learn_raspberry_pi_piconsole_bb.png?1473736644" /></p>
+<h4 id="configure-the-serial-emulator-on-your-pc">Configure the serial emulator on your PC</h4>
+<p>Linux users: minicom recommended.</p>
+<pre><code>sudo minicom -b 115200 -o -D /dev/ttyUSB0 -C /tmp/minicom.log
+</code></pre>
+<p>Note: your PC may give different names to the USB-serial dongle, e.g. /dev/ttyUSB1. Find it out by looking at <code>dmesg</code> output. </p>
+<p>Windows users (including WSL): PuTTY recommended. A sample configuration below. </p>
+<p><img alt="image-20210210120642726" src="../image-20210210120642726.png" /></p>
+<p>Note: your PC may give different names to the USB-serial dongle, e.g. COM4. Find it out by looking at Windows Device Manager. </p>
+<h4 id="powering-up-rpi3">Powering up RPi3</h4>
+<p>We recommend you power Rpi3 through its micro USB port. Perhaps use a flip switch on the other side of the USB power for power cycling Rpi3. The guide above also describes how to power your Raspberry Pi using a serial cable. RPi OS works fine with such kind of setup, however, in this case, you need to run your terminal emulator right after you plug in the cable. Check <a href="https://github.com/fxlin/p1-kernel/issues/2">this</a> issue for details.</p>
+<pre><code>Rpi3 &lt;-- micro USB ---&gt; PC
+Rpi3 &lt;-- micro USB ---&gt; Wall charger
+</code></pre>
+<p>Power cycling Rpi3, you should see Linux kernel console output on PC terminal. </p>
+<h4 id="an-example-setup">An example setup</h4>
+<p>This is my desktop when I hack with the Rpi3 kernel. </p>
+<p><img alt="" src="../setup.png" /></p>
+<h4 id="test-your-dev-workflow">Test your dev workflow</h4>
+<h5 id="background-whats-on-sd-card">Background: what's on SD card?</h5>
+<p>On powering up, Rpi3 looks for the following files on <code>boot</code> partition of the SD card. </p>
+<ul>
+<li>bootcode.bin: the proprietary bootloader for enabling SDRAM. This comes with Raspbian. </li>
+<li>start.elf: the proprietary firmware loaded by the bootloader. Using the updated Raspbian OS. This comes with Raspbian. </li>
+<li>fixup.dat: needed to use 1GB of memory. This comes with Raspbian. </li>
+<li>config.txt: to be parsed by start.elf and decide boot behavior. It offers a great deal of options which is pretty cool. A default one comes with Raspbian. <strong>This file is to be customized by us</strong> </li>
+<li>kernel8.img: our kernel. </li>
+</ul>
+<p>Summary: we need to change config.txt (once) and kernel8.img (every time we re-compile kernel) on the SD card. </p>
+<h4 id="update-configtxt">Update config.txt</h4>
+<p>Plug the SD card to PC via the card reader. Open config.txt which is on the boot partition. The following two lines are crucial. Add them to config.txt. </p>
+<pre><code>arm_64bit=1
+enable_uart=1
+</code></pre>
+<p>Note: multiple online tutorials advise options like <code>kernel_old=1</code> or <code>arm_control</code>. You do NOT need those. With our options in config.txt above, Rpi3 will load the kernel named <strong>kernel8.img</strong> to <strong>0x80000</strong>. Check the official doc for config.txt above. Look for <code>kernel_address</code>. </p>
+<p>Ref: the official <a href="https://www.raspberrypi.org/documentation/configuration/config-txt/boot.md">doc</a> for config.txt. </p>
+<h4 id="build-load-sample-baremetal-program">Build &amp; load sample baremetal program</h4>
+<p>... to ensure our toolchain works fine. </p>
+<pre><code>git clone git@github.com:fxlin/raspi3-tutorial.git
+cd raspi3-tutorial
+git checkout b026449
+cd 05_uart0
+make 
+</code></pre>
+<p><strong>Note</strong>: the repo above (raspi3-tutorial.git) is NOT our project repo. It's someone's code for testing rpi3 hardware. We are just using for testing ONLY. </p>
+<p>Copy kernel8.img to the SD card. Eject the SD card from PC. Plug the SD to Rpi3. Make sure the serial connection is good and terminal emulator on your PC is ready. Power cycle Rpi3. You should see something like: </p>
+<p><img alt="serial" src="../figures/serial.png" /></p>
+<p>(Your serial number may be different)</p>
+<p>Viola! You just built your first baremetal program for Rpi3! </p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      
+    
+  </body>
+</html>

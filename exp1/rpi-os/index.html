@@ -1,0 +1,1768 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../../exp0/rpi-os/">
+      
+      
+        <link rel="next" href="../../exp2/rpi-os/">
+      
+      
+      <link rel="icon" href="../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
+    
+    
+      
+        <title>exp1 - p1-kernel</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bcfcd587.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#1-baremetal-helloworld" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="p1-kernel" class="md-header__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            p1-kernel
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              exp1
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  OVERVIEW
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp0/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp0
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+    
+  
+  exp1
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp2/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp2
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp3/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp3
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp4a/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4a
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp4b/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4b
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp5/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp5
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp6/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp6
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../qemu/" class="md-tabs__link">
+        
+  
+    
+  
+  /qemu
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../gdb/" class="md-tabs__link">
+        
+  
+    
+  
+  /gdb
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../cheatsheet/" class="md-tabs__link">
+        
+  
+    
+  
+  /aarch64
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../ssh-proxy/" class="md-tabs__link">
+        
+  
+    
+  
+  /ssh
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../dump/" class="md-tabs__link">
+        
+  
+    
+  
+  /ker dump
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../jtag/" class="md-tabs__link">
+        
+  
+    
+  
+  /jtag
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../workflow/" class="md-tabs__link">
+        
+  
+    
+  
+  /rpi workflow
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="p1-kernel" class="md-nav__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    p1-kernel
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVERVIEW
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp0/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp0
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    exp1
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    exp1
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Objectives
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get the code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Roadmap
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#terms" class="md-nav__link">
+    <span class="md-ellipsis">
+      Terms
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-walkthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code walkthrough
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Code walkthrough">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-linker-script-srclinker-qemuld" class="md-nav__link">
+    <span class="md-ellipsis">
+      The linker script (src/linker-qemu.ld)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kernel-startup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kernel startup
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Kernel startup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#booting-the-kernel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Booting the kernel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kernel-memory-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kernel memory layout
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-kernel_main-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      The kernel_main function
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-bit-about-the-rpi3-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      A bit about the Rpi3 hardware
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="A bit about the Rpi3 hardware">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#memory-mapped-io" class="md-nav__link">
+    <span class="md-ellipsis">
+      Memory-mapped IO
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uart" class="md-nav__link">
+    <span class="md-ellipsis">
+      UART
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gpio" class="md-nav__link">
+    <span class="md-ellipsis">
+      GPIO
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#walkthrough-the-uart-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Walkthrough: the UART code
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Walkthrough: the UART code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#init-gpio-alternative-function-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Init: GPIO alternative function selection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#init-mini-uart" class="md-nav__link">
+    <span class="md-ellipsis">
+      Init: Mini UART
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sending-data-over-uart" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sending data over UART
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#take-the-kernel-for-a-spin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Take the kernel for a spin
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Take the kernel for a spin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#qemu-route-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      QEMU (route 1)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rpi3-route-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rpi3 (route 2)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp2/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp3/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp3
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp4a/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4a
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp4b/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4b
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp5/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp5
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp6/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp6
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../qemu/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /qemu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /gdb
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /aarch64
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ssh-proxy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ssh
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dump/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ker dump
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jtag/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /jtag
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../workflow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /rpi workflow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Objectives
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get the code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Roadmap
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#terms" class="md-nav__link">
+    <span class="md-ellipsis">
+      Terms
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-walkthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code walkthrough
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Code walkthrough">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-linker-script-srclinker-qemuld" class="md-nav__link">
+    <span class="md-ellipsis">
+      The linker script (src/linker-qemu.ld)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kernel-startup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kernel startup
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Kernel startup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#booting-the-kernel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Booting the kernel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kernel-memory-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kernel memory layout
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-kernel_main-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      The kernel_main function
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-bit-about-the-rpi3-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      A bit about the Rpi3 hardware
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="A bit about the Rpi3 hardware">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#memory-mapped-io" class="md-nav__link">
+    <span class="md-ellipsis">
+      Memory-mapped IO
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uart" class="md-nav__link">
+    <span class="md-ellipsis">
+      UART
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gpio" class="md-nav__link">
+    <span class="md-ellipsis">
+      GPIO
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#walkthrough-the-uart-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Walkthrough: the UART code
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Walkthrough: the UART code">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#init-gpio-alternative-function-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Init: GPIO alternative function selection
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#init-mini-uart" class="md-nav__link">
+    <span class="md-ellipsis">
+      Init: Mini UART
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sending-data-over-uart" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sending data over UART
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#take-the-kernel-for-a-spin" class="md-nav__link">
+    <span class="md-ellipsis">
+      Take the kernel for a spin
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Take the kernel for a spin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#qemu-route-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      QEMU (route 1)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rpi3-route-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rpi3 (route 2)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="1-baremetal-helloworld">1: Baremetal HelloWorld</h1>
+<p><strong>READING TIME:  40 MIN</strong></p>
+<h2 id="objectives">Objectives</h2>
+<p><img alt="" src="../figures/helloworld.png" /></p>
+<p><img alt="" src="../figures/overview.png" /></p>
+<p>We will build: a minimal, baremetal program that can print "Hello world" via Rpi3's UART. </p>
+<p>Students will experience: </p>
+<ol>
+<li>
+<p>The C project structure</p>
+</li>
+<li>
+<p>The use of cross-compilation toolchain</p>
+</li>
+<li>
+<p>arm64 assembly (lightly)</p>
+</li>
+<li>
+<p>Basic knowledge on Rpi3 and its UART hardware</p>
+</li>
+</ol>
+<h2 id="get-the-code">Get the code</h2>
+<p>Code location: p1-kernel/src/exp1</p>
+<p>Please: do a <code>git pull</code> even if you have cloned the p1-kenel repo previously, in case of upstream updates. </p>
+<p>Load pre-defined commands: "cd p1-kernel &amp;&amp; source env-qemu.sh". Make sure you read env-qemu.sh.</p>
+<h2 id="roadmap">Roadmap</h2>
+<p>Create a Makefile project. Add minimum code to boot the platform. Initialize the UART hardware. Send characters to the UART registers. </p>
+<h2 id="terms">Terms</h2>
+<ol>
+<li>
+<p>Strictly speaking, this baremetal program is not a "kernel". We nevertheless call it so for ease of explanation. </p>
+</li>
+<li>
+<p>"QEMU" means the Rpi3 platform as emulated by QEMU (route 1). "Raspberry Pi" means the actual Rpi3 hardware (route 2). We will explain details where the real hardware behaves differently from QEMU. </p>
+</li>
+</ol>
+<h2 id="code-walkthrough">Code walkthrough</h2>
+<ol>
+<li><code>Makefile.qemu</code>: We will use the GNU Makefile to build the kernel. This file contains detailed comments. A refresher of Makefile: <a href="http://opensourceforu.com/2012/06/gnu-make-in-detail-for-beginners/">this</a> article. </li>
+<li><code>src</code>: This folder contains all of the source code.</li>
+<li><code>include</code>: All of the header files are placed here. </li>
+</ol>
+<h3 id="the-linker-script-srclinker-qemuld">The linker script (src/linker-qemu.ld)</h3>
+<p>A linker script describes how the sections in the input object files (<code>_c.o</code> and <code>_s.o</code>) should be mapped into the output file (<code>.elf</code>); it also controls the addresses of all program symbols (e.g. functions and variables). More information can be found <a href="https://sourceware.org/binutils/docs/ld/Scripts.html#Scripts">here</a>. Now let's take a look at the linker script:</p>
+<pre><code>SECTIONS
+{
+    .text.boot : { *(.text.boot) }
+    .text :  { *(.text) }
+    .rodata : { *(.rodata) }
+    .data : { *(.data) }
+    . = ALIGN(0x8);
+    bss_begin = .;
+    .bss : { *(.bss*) } 
+    bss_end = .;
+}
+</code></pre>
+<p>After startup, the Rpi3 GPU loads <code>kernel8.img</code> into memory 0x0 and starts execution from the beginning of the file. That's why the <code>.text.boot</code> section must come first; we are going to put the kernel startup code inside this section. QEMU behaves differently: it loads the kernel image at 0x80000. </p>
+<blockquote>
+<p>Q: How to tweak the linker script to update the start address?</p>
+</blockquote>
+<p>The <code>.text</code>, <code>.rodata</code>, and <code>.data</code> sections contain kernel instructions, read-only data, and global data with init values. The <code>.bss</code> section contains data that should be initialized to 0. By putting such data in a separate section, the compiler can save some space in the ELF binary––only the section size is stored in the ELF header, but the section content is omitted. </p>
+<p>After booting up, our kernel initializes the <code>.bss</code> section to 0; that's why we need to record the start and end of the section (hence the <code>bss_begin</code> and <code>bss_end</code> symbols) and align the section so that it starts at an address that is a multiple of 8. This eases kernel programming because the <code>str</code> instruction can be used only with 8-byte-aligned addresses.</p>
+<h2 id="kernel-startup">Kernel startup</h2>
+<h3 id="booting-the-kernel">Booting the kernel</h3>
+<p>boot.S (src/boot.S) contains the kernel startup code. It has detailed comments. </p>
+<blockquote>
+<p>Q: It may make more sense to put core 1-3 in deep sleep using <code>wfi</code>. How? </p>
+</blockquote>
+<h3 id="kernel-memory-layout">Kernel memory layout</h3>
+<p>If the current processor ID is 0, then execution branches to the <code>master</code> function:</p>
+<p>After cleaning the <code>.bss</code> section, the kernel initializes the stack pointer and passes execution to the <code>kernel_main</code> function. The Rpi3 loads the kernel at address 0 (QEMU loads at 0x80000); that's why the initial stack pointer can be set to any location high enough so that stack will not override the kernel image when it grows sufficiently large. <code>LOW_MEMORY</code> is defined in <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp1/include/mm.h">mm.h</a> and is equal to 4MB. As our kernel's stack won't grow very large and the image itself is tiny, 4MB is more than enough for us. </p>
+<p><img alt="" src="../figures/mem-0.png" /></p>
+<p><strong>Aside: Some ARM64 instructions used</strong> </p>
+<p>For those of you who are not familiar with ARM assembler syntax, let me quickly summarize the instructions that we have used:</p>
+<ul>
+<li><a href="http://www.keil.com/support/man/docs/armasm/armasm_dom1361289881374.htm"><strong>mrs</strong></a> Load value from a system register to one of the general purpose registers (x0–x30)</li>
+<li><a href="http://www.keil.com/support/man/docs/armasm/armasm_dom1361289863017.htm"><strong>and</strong></a> Perform the logical AND operation. We use this command to strip the last byte from the value we obtain from the <code>mpidr_el1</code> register.</li>
+<li><a href="http://www.keil.com/support/man/docs/armasm/armasm_dom1361289867296.htm"><strong>cbz</strong></a> Compare the result of the previously executed operation to 0 and jump (or <code>branch</code> in ARM terminology) to the provided label if the comparison yields true.</li>
+<li><a href="http://www.keil.com/support/man/docs/armasm/armasm_dom1361289863797.htm"><strong>b</strong></a> Perform an unconditional branch to some label.</li>
+<li><a href="http://www.keil.com/support/man/docs/armasm/armasm_dom1361289862147.htm"><strong>adr</strong></a> Load a label's relative address into the target register. In this case, we want pointers to the start and end of the <code>.bss</code> region.</li>
+<li><a href="http://www.keil.com/support/man/docs/armasm/armasm_dom1361289908389.htm"><strong>sub</strong></a> Subtract values from two registers.</li>
+<li><a href="http://www.keil.com/support/man/docs/armasm/armasm_dom1361289865686.htm"><strong>bl</strong></a> "Branch with a link": perform an unconditional branch and store the return address in x30 (the link register). When the subroutine is finished, use the <code>ret</code> instruction to jump back to the return address.</li>
+<li><a href="http://www.keil.com/support/man/docs/armasm/armasm_dom1361289878994.htm"><strong>mov</strong></a> Move a value between registers or from a constant to a register.</li>
+</ul>
+<p>Our <a href="../../cheatsheet/">cheat sheet</a> summarizes common ARM64 instructions. </p>
+<p>For official documentation, <a href="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.den0024a/index.html">here</a> is the ARMv8-A developer's guide. It's a good resource if the ARM ISA is unfamiliar to you. <a href="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.den0024a/ch09s01s01.html">This page</a> specifically outlines the register usage convention in the ABI.</p>
+<h3 id="the-kernel_main-function">The <code>kernel_main</code> function</h3>
+<p>We have seen that the boot code eventually passes control to the <code>kernel_main</code> function. (VSCode: Ctrl-t then type "kernel_main")</p>
+<pre><code>#include &quot;mini_uart.h&quot;
+
+void kernel_main(void)
+{
+    uart_init();
+    uart_send_string(&quot;Hello, world!\r\n&quot;);
+
+    while (1) {
+        uart_send(uart_recv());
+    }
+}
+</code></pre>
+<p>This function is one of the simplest in the kernel. It works with the <code>Mini UART</code> device to print to screen and read user input. The kernel just prints <code>Hello, world!</code> and then enters an infinite loop that reads characters from the user and sends them back to the screen.</p>
+<h2 id="a-bit-about-the-rpi3-hardware">A bit about the Rpi3 hardware</h2>
+<p>The Rpi3 board is based on the BCM2837 SoC by Broadcom. The SoC manual is <a href="https://github.com/raspberrypi/documentation/files/1888662/BCM2837-ARM-Peripherals.-.Revised.-.V2-1.pdf">here</a>. The SoC is not friendly for OS hackers: Broadcom poorly documents it and the hardware has many quirks. </p>
+<p>Despite so, the community figured out most of the SoC details over years because Rpi3's popularity. It's not our goal to dive in the SoC. Rather, our philosophy is to deal BCM2837-specific details as few as possible -- just enough to get our kernel working. We will spend more efforts on explaining generic hardware such as ARM64 cores, generic timers, irq controllers, etc. </p>
+<blockquote>
+<p>Rpi4 seems more friendly to kernel hackers. </p>
+</blockquote>
+<h3 id="memory-mapped-io">Memory-mapped IO</h3>
+<p>On ARM-based SoCs, access to all devices is performed via memory-mapped registers. The Rpi3 SoC reserves physical memory address <code>0x3F000000</code> for IO devices. To configure a particular device, software reads/writes device registers. A device register is just a 32-bit region of memory. The meaning of each bit in each IO register is described in the SoC manual. </p>
+<!---- Take a look at section 1.2.3 ARM physical addresses in the SoC manual and the surrounding documentation for more context on why we use `0x3F000000` as a base address (even though `0x7E000000` is used throughout the manual). ---->
+
+<blockquote>
+<p>The term "device" is heavily overloaded in many tech docs. Sometimes it means a board, e.g. "an Rpi3 device"; sometimes it means an IO peripheral, e.g. "UART device". We will be explicit. </p>
+</blockquote>
+<h3 id="uart">UART</h3>
+<p>UART is a simple character device allowing software to send out text characters to a different machine. If you do not care about performance, UART requires very minimum software code. Therefore, it is often the first few IO devices to bring up when we build system software for a new machine. Only with UART meaning debugging is possible. (JTAG is another option which however requires more complex setup).</p>
+<p>In the simplest form, software writes ascii values to UART registers. The UART device converts written values to a sequence of high and low voltages on wire. This sequence is transmitted to your via the <code>TTL-to-serial cable</code> and is interpreted by your terminal emulator (e.g. PuTTY on Windows). </p>
+<p>Rpi3 has the two UART devices. Oddly enough, they are different. </p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Type</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">UART0</td>
+<td style="text-align: left;">PL011</td>
+<td>Secondary, intended as Bluetooth connector</td>
+</tr>
+<tr>
+<td style="text-align: left;">UART1</td>
+<td style="text-align: left;">mini UART</td>
+<td>Primary, intended as debug console</td>
+</tr>
+</tbody>
+</table>
+<p>UART1/Mini UART: easier to program; limited performance/functionalities. That's fine for our goal. For specification of the Mini UART registers: see page 8 of the SoC manual. </p>
+<p>UART0/PL011: richer functions; higher speed. Yet one needs to configure the board clock by talking to the GPU firmware. We won't do that. see <a href="https://github.com/bztsrc/raspi3-tutorial/tree/master/05_uart0">Example code</a> if you are interested. </p>
+<p><strong>Both UARTs can be mapped to the same physical pins</strong> by setting the GPFSEL1 register. See the GPIO function diagram below. </p>
+<p>That's enough to know about Rpi UARTs. More:  <a href="https://www.raspberrypi.org/documentation/configuration/uart.md">official web page</a>. </p>
+<h3 id="gpio">GPIO</h3>
+<p>Another IO device is GPIO <a href="https://en.wikipedia.org/wiki/General-purpose_input/output">General-purpose input/output</a>. GPIO provides a bunch of registers. Each bit in such a register corresponds to a pin on the Rpi3 board. By writing 1 or 0 to register bits, software can control the output voltage on the pins, e.g. for turning on/off LEDs connected to such pins. Reading is done in a similar fashion. The picture below shows GPIO pin headers populated on Rpi3. (Note: the picture shows Rpi2, which has the same pinout as Rpi3)</p>
+<p><img alt="" src="../../images/gpio-pins.jpg" /></p>
+<p>An SoC often has limited number of pins. Software can control the use of these pins, e.g. for GPIO or for UART. Software does so by writing to specific memory-mapped registers. </p>
+<p>The GPIO can be used to configure the behavior of different GPIO pins. For example, to be able to use the Mini UART, we need to activate pins 14 and 15 and set them up to use this device. The image below illustrates how numbers are assigned to the GPIO pins:</p>
+<p><img alt="" src="../../images/gpio-numbers.png" /></p>
+<h2 id="walkthrough-the-uart-code">Walkthrough: the UART code</h2>
+<p>The following init code configures pin 14 &amp; 15 as UART in/out, sets up UART clock and its modes, etc. </p>
+<blockquote>
+<p>Much of the UART init code is irrelevant to QEMU. Since QEMU "emulates" the UARTs, it can dump whatever our kernel writes to the emulated UART registers to stdio. Example: <code>qemu-system-aarch64 -M raspi3 -kernel ./kernel8.img -serial null -serial stdio</code></p>
+<p>The first -serial means UART0 which we do not touch; the second -serial means we direct UART1 to stdio. </p>
+</blockquote>
+<pre><code>void uart_init ( void )
+{
+    unsigned int selector;
+
+    selector = get32(GPFSEL1);
+    selector &amp;= ~(7&lt;&lt;12);                   // clean gpio14
+    selector |= 2&lt;&lt;12;                      // set alt5 for gpio14
+    selector &amp;= ~(7&lt;&lt;15);                   // clean gpio15
+    selector |= 2&lt;&lt;15;                      // set alt5 for gpio 15
+    put32(GPFSEL1,selector);
+
+    put32(GPPUD,0);
+    delay(150);
+    put32(GPPUDCLK0,(1&lt;&lt;14)|(1&lt;&lt;15));
+    delay(150);
+    put32(GPPUDCLK0,0);
+
+    put32(AUX_ENABLES,1);                   //Enable mini uart (this also enables access to it registers)
+    put32(AUX_MU_CNTL_REG,0);               //Disable auto flow control and disable receiver and transmitter (for now)
+    put32(AUX_MU_IER_REG,0);                //Disable receive and transmit interrupts
+    put32(AUX_MU_LCR_REG,3);                //Enable 8 bit mode
+    put32(AUX_MU_MCR_REG,0);                //Set RTS line to be always high
+    put32(AUX_MU_BAUD_REG,270);             //Set baud rate to 115200
+
+    put32(AUX_MU_CNTL_REG,3);               //Finally, enable transmitter and receiver
+}
+</code></pre>
+<p>Here, we use the two functions <code>put32</code> and <code>get32</code>. Those functions are very simple -- read and write some data to and from a 32-bit register. You can take a look at how they are implemented in <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp1/src/utils.S">utils.S</a>. <code>uart_init</code> is one of the most complex and important functions in this lesson, and we will continue to examine it in the next three sections.</p>
+<h3 id="init-gpio-alternative-function-selection">Init: GPIO alternative function selection</h3>
+<p>First, we need to activate the GPIO pins. Most of the pins can be used with different IO devices. So before using a particular pin, we need to select the pin's alternative function,  a number from 0 to 5 that can be set for each pin and configures which IO device is virtually "connected" to the pin. </p>
+<p>See the list of all available GPIO alternative functions in the image below (taken from page 102 of the SoC manual)</p>
+<p><img alt="Raspberry Pi GPIO alternative functions" src="../../images/alt.png" /></p>
+<p>Here you can see that pins 14 and 15 have the TXD1 and RXD1 alternative functions available. This means that if we select alternative function number 5 for pins 14 and 15, they will be used as a Mini UART Transmit Data pin and Mini UART Receive Data pin, respectively. The <code>GPFSEL1</code> register is used to control alternative functions for pins 10-19. The meaning of all the bits in those registers is shown in the following table (page 92 of the SoC manual):</p>
+<p><img alt="Raspberry Pi GPIO function selector" src="../../images/gpfsel1.png" /></p>
+<p>So now you know everything you need to understand the following lines of code that are used to configure GPIO pins 14 and 15 to work with the Mini UART device:</p>
+<pre><code>    unsigned int selector;
+
+    selector = get32(GPFSEL1);
+    selector &amp;= ~(7&lt;&lt;12);                   // clean gpio14
+    selector |= 2&lt;&lt;12;                      // set alt5 for gpio14
+    selector &amp;= ~(7&lt;&lt;15);                   // clean gpio15
+    selector |= 2&lt;&lt;15;                      // set alt5 for gpio 15
+    put32(GPFSEL1,selector);
+</code></pre>
+<p>Init: GPIO pull-up/down &amp; how we disable it</p>
+<p>When working with GPIO pins, you will often encounter terms such as pull-up/pull-down. These concepts are explained in great detail in <a href="https://grantwinney.com/using-pullup-and-pulldown-resistors-on-the-raspberry-pi/">this</a> article. For those who are too lazy to read the whole article, I will briefly explain the pull-up/pull-down concept.</p>
+<p>If you use a particular pin as input and don't connect anything to this pin, you will not be able to identify whether the value of the pin is 1 or 0. In fact, the device will report random values. The pull-up/pull-down mechanism allows you to overcome this issue. If you set the pin to the pull-up state and nothing is connected to it, it will report <code>1</code> all the time (for the pull-down state, the value will always be 0). In our case, we need neither the pull-up nor the pull-down state, because both the 14 and 15 pins are going to be connected all the time. </p>
+<p><strong>The pin state is preserved even after a reboot, so before using any pin, we always have to initialize its state.</strong> There are three available states: pull-up, pull-down, and neither (to remove the current pull-up or pull-down state), and we need the third one.</p>
+<p>Switching between pin states is not a very simple procedure because it requires physically toggling a switch on the electric circuit. This process involves the <code>GPPUD</code> and <code>GPPUDCLK</code> registers and is described on page 101 of the SoC manual:</p>
+<pre><code>The GPIO Pull-up/down Clock Registers control the actuation of internal pull-downs on
+the respective GPIO pins. These registers must be used in conjunction with the GPPUD
+register to effect GPIO Pull-up/down changes. The following sequence of events is
+required:
+1. Write to GPPUD to set the required control signal (i.e. Pull-up or Pull-Down or neither
+to remove the current Pull-up/down)
+2. Wait 150 cycles – this provides the required set-up time for the control signal
+3. Write to GPPUDCLK0/1 to clock the control signal into the GPIO pads you wish to
+modify – NOTE only the pads which receive a clock will be modified, all others will
+retain their previous state.
+4. Wait 150 cycles – this provides the required hold time for the control signal
+5. Write to GPPUD to remove the control signal
+6. Write to GPPUDCLK0/1 to remove the clock
+</code></pre>
+<p><strong>This procedure describes how we can remove both the pull-up and pull-down states from a pin</strong>, which is what we are doing for pins 14 and 15 in the following code:</p>
+<pre><code>    put32(GPPUD,0);
+    delay(150);
+    put32(GPPUDCLK0,(1&lt;&lt;14)|(1&lt;&lt;15));
+    delay(150);
+    put32(GPPUDCLK0,0);
+</code></pre>
+<h3 id="init-mini-uart">Init: Mini UART</h3>
+<p>Now our Mini UART is connected to the GPIO pins, and the pins are configured. The rest of the <code>uart_init</code> function is dedicated to Mini UART initialization. </p>
+<pre><code>    put32(AUX_ENABLES,1);                   //Enable mini uart (this also enables access to its registers)
+    put32(AUX_MU_CNTL_REG,0);               //Disable auto flow control and disable receiver and transmitter (for now)
+    put32(AUX_MU_IER_REG,0);                //Disable receive and transmit interrupts
+    put32(AUX_MU_LCR_REG,3);                //Enable 8 bit mode
+    put32(AUX_MU_MCR_REG,0);                //Set RTS line to be always high
+    put32(AUX_MU_BAUD_REG,270);             //Set baud rate to 115200
+
+    put32(AUX_MU_CNTL_REG,3);               //Finally, enable transmitter and receiver
+</code></pre>
+<p>Let's examine this code snippet line by line. </p>
+<pre><code>    put32(AUX_ENABLES,1);                   //Enable mini uart (this also enables access to its registers)
+</code></pre>
+<p>This line enables the Mini UART. We must do this in the beginning, because this also enables access to all the other Mini UART registers.</p>
+<hr />
+<pre><code>    put32(AUX_MU_CNTL_REG,0);               //Disable auto flow control and disable receiver and transmitter (for now)
+</code></pre>
+<p>Here we disable the receiver and transmitter before the configuration is finished. We also permanently disable auto-flow control because it requires us to use additional GPIO pins, and the TTL-to-serial cable doesn't support it. For more information about auto-flow control, you can refer to <a href="http://www.deater.net/weave/vmwprod/hardware/pi-rts/">this</a> article.</p>
+<hr />
+<pre><code>    put32(AUX_MU_IER_REG,0);                //Disable receive and transmit interrupts
+</code></pre>
+<p>It is possible to configure the Mini UART to generate a processor interrupt each time new data is available. We want to be as simple as possible. So for now, we will just disable this feature.</p>
+<hr />
+<pre><code>    put32(AUX_MU_LCR_REG,3);                //Enable 8 bit mode
+</code></pre>
+<p>Mini UART can support either 7- or 8-bit operations. This is because an ASCII character is 7 bits for the standard set and 8 bits for the extended. We are going to use 8-bit mode. </p>
+<hr />
+<pre><code>    put32(AUX_MU_MCR_REG,0);                //Set RTS line to be always high
+</code></pre>
+<p>The RTS line is used in the flow control and we don't need it. Set it to be high all the time.</p>
+<hr />
+<pre><code>    put32(AUX_MU_BAUD_REG,270);             //Set baud rate to 115200
+</code></pre>
+<p>The baud rate is the rate at which information is transferred in a communication channel. “115200 baud” means that the serial port is capable of transferring a maximum of 115200 bits per second. The baud rate of your Raspberry Pi mini UART device should be the same as the baud rate in your terminal emulator. </p>
+<p>The Mini UART calculates baud rate according to the following equation:</p>
+<pre><code>baudrate = system_clock_freq / (8 * ( baudrate_reg + 1 )) 
+</code></pre>
+<p>The <code>system_clock_freq</code> is 250 MHz, so we can easily calculate the value of <code>baudrate_reg</code> as 270.</p>
+<pre><code>    put32(AUX_MU_CNTL_REG,3);               //Finally, enable transmitter and receiver
+</code></pre>
+<p>After this line is executed, the Mini UART is ready for work!</p>
+<h3 id="sending-data-over-uart">Sending data over UART</h3>
+<p>After the Mini UART is ready, we can try to use it to send and receive some data. To do this, we can use the following two functions:</p>
+<pre><code>void uart_send ( char c )
+{
+    while(1) {
+        if(get32(AUX_MU_LSR_REG)&amp;0x20) 
+            break;
+    }
+    put32(AUX_MU_IO_REG,c);
+}
+
+char uart_recv ( void )
+{
+    while(1) {
+        if(get32(AUX_MU_LSR_REG)&amp;0x01) 
+            break;
+    }
+    return(get32(AUX_MU_IO_REG)&amp;0xFF);
+}
+</code></pre>
+<p>Both of the functions start with an infinite loop, the purpose of which is to verify whether the device is ready to transmit or receive data. We are using  the <code>AUX_MU_LSR_REG</code> register to do this. Bit zero, if set to 1, indicates that the data is ready; this means that we can read from the UART. Bit five, if set to 1, tells us that the transmitter is empty, meaning that we can write to the UART.</p>
+<p>Next, we use <code>AUX_MU_IO_REG</code> to either store the value of the transmitted character or read the value of the received character.</p>
+<hr />
+<p>We also have a very simple function that is capable of sending strings instead of characters:</p>
+<pre><code>void uart_send_string(char* str)
+{
+    for (int i = 0; str[i] != '\0'; i ++) {
+        uart_send((char)str[i]);
+    }
+}
+</code></pre>
+<p>This function just iterates over all characters in a string and sends them one by one. </p>
+<p><strong>Low efficiency?</strong> Apparently Tx/Rx with busy wait burn lots of CPU cycles for no good. It's fine for our baremetal program -- simple &amp; less error-prone. Production software often do interrupt-driven Rx/Tx. </p>
+<h2 id="take-the-kernel-for-a-spin">Take the kernel for a spin</h2>
+<h3 id="qemu-route-1">QEMU (route 1)</h3>
+<p><strong>Setup</strong></p>
+<p>Follow the instructions in <a href="../../exp0/rpi-os/">Prerequisites</a>.</p>
+<p>Type <code>make -f Makefile.qemu</code> . </p>
+<p><strong>Run</strong></p>
+<pre><code>$ qemu-system-aarch64 -M raspi3 -kernel ./kernel8.img -serial null -serial stdio
+VNC server running on 127.0.0.1:5900
+Hello, world!
+&lt;Ctrl-C&gt;
+</code></pre>
+<h3 id="rpi3-route-2">Rpi3 (route 2)</h3>
+<p>Run <code>make -f Makefile.rpi3</code> to build the kernel. </p>
+<p>The Raspberry Pi startup sequence is the following (simplified):</p>
+<ol>
+<li>The device is powered on.</li>
+<li>The GPU starts up and reads the <code>config.txt</code> file from the boot partition. This file contains some configuration parameters that the GPU uses to further adjust the startup sequence.</li>
+<li><code>kernel8.img</code> is loaded into memory and executed.</li>
+</ol>
+<p><strong>Setup</strong></p>
+<p>To be able to run our simple OS, the <code>config.txt</code> file should be the following:</p>
+<pre><code>enable_uart=1
+arm_64bit=1
+kernel_old=1
+disable_commandline_tags=1
+</code></pre>
+<ul>
+<li><code>kernel_old=1</code> specifies that the kernel image should be loaded at address 0.</li>
+<li><code>disable_commandline_tags</code> instructs the GPU to not pass any command line arguments to the booted image.</li>
+</ul>
+<p><strong>Run</strong></p>
+<ol>
+<li>Copy the generated <code>kernel8.img</code> file to the <code>boot</code> partition of your Raspberry Pi flash card and delete <code>kernel7.img</code> as well as any other <code>kernel*.img</code> files on your SD card. Make sure you left all other files in the boot partition untouched (see <a href="https://github.com/fxlin/p1-kernel/issues/43">43</a> and <a href="https://github.com/fxlin/p1-kernel/issues/158">158</a> issues for details). </li>
+</ol>
+<p><strong>Update</strong> (2/10/21): students reported that UART1 stops to work with the newest Rpi3 firmware (either extracted from Raspbian OS or from the upstream github repo). The symptom: no "helloworld" is printed, while UART1 seems echoing fine. UART0 seems unaffected. My guess: it has something to do with the firmware's new device tree feature? <strong>Action:</strong> use older firmware provided by us: https://github.com/fxlin/p1-kernel/releases/tag/exp1-rpi3. </p>
+<ol>
+<li>
+<p>Modify the <code>config.txt</code> file as described above.</p>
+</li>
+<li>
+<p>Connect the USB-to-TTL serial cable as described in the <a href="../../exp0/rpi-os/">Prerequisites</a>.</p>
+</li>
+<li>
+<p>Power on your Raspberry Pi.</p>
+</li>
+<li>
+<p>Open your terminal emulator. You should be able to see the <code>Hello, world!</code> message there.</p>
+</li>
+</ol>
+<p><strong>Aside (optional): prepare the SD card from scratch (w/o Raspbian)</strong></p>
+<p>The steps above assume that you have Raspbian installed on your SD card. It is also possible to run the RPi OS using an empty SD card.</p>
+<ol>
+<li>
+<p>Prepare your SD card:</p>
+<ul>
+<li>Use an MBR partition table</li>
+<li>Format the boot partition as FAT32<blockquote>
+<p>The card should be formatted exactly in the same way as it is required to install Raspbian. Check <code>HOW TO FORMAT AN SD CARD AS FAT</code> section in the <a href="https://www.raspberrypi.org/documentation/installation/noobs.md">official documenation</a> for more information.</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>
+<p>Copy the following files to the card:</p>
+<ul>
+<li>
+<p><a href="https://github.com/raspberrypi/firmware/blob/master/boot/bootcode.bin">bootcode.bin</a> This is the GPU bootloader, it contains the GPU code to start the GPU and load the GPU firmware. </p>
+</li>
+<li>
+<p><a href="https://github.com/raspberrypi/firmware/blob/master/boot/start.elf">start.elf</a> This is the GPU firmware. It reads <code>config.txt</code> and enables the GPU to load and run ARM specific user code from <code>kernel8.img</code></p>
+</li>
+</ul>
+<p><strong>Update</strong> (2/10/21): UART1 is broken by these upstream firmware for unknown reason. Use older firmware provided by us: https://github.com/fxlin/p1-kernel/releases/tag/exp1-rpi3. </p>
+</li>
+<li>
+<p>Copy <code>kernel8.img</code> and <code>config.txt</code> files. </p>
+</li>
+<li>
+<p>Connect the USB-to-TTL serial cable.</p>
+</li>
+<li>
+<p>Power on your Raspberry Pi.</p>
+</li>
+<li>
+<p>Use your terminal emulator to connect to the RPi OS. </p>
+</li>
+</ol>
+<p>Unfortunately, all Raspberry Pi firmware files are closed-sourced and undocumented. For more information about the Raspberry Pi startup sequence, you can refer to some unofficial sources, like <a href="https://raspberrypi.stackexchange.com/questions/10442/what-is-the-boot-sequence">this</a> StackExchange question or <a href="https://github.com/DieterReuter/workshop-raspberrypi-64bit-os/blob/master/part1-bootloader.md">this</a> Github repository.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      
+    
+  </body>
+</html>

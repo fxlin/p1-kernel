@@ -1,0 +1,1500 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../qemu/">
+      
+      
+        <link rel="next" href="../cheatsheet/">
+      
+      
+      <link rel="icon" href="../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
+    
+    
+      
+        <title>/gdb - p1-kernel</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.bcfcd587.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#using-gdb-to-debug-kernel" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="p1-kernel" class="md-header__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            p1-kernel
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              /gdb
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+    
+  
+  OVERVIEW
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exp0/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp0
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exp1/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp1
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exp2/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp2
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exp3/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp3
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exp4a/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4a
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exp4b/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4b
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exp5/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp5
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exp6/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp6
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../qemu/" class="md-tabs__link">
+        
+  
+    
+  
+  /qemu
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+    
+  
+  /gdb
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../cheatsheet/" class="md-tabs__link">
+        
+  
+    
+  
+  /aarch64
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../ssh-proxy/" class="md-tabs__link">
+        
+  
+    
+  
+  /ssh
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../dump/" class="md-tabs__link">
+        
+  
+    
+  
+  /ker dump
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../jtag/" class="md-tabs__link">
+        
+  
+    
+  
+  /jtag
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../exp1/workflow/" class="md-tabs__link">
+        
+  
+    
+  
+  /rpi workflow
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="p1-kernel" class="md-nav__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    p1-kernel
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVERVIEW
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exp0/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp0
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exp1/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp1
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exp2/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exp3/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp3
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exp4a/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4a
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exp4b/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4b
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exp5/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp5
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exp6/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp6
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../qemu/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /qemu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    /gdb
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    /gdb
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#gdb-installation-not-needed-if-you-use-course-servers" class="md-nav__link">
+    <span class="md-ellipsis">
+      GDB Installation (not needed if you use course servers)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      The workflow
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-launch-qemu-the-kernel-and-wait-for-the-debugger" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Launch QEMU + the kernel and wait for the debugger
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#launch-gdb" class="md-nav__link">
+    <span class="md-ellipsis">
+      Launch GDB
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dump-register-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dump register contents
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dump-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dump memory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#print-out-variablesstructures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Print out variables/structures
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set-a-breakpoint-at-addr" class="md-nav__link">
+    <span class="md-ellipsis">
+      Set a breakpoint at addr
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#disassemble-at-given-addr" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disassemble at given addr
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#functionsource-lookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Function/source lookup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watchpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      Watchpoint
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-gdb-dashboard-enhancement" class="md-nav__link">
+    <span class="md-ellipsis">
+      The GDB "dashboard" enhancement
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The GDB "dashboard" enhancement">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#set-your-port" class="md-nav__link">
+    <span class="md-ellipsis">
+      Set your port
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#customize" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customize
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#other-enhancement-fyi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Other enhancement (FYI)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reference
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /aarch64
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ssh-proxy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ssh
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dump/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ker dump
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../jtag/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /jtag
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exp1/workflow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /rpi workflow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#gdb-installation-not-needed-if-you-use-course-servers" class="md-nav__link">
+    <span class="md-ellipsis">
+      GDB Installation (not needed if you use course servers)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      The workflow
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-launch-qemu-the-kernel-and-wait-for-the-debugger" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Launch QEMU + the kernel and wait for the debugger
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#launch-gdb" class="md-nav__link">
+    <span class="md-ellipsis">
+      Launch GDB
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dump-register-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dump register contents
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dump-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dump memory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#print-out-variablesstructures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Print out variables/structures
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set-a-breakpoint-at-addr" class="md-nav__link">
+    <span class="md-ellipsis">
+      Set a breakpoint at addr
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#disassemble-at-given-addr" class="md-nav__link">
+    <span class="md-ellipsis">
+      Disassemble at given addr
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#functionsource-lookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Function/source lookup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watchpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      Watchpoint
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-gdb-dashboard-enhancement" class="md-nav__link">
+    <span class="md-ellipsis">
+      The GDB "dashboard" enhancement
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The GDB "dashboard" enhancement">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#set-your-port" class="md-nav__link">
+    <span class="md-ellipsis">
+      Set your port
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#customize" class="md-nav__link">
+    <span class="md-ellipsis">
+      Customize
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#other-enhancement-fyi" class="md-nav__link">
+    <span class="md-ellipsis">
+      Other enhancement (FYI)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reference
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="using-gdb-to-debug-kernel">Using GDB to debug kernel</h1>
+<p>https://github.com/fxlin/p1-kernel/blob/master/docs/gdb.md</p>
+<p><strong>NOTE</strong>: </p>
+<ol>
+<li>Read the whole document before you try. </li>
+<li><em>WSL users who want to develop on local machines instead of the server</em>: gdbserver may not play well with WSL. See "troubleshooting"  below. You are fine if you develop on the server. </li>
+</ol>
+<h2 id="gdb-installation-not-needed-if-you-use-course-servers">GDB Installation (not needed if you use course servers)</h2>
+<p>We've done this on the server already. Do this if developing on local machines (Linux or WSL). </p>
+<pre><code>sudo apt install gdb-multiarch gcc-aarch64-linux-gnu build-essential 
+</code></pre>
+<p>Note: the gdb for aarch64 is NOT called aarch64-XXXX-gdb.</p>
+<h2 id="the-workflow">The workflow</h2>
+<h3 id="1-launch-qemu-the-kernel-and-wait-for-the-debugger">1. Launch QEMU + the kernel and wait for the debugger</h3>
+<p>1/24/2024: the below can be done with one command "p1-run-debug" (after "source env-qemu.sh")</p>
+<pre><code># will wait for gdb to connect at local tcp 1234
+qemu-system-aarch64 -M raspi3 -kernel ./kernel8.img -serial null -serial stdio -s -S
+
+# OR, will wait for gdb to connect at local tcp 5678
+qemu-system-aarch64 -M raspi3 -kernel ./kernel8.img -serial null -serial stdio -gdb tcp::5678 -S
+</code></pre>
+<p>Explanation: -S not starting the guest until you tell it to from gdb.  -s listening for an incoming connection from gdb on TCP port 1234</p>
+<p><strong>WARNING</strong> If multiple students run the first command on the server machine, they all attempt to listen on tcp port 1234. Only one will succeed. If you see such a failure, use the second form to specify a <strong>different</strong> TCP port number (not necessarily 5678 which may be in use as well). </p>
+<pre><code>xzl@granger1[~]$ netstat -tulpn|grep 5678
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+tcp        0      0 0.0.0.0:5678            0.0.0.0:*               LISTEN      -
+tcp6       0      0 :::5678                 :::*                    LISTEN      -
+xzl@granger1[~]$ netstat -tulpn|grep 1234
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+tcp        2      0 0.0.0.0:1234            0.0.0.0:*               LISTEN      -
+tcp        0      0 127.0.0.1:12345         0.0.0.0:*               LISTEN      -
+tcp        0      0 127.0.0.1:12346         0.0.0.0:*               LISTEN      -
+tcp6       0      0 :::1234                 :::*                    LISTEN      -
+</code></pre>
+<h3 id="launch-gdb">Launch GDB</h3>
+<p>From another terminal</p>
+<pre><code>gdb-multiarch build/kernel8.elf 
+(gdb) target remote :1234 
+(gdb) layout asm 
+</code></pre>
+<p>The port number (e.g. 1234) must match what you specified for QEMU.</p>
+<p>Single step </p>
+<pre><code>(gdb) si 
+</code></pre>
+<p><img alt="gdb-si" src="../images/gdb-si.png" /></p>
+<h3 id="dump-register-contents">Dump register contents</h3>
+<pre><code>(gdb) info reg 
+</code></pre>
+<p><img alt="gdb-reg" src="../images/gdb-reg.png" /></p>
+<p>show reg information at each step. This example shows </p>
+<pre><code>(gdb) display/10i $sp
+</code></pre>
+<p><img alt="gdb-si-display" src="../images/gdb-si-display.gif" /></p>
+<h3 id="dump-memory">Dump memory</h3>
+<p>You can specify a symbol or a raw addr </p>
+<p>... as instructions</p>
+<pre><code>x/20i _start
+</code></pre>
+<p>... as hex (bytes)</p>
+<pre><code>x/20xb _start
+</code></pre>
+<p>... as hex (words)</p>
+<pre><code>x/20xw _start
+</code></pre>
+<p>... as a textual string</p>
+<pre><code>x/s _start
+x/s $x0
+</code></pre>
+<h3 id="print-out-variablesstructures">Print out variables/structures</h3>
+<pre><code>print *mem_map
+</code></pre>
+<p>print the first 10 elements of mem_map, a pointer of type short*</p>
+<pre><code>print (short[10])*mem_map
+</code></pre>
+<h3 id="set-a-breakpoint-at-addr">Set a breakpoint at addr</h3>
+<pre><code>b *0xffff0000
+</code></pre>
+<h3 id="disassemble-at-given-addr">Disassemble at given addr</h3>
+<pre><code>disas 0xffff0000
+</code></pre>
+<h3 id="functionsource-lookup">Function/source lookup</h3>
+<p>Look up type of a given symbol </p>
+<pre><code>ptype mem_map
+</code></pre>
+<p>Find out function name at a given addr</p>
+<pre><code>info line *0x10000000
+</code></pre>
+<p>List source at a given addr</p>
+<pre><code>list *0x10000000
+list *fn 
+</code></pre>
+<h3 id="watchpoint">Watchpoint</h3>
+<p>Will break if the given memory addr is altered </p>
+<pre><code>watch *0xffff0000
+</code></pre>
+<h2 id="the-gdb-dashboard-enhancement">The GDB "dashboard" enhancement</h2>
+<p>The basic GDB UI is too primitive to beginners. We provide you an enhancement called GDB-dashboard. The upstream source is <a href="https://github.com/fxlin/gdb-dashboard-aarch64">here</a>. I adapted it for aarch64. Screenshot: </p>
+<p><img alt="Screenshot" src="https://raw.githubusercontent.com/fxlin/gdb-dashboard-aarch64/master/gdb-dash-aarch64.png" /></p>
+<h3 id="installation">Installation</h3>
+<p>Grab from my repository: </p>
+<pre><code>wget -P ~ https://raw.githubusercontent.com/fxlin/gdb-dashboard-aarch64/master/.gdbinit
+</code></pre>
+<p>There's only one file: <code>.gdbinit</code>. It's the initial script that GDB will load upon start. The above line download it to your home directory. </p>
+<h4 id="set-your-port">Set your port</h4>
+<p>Open ~/.gdbinit. Go to near line 2500 where you can see initialization commands for GDB, e.g. </p>
+<pre><code>file build/kernel8.elf
+target remote :1234
+</code></pre>
+<blockquote>
+<p>The port number (e.g. 1234) must match what you specified for QEMU.</p>
+</blockquote>
+<h3 id="usage">Usage</h3>
+<p><em>All GDB commands still apply</em>, e.g. "si" is single step per instruction; "b" is to set a breakpoint; "c" for continuing execution. See below for more. </p>
+<p>The major features here are multiple views: for registers, stack, assembly, and source. </p>
+<h4 id="customize">Customize</h4>
+<p>GDB execute these commands whenever it starts, so you do not have to type them every time. </p>
+<p>In the above example, GDB loads the ELF file kernel8.elf (only for parsing symbols and debugging info); it connects to a remote target at local port 1234. </p>
+<p>Lines below customize gdb-dashboard behaviors, e.g. </p>
+<pre><code>dashboard source -style height 15
+dashboard assembly -style height 8
+</code></pre>
+<p>These lines set the height of the "source" panel and the "assembly" panel. </p>
+<p>The best documentation of gdb-dashboard seems from typing <code>help dashboard</code> in the GDB console. e.g. In GDB, type: </p>
+<pre><code>&gt;&gt;&gt; help dashboard expressions 
+</code></pre>
+<p>Cannot connect? See "troubleshooting" below.</p>
+<h2 id="other-enhancement-fyi">Other enhancement (FYI)</h2>
+<p>GEF (https://github.com/hugsy/gef) is also viable. Both GEF and GDB-dashboard: </p>
+<ul>
+<li>
+<p>Both enhanced GDB significantly. </p>
+</li>
+<li>
+<p>GEF understands aarch64 semantics (e.g. CPU flags) very well. It can even tell why a branch was taken/not taken. However, GEF does not parse aarch64 callstack properly (at least I cannot get it work). </p>
+</li>
+<li>
+<p>GDB-dashboard nicely parses the callstack. It, however, does not display aarch64 registers properly. </p>
+</li>
+</ul>
+<p>GEF screenshot (note the CPU flags it recognized)</p>
+<p><img alt="image-20210127220750060" src="../exp3/images/gef.png" /></p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p><strong>Cannot connect and need help?</strong> Report the following:</p>
+<ul>
+<li>Your QEMU version. i.e. the output of "qemu-system-aarch64  --version"</li>
+<li>Have you tried other kernel binaries, e.g. from p1exp1? And the binaries provided by us? https://github.com/fxlin/p1-kernel/releases</li>
+<li>The full commands you use to launch QEMU. Have you tried different port numbers? </li>
+<li>Launch GDB w/o loading .gdbinit: </li>
+</ul>
+<pre><code>gdb-multiarch -n
+</code></pre>
+<p>Then enter GDB commands manually, e.g. load, target remote, etc. Does the problem persist? What's the output? </p>
+<ul>
+<li>Attach screenshot(s) of the above steps, if possible. </li>
+</ul>
+<p><strong>WSL caveat:</strong></p>
+<p>"gdbserver: Target description specified unknown architecture “aarch64” 
+https://stackoverflow.com/questions/53524546/gdbserver-target-description-specified-unknown-architecture-aarch64 
+It seems GDB server does not play well with WSL… be aware! </p>
+<h2 id="reference">Reference</h2>
+<p>Launch qemu with gdb </p>
+<p>https://en.wikibooks.org/wiki/QEMU/Debugging_with_QEMU#Launching_QEMU_from_GDB </p>
+<p>more info about gdb for kernel debugging </p>
+<p>https://wiki.osdev.org/Kernel_Debugging </p>
+<p>Good article</p>
+<p>https://interrupt.memfault.com/blog/advanced-gdb#source-files</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      
+    
+  </body>
+</html>

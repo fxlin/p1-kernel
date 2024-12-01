@@ -1,0 +1,1558 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../../exp3/rpi-os/">
+      
+      
+        <link rel="next" href="../../exp4b/rpi-os/">
+      
+      
+      <link rel="icon" href="../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
+    
+    
+      
+        <title>exp4a - p1-kernel</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bcfcd587.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#4a-cooperative-multitasking" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="p1-kernel" class="md-header__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            p1-kernel
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              exp4a
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  OVERVIEW
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp0/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp0
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp1/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp1
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp2/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp2
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp3/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp3
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+    
+  
+  exp4a
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp4b/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4b
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp5/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp5
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp6/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp6
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../qemu/" class="md-tabs__link">
+        
+  
+    
+  
+  /qemu
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../gdb/" class="md-tabs__link">
+        
+  
+    
+  
+  /gdb
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../cheatsheet/" class="md-tabs__link">
+        
+  
+    
+  
+  /aarch64
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../ssh-proxy/" class="md-tabs__link">
+        
+  
+    
+  
+  /ssh
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../dump/" class="md-tabs__link">
+        
+  
+    
+  
+  /ker dump
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../jtag/" class="md-tabs__link">
+        
+  
+    
+  
+  /jtag
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp1/workflow/" class="md-tabs__link">
+        
+  
+    
+  
+  /rpi workflow
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="p1-kernel" class="md-nav__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    p1-kernel
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVERVIEW
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp0/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp0
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp1/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp1
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp2/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp3/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp3
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    exp4a
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    exp4a
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Roadmap
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get the code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-data-structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key data structures
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key data structures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#task_struct" class="md-nav__link">
+    <span class="md-ellipsis">
+      task_struct
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-switch" class="md-nav__link">
+    <span class="md-ellipsis">
+      Task switch
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Task switch">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#preparing-task_structs-kernelc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Preparing task_structs (kernel.c)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#switching-tasks-schedc-scheds" class="md-nav__link">
+    <span class="md-ellipsis">
+      Switching tasks (sched.c &amp; sched.S)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#launching-a-new-task" class="md-nav__link">
+    <span class="md-ellipsis">
+      Launching a new task
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ret_from_fork-entrys" class="md-nav__link">
+    <span class="md-ellipsis">
+      ret_from_fork (entry.S)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memory-allocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Memory allocation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-scheduler" class="md-nav__link">
+    <span class="md-ellipsis">
+      The scheduler
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#one-more-thing" class="md-nav__link">
+    <span class="md-ellipsis">
+      One more thing ...
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp4b/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4b
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp5/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp5
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp6/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp6
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../qemu/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /qemu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /gdb
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /aarch64
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ssh-proxy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ssh
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dump/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ker dump
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jtag/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /jtag
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp1/workflow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /rpi workflow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Roadmap
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get the code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-data-structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key data structures
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key data structures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#task_struct" class="md-nav__link">
+    <span class="md-ellipsis">
+      task_struct
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#task-switch" class="md-nav__link">
+    <span class="md-ellipsis">
+      Task switch
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Task switch">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#preparing-task_structs-kernelc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Preparing task_structs (kernel.c)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#switching-tasks-schedc-scheds" class="md-nav__link">
+    <span class="md-ellipsis">
+      Switching tasks (sched.c &amp; sched.S)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#launching-a-new-task" class="md-nav__link">
+    <span class="md-ellipsis">
+      Launching a new task
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ret_from_fork-entrys" class="md-nav__link">
+    <span class="md-ellipsis">
+      ret_from_fork (entry.S)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memory-allocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Memory allocation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-scheduler" class="md-nav__link">
+    <span class="md-ellipsis">
+      The scheduler
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#one-more-thing" class="md-nav__link">
+    <span class="md-ellipsis">
+      One more thing ...
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="4a-cooperative-multitasking">4a: Cooperative Multitasking</h1>
+<p><strong>READING TIME: 30MIN</strong></p>
+<p>Results with UART output: </p>
+<p><img alt="" src="../qemu-sched.gif" /></p>
+<h2 id="overview">Overview</h2>
+<p>From this experiment onward, our kernel starts to schedule multiple tasks. This makes it a true "kernel" instead of a baremetal program. </p>
+<p>This experiment focuses on scheduling and task switch. Tasks must voluntarily yield to each other.  We do not need timer interrupts to drive task switch, which is what upcoming experiment (4b) will do. Therefore, in the given code, <strong>irqs are turned off by default</strong>. </p>
+<p><strong>However,</strong> for assignment you may need to turn irqs back on (e.g. to implement sleep) and take care of irq handling. </p>
+<h2 id="roadmap">Roadmap</h2>
+<p>We will implement: </p>
+<ol>
+<li>The <code>task_struct</code> data structure </li>
+<li>Task creation by manipulating <code>task_struct</code>, registers, and stack</li>
+<li>Minimalist memory allocation</li>
+<li>Minimalist task scheduling
+   <!--- counter. must be maintained in timer_tick() for accounting ... --->
+</li>
+</ol>
+<p><strong>Processes or tasks?</strong>. As we do not have virtual memory yet, we use the term "tasks" instead of "processes". Note: in Linux both thread and processes are just different types of tasks; the difference is in how they share address spaces. </p>
+<h2 id="get-the-code">Get the code</h2>
+<p>Code location: p1-kernel/src/exp4a</p>
+<p>Please: do a <code>git pull</code> even if you have cloned the p1-kenel repo previously, in case of upstream updates. </p>
+<h2 id="key-data-structures">Key data structures</h2>
+<p><img alt="" src="../sched/Slide1.png" /> 
+<em>Figure above: an array of pointers to task_structs of tasks</em> </p>
+<h3 id="task_struct">task_struct</h3>
+<p>A struct describing a task. Its name comes from the Linux kernel (again). The code is as follows (<code>sched.h</code>).</p>
+<pre><code>struct cpu_context {
+    unsigned long x19;
+    unsigned long x20;
+    unsigned long x21;
+    unsigned long x22;
+    unsigned long x23;
+    unsigned long x24;
+    unsigned long x25;
+    unsigned long x26;
+    unsigned long x27;
+    unsigned long x28;
+    unsigned long fp;
+    unsigned long sp;
+    unsigned long pc;
+};
+
+struct task_struct {
+    struct cpu_context cpu_context;
+    long state;
+    long counter;
+    long priority;
+    long preempt_count;
+};
+</code></pre>
+<p>This struct has the following members:</p>
+<ul>
+<li><code>cpu_context</code> This is a struct that contains values of all registers that might be different between the tasks.</li>
+<li>Why don't we save all registers, but only <code>x19 - x30</code> and <code>sp</code>? (<code>fp</code> is <code>x29</code> and <code>pc</code> is <code>x30</code>). A short answer: to cater to the Armv8 calling convention. <ul>
+<li>Because task switch happens only when a task calls <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp4a/src/sched.S#L4">cpu_switch_to</a> function. From the point of view of the task that is being scheduled out (i.e. the "switched-from" task), it just calls <code>cpu_switch_to</code> function and it returns after some (potentially long) time. </li>
+<li>The "switched from" task is unaware of that another task (i.e. the "switched-to" task) happens to runs during this period.  </li>
+<li>Accordingly to ARM calling conventions registers <code>x0 - x18</code> can be overwritten by the callee (i.e. <code>cpu_switch_to()</code> in our case). Hence, the kernel doesn't have to save the contents of <code>x0 - x18</code> for the caller (the "switched-from" task). </li>
+</ul>
+</li>
+<li><code>state</code> The state of the currently running task (NOT <code>PSTATE</code> -- an orthogonal concept). For a task just doing CPU work but not IO, the task state will always be TASK_RUNNING. For now, this is the only state supported by our kernel. </li>
+<li>Later we add a few additional states. For example, a task waiting for an interrupt should be in a different state, because it doesn't make sense to schedule the task when it is not ready to run yet. </li>
+<li><code>counter</code> is used to determine how long the current task has been running. <code>counter</code> decreases by 1 each timer tick. When it reaches 0, the kernel will attempt to schedule another task. This supports our simple scheduling algorithm.</li>
+<li><code>priority</code>  When the kernel schedules a new task, the kernel copies the task's  <code>priority</code> value to <code>counter</code>. In this way, the kernel can regulate the amount of processor time the task gets relative to other tasks.</li>
+<li><code>preempt_count</code> A flag. A non-zero value means that the current task is executing in a critical code region that cannot be interrupted, e.g. by switching to another task. Any timer tick should be ignored and not triggering rescheduling. </li>
+</ul>
+<p>After the kernel startup, there is only one task running: the one that runs kernel_main(). It is called "init task". Before the scheduler is enabled, we must fill <code>task_struct</code> of the init task. This is done in <code>INIT_TASK</code>.</p>
+<p>All <code>task_struct</code>s are stored in <code>task</code> (sched.c) array. This array has only 64 slots - that is the maximum number of simultaneous tasks the kernel can have. It won't suit a production OS, but it is ok for our goals.</p>
+<p>An important global variable is <code>current</code> (sched.c) that always points to <code>task_struct</code> of currently executing task. Both <code>current</code> and <code>task</code> array are initially set to hold a pointer to the init task. There is also a global variable <code>nr_task</code> - it contains the number of currently running tasks in the system.</p>
+<h2 id="task-switch">Task switch</h2>
+<h3 id="preparing-task_structs-kernelc">Preparing task_structs (kernel.c)</h3>
+<pre><code>void kernel_main(void)
+{
+    uart_init();
+    init_printf(0, putc);
+    irq_vector_init();
+
+    int res = copy_process((unsigned long)&amp;process, (unsigned long)&quot;12345&quot;);
+    if (res != 0) {
+        printf(&quot;error while starting process 1&quot;);
+        return;
+    }
+    res = copy_process((unsigned long)&amp;process, (unsigned long)&quot;abcde&quot;);
+    if (res != 0) {
+        printf(&quot;error while starting process 2&quot;);
+        return;
+    }
+
+    while (1){
+        schedule();
+    }
+}
+</code></pre>
+<ol>
+<li>
+<p>A new function <code>copy_process</code> is introduced. <code>copy_process</code> takes 2 arguments: a function to execute in a new thread and an argument passed to this function. <code>copy_process</code> allocates a new <code>task_struct</code>  and makes it available for the scheduler.</p>
+</li>
+<li>
+<p>Another new function <code>schedule</code>. This is the core scheduler function: it checks whether there is a new task that needs to preempt the current one. In cooperative scheduling, a task voluntarily calls <code>schedule</code> if it doesn't have any work to do at the moment. </p>
+</li>
+</ol>
+<blockquote>
+<p>For preemptive multitasking, <code>schedule</code> is also called from the timer interrupt handler.</p>
+<p>Try your self with QEMU: set a breakpoint at copy_process &amp; launch the kernel. Examine task_struct with <code>print *p</code>. Examine the value of cpu_context.[pc|sp|fn|arg]. </p>
+</blockquote>
+<p>We are calling <code>copy_process</code> 2 times, each time passing a pointer to the process function as the first argument.</p>
+<p><code>process</code> function is very simple.</p>
+<pre><code>void process(char *array)
+{
+    while (1){
+        for (int i = 0; i &lt; 5; i++){
+            uart_send(array[i]);
+            delay(100000);
+            schedule();
+        }
+    }
+}
+</code></pre>
+<p>It just keeps printing characters from the array, which is passed as an argument. Task 1 is created with the argument "12345" and task 2 is with the argument "abcde". After printing out a string, a task yields to others by calling <code>schedule()</code>. If our scheduler implementation is correct, both threads will take turns to print strings. </p>
+<h3 id="switching-tasks-schedc-scheds">Switching tasks (sched.c &amp; sched.S)</h3>
+<p>This is where the magic happens. The code looks like this.</p>
+<pre><code>void switch_to(struct task_struct * next)
+{
+    if (current == next)
+        return;
+    struct task_struct * prev = current;
+    current = next;
+    cpu_switch_to(prev, next);
+}
+</code></pre>
+<p>If the "next" process is not the same as the "current",  the kernel updates <code>current</code>. The <code>cpu_switch_to</code> function is where the real context switch happens. To manipulates registers, it is in assembly. </p>
+<pre><code>.globl cpu_switch_to
+cpu_switch_to:
+    mov    x10, #THREAD_CPU_CONTEXT
+    add    x8, x0, x10
+    mov    x9, sp
+    stp    x19, x20, [x8], #16        // store callee-saved registers
+    stp    x21, x22, [x8], #16
+    stp    x23, x24, [x8], #16
+    stp    x25, x26, [x8], #16
+    stp    x27, x28, [x8], #16
+    stp    x29, x9, [x8], #16
+    str    x30, [x8]
+    add    x8, x1, x10
+    ldp    x19, x20, [x8], #16        // restore callee-saved registers
+    ldp    x21, x22, [x8], #16
+    ldp    x23, x24, [x8], #16
+    ldp    x25, x26, [x8], #16
+    ldp    x27, x28, [x8], #16
+    ldp    x29, x9, [x8], #16
+    ldr    x30, [x8]
+    mov    sp, x9
+    ret
+</code></pre>
+<p>Let's examine it line by line.</p>
+<pre><code>    mov    x10, #THREAD_CPU_CONTEXT
+    add    x8, x0, x10
+</code></pre>
+<p><code>THREAD_CPU_CONTEXT</code> constant contains offset of the <code>cpu_context</code> structure in the <code>task_struct</code> (the offset is 0 in the current implementation). <code>x0</code> contains a pointer to the first argument, which is the current <code>task_struct</code> (i.e. the "switch-from" task).  After the copied 2 lines are executed, <code>x8</code> will contain a pointer to the current <code>cpu_context</code>.</p>
+<pre><code>    mov    x9, sp
+    stp    x19, x20, [x8], #16        // store callee-saved registers
+    stp    x21, x22, [x8], #16
+    stp    x23, x24, [x8], #16
+    stp    x25, x26, [x8], #16
+    stp    x27, x28, [x8], #16
+    stp    x29, x9, [x8], #16
+    str    x30, [x8]
+</code></pre>
+<p><img alt="" src="../sched/Slide2.png" /></p>
+<p><em>The figure above: During context switch, registers are being saved to task_struct.context</em></p>
+<p>Above: all callee-saved registers are stored in the order, in which they are defined in <code>cpu_context</code> structure. The current stack pointer is saved as <code>cpu_context.sp</code> and <code>x29</code> is saved as <code>cpu_context.fp</code> (frame pointer).</p>
+<p>Note: <code>x30</code>, the link register containing function return address, is stored as <code>cpu_context.pc</code>. Why?</p>
+<p>Now we calculate the address of the next task's <code>cpu_context</code>: </p>
+<pre><code>    add    x8, x1, x10
+</code></pre>
+<p>This a cute hack. <code>x10</code> contains <code>THREAD_CPU_CONTEXT</code> , the offset of the <code>cpu_context</code> structure inside <code>task_struct</code>. <code>x1</code> is a pointer to the next <code>task_struct</code>, so <code>x8</code> will contain a pointer to the next <code>cpu_context</code>.</p>
+<p>Now, restore the CPU context of "switch_to" task from memory to CPU registers. A mirror procedure. </p>
+<pre><code>    ldp    x19, x20, [x8], #16        // restore callee-saved registers
+    ldp    x21, x22, [x8], #16
+    ldp    x23, x24, [x8], #16
+    ldp    x25, x26, [x8], #16
+    ldp    x27, x28, [x8], #16
+    ldp    x29, x9, [x8], #16
+    ldr    x30, [x8]
+    mov    sp, x9
+    ret
+</code></pre>
+<p>The <code>ret</code> instruction will jump to the location pointed to by the link register (<code>x30</code>). If we are switching to a task for the first time, this will be the beginning of the <code>ret_from_fork</code> function. More on that below. In all other cases this will be the location previously saved in the <code>cpu_context.pc</code> by the <code>cpu_switch_to</code> function. Think: which instruction does it point to? </p>
+<h3 id="launching-a-new-task">Launching a new task</h3>
+<p>New task creation is implemented in the copy_process function.</p>
+<p>Keep in mind: after <code>copy_process</code> finishes execution, no context switch happens yet. The function only prepares new <code>task_struct</code> and adds it to the <code>task</code> array — this task will be executed only after <code>schedule</code> function is called.</p>
+<pre><code>int copy_process(unsigned long fn, unsigned long arg)
+{
+    struct task_struct *p;
+
+    p = (struct task_struct *) get_free_page();
+    if (!p)
+        return 1;
+    p-&gt;priority = current-&gt;priority;
+    p-&gt;state = TASK_RUNNING;
+    p-&gt;counter = p-&gt;priority;
+
+    p-&gt;cpu_context.x19 = fn;
+    p-&gt;cpu_context.x20 = arg;
+    p-&gt;cpu_context.pc = (unsigned long)ret_from_fork;
+    p-&gt;cpu_context.sp = (unsigned long)p + THREAD_SIZE;
+    int pid = nr_tasks++;
+    task[pid] = p;
+    return 0;
+}
+</code></pre>
+<p>We examine it in details.</p>
+<pre><code>    struct task_struct *p;
+</code></pre>
+<p>The function starts with allocating a pointer for the new task. As interrupts are off, the kernel will not be interrupted in the middle of the <code>copy_process</code> function.</p>
+<pre><code>    p = (struct task_struct *) get_free_page();
+    if (!p)
+        return 1;
+</code></pre>
+<p>Next, a new page is allocated. At the bottom of this page, we are putting the <code>task_struct</code> for the newly created task. The rest of this page will be used as the task stack. A few lines below, <code>context.sp</code> is set as <code>p + THREAD_SIZE</code>. THREAD_SIZE is defined as 4KB. It is the total amount of kernel memory for a task. The name, again, is following the Linux kernel convention. </p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><img alt="" src="../sched/Slide3.png" /></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><em>Figure above: a task's task_struct in relative to its stack space</em></td>
+</tr>
+</tbody>
+</table>
+<pre><code>    p-&gt;priority = current-&gt;priority;
+    p-&gt;state = TASK_RUNNING;
+    p-&gt;counter = p-&gt;priority;
+</code></pre>
+<p>After the <code>task_struct</code> is allocated, we can initialize its properties.  Priority and initial counters are set based on the current task priority. </p>
+<pre><code>    p-&gt;cpu_context.x19 = fn;
+    p-&gt;cpu_context.x20 = arg;
+    p-&gt;cpu_context.pc = (unsigned long)ret_from_fork;
+    p-&gt;cpu_context.sp = (unsigned long)p + THREAD_SIZE;
+</code></pre>
+<p>This is the most important part of the function. Here <code>cpu_context</code> is initialized. The stack pointer is set to the top of the newly allocated memory page (see the figure above). <code>pc</code>  is set to the ret_from_fork function. Details below. </p>
+<h3 id="ret_from_fork-entrys">ret_from_fork (entry.S)</h3>
+<p>This is the <strong>first</strong> piece of code executed by a newly created process. A new process P executes <code>ret_from_fork</code> after <strong>it is switched to</strong> for the first time. That is right after the scheduler picks P for the first time and restores P's CPU context from <code>task_struct</code> to CPU registers. Throughout its lifetime, P only executes <code>ret_from_fork</code> once. </p>
+<blockquote>
+<p>About naming: despite the name "fork", we are not doing fork() as in Linux/Unix. We are simply copying a <code>task_struct</code> while fork() does far more things like duplicating process address spaces. The naming follows the Linux kernel convention; and we will evolve our <code>ret_from_fork</code> in subsequent experiments. </p>
+</blockquote>
+<pre><code>.globl ret_from_fork
+ret_from_fork:
+    bl    schedule_tail // will talk about this later
+    mov    x0, x20
+    blr    x19         //should never return
+</code></pre>
+<p>What are the initial values of <code>x19</code> and <code>x20</code>? See code <code>copy_process</code> above, which saves <code>fn</code> (the process's main function) and <code>arg</code> (the argument passed to the process) to<code>task_struct.x19</code> and <code>x20</code>. When switching to P, the kernel restores <code>fn</code> and <code>arg</code> from <code>task_struct</code> to <code>x19</code> and <code>x20</code>. And here we are:  <code>ret_from_fork</code> calls the function stored in <code>x19</code> register with the argument stored in <code>x20</code>. </p>
+<blockquote>
+<p>:wrench:Try your self with QEMU+GDB: set a breakpoint at ret_from_fork, launch the kernel, and single step into the new process function. </p>
+</blockquote>
+<h2 id="memory-allocation">Memory allocation</h2>
+<p>Each task in the system should have its dedicated stack. That's why when creating a new task we must have a way to allocate memory. For now, our memory allocator is extremely primitive. (The implementation can be found in mm.c file)</p>
+<pre><code>static unsigned short mem_map [ PAGING_PAGES ] = {0,};
+
+unsigned long get_free_page()
+{
+    for (int i = 0; i &lt; PAGING_PAGES; i++){
+        if (mem_map[i] == 0){
+            mem_map[i] = 1;
+            return LOW_MEMORY + i*PAGE_SIZE;
+        }
+    }
+    return 0;
+}
+
+void free_page(unsigned long p){
+    mem_map[(p - LOW_MEMORY) / PAGE_SIZE] = 0;
+}
+</code></pre>
+<blockquote>
+<p>:wrench: Try it yourself with QEMU: <code>ptype mem_map</code> then <code>print (short[10])*mem_map</code>. </p>
+</blockquote>
+<p>The allocator can work only with memory pages (each page is 4 KB in size). There is an array called <code>mem_map</code> that for each page in the system holds its status: whether it is allocated or free. Whenever we need to allocate a new page, we just loop through this array and return the first free page. This implementation is based on 2 assumptions:</p>
+<ol>
+<li>We know the total amount of memory in the system. It is <code>1 GB - 1 MB</code> (the last megabyte of memory is reserved for device registers.). This value is stored in the HIGH_MEMORY constant.</li>
+<li>First 4 MB of memory are reserved for the kernel image and init task stack. This value is stored in the LOW_MEMORY constant. All memory allocations start right after this point.</li>
+</ol>
+<blockquote>
+<p>Note: even with QEMU our kernel must start from 0x80000 (512KB), the above assumptions are good as there's still plenty room in 512KB -- LOW_MEMORY for our tiny kernel.</p>
+</blockquote>
+<h2 id="the-scheduler">The scheduler</h2>
+<p>Finally, we are ready to look at the scheduler algorithm. We almost precisely copied this algorithm from the first release of the Linux kernel. </p>
+<pre><code>void _schedule(void)
+{
+    int next,c;
+    struct task_struct * p;
+    while (1) {
+        c = -1;
+        next = 0;
+        // try to pick a task
+        for (int i = 0; i &lt; NR_TASKS; i++){
+            p = task[i];
+            if (p &amp;&amp; p-&gt;state == TASK_RUNNING &amp;&amp; p-&gt;counter &gt; c) {
+                c = p-&gt;counter;
+                next = i;
+            }
+        }
+        if (c) {
+            break;
+        }
+        // update counters
+        for (int i = 0; i &lt; NR_TASKS; i++) {
+            p = task[i];
+            if (p) {
+                p-&gt;counter = (p-&gt;counter &gt;&gt; 1) + p-&gt;priority;
+            }
+        }
+    }
+    switch_to(task[next]);
+}
+</code></pre>
+<p>The simple algorithm works like the following:</p>
+<ul>
+<li>
+<p>The first <code>for</code> loop iterates over all tasks and tries to find a task in <code>TASK_RUNNING</code> state with the maximum counter. If such a task is found, we immediately break from the <code>while</code> loop and switch to this task. </p>
+</li>
+<li>
+<p>If no such task is found, this is either because i) no task is in <code>TASK_RUNNING</code>  state or ii) all such tasks have 0 counters. In a real OS, i) might happen, for example, when all tasks are waiting for an interrupt. In our current tiny kernel, all tasks are always in <code>TASK_RUNNING</code> (Why?) </p>
+</li>
+<li>
+<p>The scheduler moves to the 2nd <code>for</code> loop to "recharge" counters. It bumps counters for all tasks once. The increment depends on a task's priority. Note: a task counter can never get larger than <code>2 * priority</code>.</p>
+</li>
+<li>
+<p>With updated counters, the scheduler goes back to the 1st <code>for</code> loop to pick a task. </p>
+</li>
+</ul>
+<p>We will augment the scheduling algorithm for preemptive multitasking later. </p>
+<h2 id="conclusion">Conclusion</h2>
+<p>We have seen important nuts &amp; bolts of multitasking. The subsequent experiment will enable task preemption. We will show a detailed workflow of context switch there. </p>
+<h2 id="one-more-thing">One more thing ...</h2>
+<p>There's support for a graphical console. Works for both QEMU and Rpi3. Display required. See <a href="../../exp3/fb/">instructions</a>. </p>
+<p><img alt="" src="../gfx-sched.gif" /></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1867 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../../exp2/rpi-os/">
+      
+      
+        <link rel="next" href="../../exp4a/rpi-os/">
+      
+      
+      <link rel="icon" href="../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
+    
+    
+      
+        <title>exp3 - p1-kernel</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bcfcd587.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#3-interrupts" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="p1-kernel" class="md-header__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            p1-kernel
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              exp3
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  OVERVIEW
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp0/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp0
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp1/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp1
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp2/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp2
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+    
+  
+  exp3
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp4a/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4a
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp4b/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4b
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp5/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp5
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp6/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp6
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../qemu/" class="md-tabs__link">
+        
+  
+    
+  
+  /qemu
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../gdb/" class="md-tabs__link">
+        
+  
+    
+  
+  /gdb
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../cheatsheet/" class="md-tabs__link">
+        
+  
+    
+  
+  /aarch64
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../ssh-proxy/" class="md-tabs__link">
+        
+  
+    
+  
+  /ssh
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../dump/" class="md-tabs__link">
+        
+  
+    
+  
+  /ker dump
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../jtag/" class="md-tabs__link">
+        
+  
+    
+  
+  /jtag
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp1/workflow/" class="md-tabs__link">
+        
+  
+    
+  
+  /rpi workflow
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="p1-kernel" class="md-nav__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    p1-kernel
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVERVIEW
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp0/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp0
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp1/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp1
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp2/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    exp3
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    exp3
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Objectives
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get the code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#terms" class="md-nav__link">
+    <span class="md-ellipsis">
+      Terms
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hacking-tips-tracing-interrupts-with-qemu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hacking tips -- tracing interrupts with QEMU
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#background-interrupts-exceptions-in-arm64" class="md-nav__link">
+    <span class="md-ellipsis">
+      Background: interrupts &amp; exceptions in ARM64
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Background: interrupts & exceptions in ARM64">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interrupts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interrupts-exceptions-on-aarch64" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interrupts &amp; Exceptions on aarch64
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exception-vectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exception vectors
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-walkthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code Walkthrough
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Code Walkthrough">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exception-vectors-tables-etc-entrys" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exception vectors, tables, etc. (entry.S)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exception vectors, tables, etc. (entry.S)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#making-cpu-aware-of-the-vector-table-irqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Making CPU aware of the vector table (irq.S)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-simple-handler-for-unexpected-exceptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      A simple handler for unexpected exceptions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kernel_entry-exit" class="md-nav__link">
+    <span class="md-ellipsis">
+      kernel_entry &amp; exit
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interrupt-enabledisable" class="md-nav__link">
+    <span class="md-ellipsis">
+      interrupt enable/disable?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring interrupts
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring interrupts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-the-interrupt-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring the Interrupt controller
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maskingunmasking-interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Masking/unmasking interrupts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arms-generic-hardware-timer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Arm's generic hardware timer
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Arm's generic hardware timer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#initialize-timer-timers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initialize timer (timer.S)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#turn-on-timer-interrupt-at-the-cpu-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      Turn on timer interrupt at the CPU core
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handing-timer-interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Handing timer interrupts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reset-timer-timers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reset timer (timer.S)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fyi-other-timers-on-rpi3" class="md-nav__link">
+    <span class="md-ellipsis">
+      FYI: other timers on Rpi3
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FYI: other timers on Rpi3">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fyi-programming-the-rpi3s-system-timer-not-used-in-this-experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      FYI: Programming the Rpi3's system timer (not used in this experiment)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp4a/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4a
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp4b/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4b
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp5/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp5
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp6/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp6
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../qemu/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /qemu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /gdb
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /aarch64
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ssh-proxy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ssh
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dump/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ker dump
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jtag/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /jtag
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp1/workflow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /rpi workflow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Objectives
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get the code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#terms" class="md-nav__link">
+    <span class="md-ellipsis">
+      Terms
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hacking-tips-tracing-interrupts-with-qemu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hacking tips -- tracing interrupts with QEMU
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#background-interrupts-exceptions-in-arm64" class="md-nav__link">
+    <span class="md-ellipsis">
+      Background: interrupts &amp; exceptions in ARM64
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Background: interrupts & exceptions in ARM64">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interrupts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interrupts-exceptions-on-aarch64" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interrupts &amp; Exceptions on aarch64
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exception-vectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exception vectors
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-walkthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code Walkthrough
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Code Walkthrough">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exception-vectors-tables-etc-entrys" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exception vectors, tables, etc. (entry.S)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exception vectors, tables, etc. (entry.S)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#making-cpu-aware-of-the-vector-table-irqs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Making CPU aware of the vector table (irq.S)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-simple-handler-for-unexpected-exceptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      A simple handler for unexpected exceptions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kernel_entry-exit" class="md-nav__link">
+    <span class="md-ellipsis">
+      kernel_entry &amp; exit
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interrupt-enabledisable" class="md-nav__link">
+    <span class="md-ellipsis">
+      interrupt enable/disable?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring interrupts
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring interrupts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-the-interrupt-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring the Interrupt controller
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maskingunmasking-interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Masking/unmasking interrupts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#arms-generic-hardware-timer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Arm's generic hardware timer
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Arm's generic hardware timer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#initialize-timer-timers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initialize timer (timer.S)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#turn-on-timer-interrupt-at-the-cpu-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      Turn on timer interrupt at the CPU core
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handing-timer-interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Handing timer interrupts
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reset-timer-timers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reset timer (timer.S)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fyi-other-timers-on-rpi3" class="md-nav__link">
+    <span class="md-ellipsis">
+      FYI: other timers on Rpi3
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FYI: other timers on Rpi3">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fyi-programming-the-rpi3s-system-timer-not-used-in-this-experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      FYI: Programming the Rpi3's system timer (not used in this experiment)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="3-interrupts">3: Interrupts</h1>
+<p><strong>READING TIME: 40 MIN</strong></p>
+<p><img alt="" src="../images/qemu-timer.gif" /></p>
+<h2 id="objectives">Objectives</h2>
+<p>We will build a baremetal program that prints out messages, as driven by periodic interrupts from a hardware timer. </p>
+<p>You will learn and experience with: </p>
+<ol>
+<li>Exception/interrupt vectors</li>
+<li>Handling interrupts</li>
+<li>Program hardware timers</li>
+</ol>
+<h2 id="get-the-code">Get the code</h2>
+<p>Code location: p1-kernel/src/exp3</p>
+<p>Please: do a <code>git pull</code> even if you have cloned the p1-kenel repo previously, in case of upstream updates. </p>
+<h2 id="terms">Terms</h2>
+<p>"Interrupts" or "irq"? We use these two terms interchangeably. Many kernel documents use the latter. </p>
+<h2 id="hacking-tips-tracing-interrupts-with-qemu">Hacking tips -- tracing interrupts with QEMU</h2>
+<pre><code>qemu-system-aarch64 -M raspi3 -kernel ./kernel8.img \
+-serial null -serial stdio \
+-d int -D test.log 
+</code></pre>
+<p>See <a href="../../qemu/">the qmeu cheatsheet</a> for more. </p>
+<h2 id="background-interrupts-exceptions-in-arm64">Background: interrupts &amp; exceptions in ARM64</h2>
+<h3 id="interrupts">Interrupts</h3>
+<p>Interrupts are generated by IO devices, go through the irq controller, and eventually arrive the CPU. The CPU can program the irq controller to enable/disable specific interrupt sources. By disabling an irq source, the CPU will not lose any irq from that device, but just defer receiving irq until the CPU re-enables the irq source. The CPU can also read from the irq controller which IO devices have pending interrupts, meaning that the IO devices need attention. </p>
+<p><img alt="image-20210127215831536" src="../irq-routing-1612405762169.png" /></p>
+<p>By their canonical definitions, interrupts are asynchronous while exceptions are synchronous. </p>
+<h3 id="interrupts-exceptions-on-aarch64">Interrupts &amp; Exceptions on aarch64</h3>
+<p>However in ARM64 lingo, exception is broadly defined; interrupts are a special kind of exceptions. x86 has its own lingo, calling exceptions as "traps". </p>
+<p>In this article, we use ARM's broad definition of exceptions unless stated otherwise. </p>
+<h3 id="exception-vectors">Exception vectors</h3>
+<p><img alt="" src="../vectable_mem.png" /></p>
+<p><em>Figure above: the EL1 vector table as in memory. EL2 and EL3 each has a </em><em>separate</em><em> vector table like this.</em></p>
+<p><strong>An exception vector</strong> (or handler) is a piece of code the CPU will execute when a specific exception happens. "<em>These would normally be branch instructions that direct the core to the full exception handler.</em>" (the ARM64 manual). </p>
+<p>The ARM64 hardware mandates: each exception vector can occupy<code>0x80</code> bytes maximum (thus <code>.align 7</code> in the asm code). </p>
+<p><strong>A vector table</strong> is an array of exception vectors. Each exception level (EL) has its own vector table. The above figure shows the vector table for EL1. </p>
+<p><strong>The vector table for EL1</strong>. Provided by our kernel. Purpose: to handle exceptions <em>taken from</em> EL0 (user programs) or EL1 (the kernel's own execution). </p>
+<p>Format: the kernel <strong>defines 16 exception handlers</strong>: 4 types [sync, irq, fiq, serror] for each of the CPU 4 execution states [EL1t, EL1h, EL0_64, EL0_32]. </p>
+<p><strong>Four exception types</strong>  (focus the former two) </p>
+<ol>
+<li>
+<p><strong>Synchronous exception</strong>s Exceptions of this type are always caused by the currently executed instruction. For example, you can use <code>str</code> instruction to store some data at a non-existing memory location. In this case, a synchronous exception is generated. Synchronous exceptions also can be used to generate a "software interrupt". Software interrupt is a synchronous exception that is generated on purpose by <code>svc</code> instruction. We will use this technique in lesson 5 to implement system calls.</p>
+</li>
+<li>
+<p><strong>Asynchronous exceptions (IRQ)</strong> Those are normal interrupts. They are always asynchronous, which means that they have nothing to do with the currently executed instruction.  In contrast to synchronous exceptions, they are always not generated by the processor itself, but by external hardware.</p>
+</li>
+<li>
+<p><strong>FIQ (Fast Interrupt Request)</strong> This type of exception is called "fast interrupts" and exist solely for the purpose of prioritizing exceptions. It is possible to configure some interrupts as "normal" and other as "fast". Fast interrupts will be signaled first and will be handled by a separate exception handler. Linux doesn't use fast interrupts and we also are not going to do so.</p>
+</li>
+<li>
+<p><strong>SError (System Error)</strong> Like <code>IRQ</code> and <code>FIQ</code>, <code>SError</code> exceptions are asynchronous and are generated by external hardware. Unlike <code>IRQ</code> and <code>FIQ</code>, <code>SError</code> always indicates some error condition. <a href="https://community.arm.com/processors/f/discussions/3205/re-what-is-serror-detailed-explanation-is-required">Here</a> you can find an example explaining when <code>SError</code> can be generated.</p>
+</li>
+</ol>
+<p><strong>Four CPU execution states</strong></p>
+<ol>
+<li><strong>EL1t</strong> Exception happens when CPU is at EL1 while the stack pointer (SP) was set to be shared with EL0. This happens when <code>SPSel</code> register holds the value <code>0</code>.  Recall that <code>SPSel</code> is part of the CPU's PSTATE. </li>
+<li><strong>EL1h</strong> Exception happens at EL1 at the time when a dedicated SP was allocated for EL1. This happens when <code>SPSel</code> holds the value <code>1</code>. <strong>This is the mode that our kernel is are currently using.</strong></li>
+<li><strong>EL0_64</strong> Exception is taken from EL0 executing in 64-bit mode. This experiment will not deal with EL0. Spoiler: EL0_64 corresponds to the exceptions that caused by 64-bit user programs. (Note: in the vector table for EL1, this entry is for EL0_64; in the vector table for EL2, this is for EL1_64)</li>
+<li><strong>EL0_32</strong> Exception is taken from EL0 executing in 32-bit mode. This experiment will not deal with EL0 or 32-bit mode. Spoiler: this corresponds to exceptions in 32-bit user programs. (Note: in the vector table for EL1, this entry is for EL0_32; in the vector table for EL2, this is for EL1_32)</li>
+</ol>
+<blockquote>
+<p>"The t and h suffixes are based on the terminology of <em>thread</em> and <em>handler</em>, introduced in ARMv7-M." -- ARM</p>
+</blockquote>
+<p><strong>The vector tables for EL2 or EL3?</strong> The format is the same as EL1, e.g. 16 (=4x4) exception handlers. Note: EL2 vectors are for exceptions taken from EL2 and EL1; EL3 vectors are for exceptions taken from EL3 and EL2. See the short official document "<a href="https://developer.arm.com/documentation/100933/0100/AArch64-exception-vector-table?lang=en">AArch64 exception vector table</a>". </p>
+<h2 id="code-walkthrough">Code Walkthrough</h2>
+<h3 id="exception-vectors-tables-etc-entrys">Exception vectors, tables, etc. (entry.S)</h3>
+<p>The figure below shows how vector table is defined. The code mimics what the ARM64 Linux kernel does. </p>
+<p><img alt="image-20210127174836499" src="../vectable.png" /></p>
+<blockquote>
+<p>Why named "entry.S"? Because in a full-fledged kernel, exception/irq handlers are where user programs enter the kernel for execution. Although this experiment is not building such a kernel, we follow the naming convention. </p>
+</blockquote>
+<p>The vector table consists of 16 <code>ventry</code> definitions:</p>
+<pre><code>.align  11
+.globl vectors 
+vectors:
+    ventry  sync_invalid_el1t           // Synchronous EL1t
+    ventry  irq_invalid_el1t            // IRQ EL1t
+    ventry  fiq_invalid_el1t            // FIQ EL1t
+    ventry  error_invalid_el1t          // Error EL1t
+... 
+</code></pre>
+<p>The macro ventry is used to create entries in the vector table.</p>
+<pre><code>    .macro    ventry    label
+    .align    7
+    b    \label
+    .endm
+</code></pre>
+<p>As suggested above: for code clarity, we are not going to handle exceptions right inside the exception vector. Instead, we make each vector a branch instruction (<code>b \label</code>) that jumps to a label provided for the macro as <code>label</code> argument.</p>
+<p>We need <code>.align 7</code> because all exception vectors should be spaced at <code>0x80</code> bytes (2&lt;&lt;7) one from another. A useful assembly trick. </p>
+<h4 id="making-cpu-aware-of-the-vector-table-irqs">Making CPU aware of the vector table (irq.S)</h4>
+<p>Ok, now we have prepared the vector table, but the processor doesn't know where it is located and therefore can't use it. In order for the exception handling to work, we must set <code>vbar_el1</code> (Vector Base Address Register) to the vector table address. </p>
+<pre><code>.globl irq_vector_init
+irq_vector_init:
+    adr    x0, vectors        
+    msr    vbar_el1, x0       
+    ret
+</code></pre>
+<h4 id="a-simple-handler-for-unexpected-exceptions">A simple handler for unexpected exceptions</h4>
+<p>In this experiment we are only interested in handling <code>IRQ</code> that occurred at EL1h. Yet, our kernel  defines all 16 handlers for EL1. This is for debugging ease: we want to print out meaningful message in case our kernel triggers some other exceptions due to our programming mistakes. </p>
+<p>We name all the handlers that are NOT supposed to be trigged  with a <code>invalid</code> postfix. We implement these handlers using a <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp3/src/entry.S#L3">handle_invalid_entry</a> macro:</p>
+<pre><code>    .macro handle_invalid_entry type
+    kernel_entry
+    mov    x0, #\type
+    mrs    x1, esr_el1
+    mrs    x2, elr_el1
+    bl    show_invalid_entry_message
+    b    err_hang
+    .endm
+</code></pre>
+<p>The first line invokes a macro <code>kernel_entry</code> which is the first few instructions the kernel should execute in handling an exception/interrupt (recall the term "entry"). We will discuss it below.</p>
+<p>Then we call show_invalid_entry_message() and prepare 3 arguments for it. The arguments are passed in 3 registers: x0, x1, and x2. </p>
+<ul>
+<li>x0: the exception type. The value comes from the argument to this macro. It can take one of <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp3/include/entry.h#L6">these</a> values defined in entry.h. It tells us exactly which exception handler has been executed.</li>
+<li>x1: information about what causes the exception. The value comes from <code>esr_el1</code> register.  <code>ESR</code> stands for Exception Syndrome Register. EL1 implies "when an exception is taken to EL1", i.e. when the exception is handled at EL1. Note: in this experiment our kernel runs at EL1 and when an interrupt happens it is handled at EL1. Read the <a href="https://developer.arm.com/docs/ddi0595/b/aarch64-system-registers/esr_el1">ref</a> again. </li>
+<li>x2: the address of the instruction being executed when the exception happens. The value comes from the  <code>elr_el1</code> as described earlier. For synchronous exceptions, this is the instruction that causes the exception; for irqs (asynchronous), this is the instruction completed right before irq happens. Again, the postfix EL1 indicates that "<em>when taking an exception to EL1, (this reg) holds the address to return to.</em>" </li>
+</ul>
+<p>The code next invokes <code>show_invalid_entry_message</code>  function, which prints textual information to UART. Returning from that function, the code executes in an infinite loop as we have nothing else to do. </p>
+<h4 id="kernel_entry-exit">kernel_entry &amp; exit</h4>
+<p>To handle <em>valid</em> exceptions (timer interrupts in our case), the kernel needs to save &amp; restore the <em>context</em> of the "normal" execution, i.e. switching from the normal execution to the exception handler, executing it, and resuming the execution being interrupted. In other words, after the exception handler, we want all general purpose registers to have the same values as they had before the exception was generated. </p>
+<blockquote>
+<p>Why does NOT the above handler <code>handle_invalid_entry</code> save registers? Because it ends with an infinite loop and never intends to resume the interrupted execution. </p>
+</blockquote>
+<pre><code>el1_irq:
+    kernel_entry 
+    bl  handle_irq
+    kernel_exit 
+</code></pre>
+<p>Back to <code>kernel_entry</code>. This is the first thing to do in handling an exception: saving the processor state, notably registers x0 - x30, to the stack. To do so, it first subtracts from <code>sp</code> the size of total stored registers (#S_FRAME_SIZE) and then fills the stack space. </p>
+<p>According to <code>kernel_entry</code>, there is <code>kernel_exit</code> to be called as the last thing of an exception handler. <code>kernel_exit</code> restores the CPU state by copying back the values of x0 - x30. The order exactly mirrors that of <code>kernel_entry</code> otherwise we will see wrong register values. Finally <code>kernel_exit</code> executes <code>eret</code>, which returns to the interrupted execution (still at EL1). </p>
+<p>The following figure shows how the kernel memory look like before &amp; after handling an interrupt. </p>
+<p><img alt="" src="../images/irq.png" /></p>
+<h4 id="interrupt-enabledisable">interrupt enable/disable?</h4>
+<p>When an exception happens, the CPU will turn off interrupts automatically. When we return from an interrupt, ERET will restore PSTATE from SPSR_EL1, which contains the DAIF flags that control the interrupt state (i.e. enabled or disabled). </p>
+<h2 id="configuring-interrupts">Configuring interrupts</h2>
+<h4 id="_1"><img alt="image-20210127215831536" src="../images/irq-routing.png" /></h4>
+<h3 id="configuring-the-interrupt-controller">Configuring the Interrupt controller</h3>
+<p>Bcm2837, the SoC for Rpi3, has its own interrupt controller described on page 109 of <a href="https://github.com/raspberrypi/documentation/files/1888662/BCM2837-ARM-Peripherals.-.Revised.-.V2-1.pdf">BCM2837 ARM Peripherals manual</a>.
+Because of the hardware quirks (e.g. many irqs are routed from GPU to CPU), the interrupt controller organizes irq sources into three groups and has registers for controlling/checking individual groups. </p>
+<blockquote>
+<p>Be aware of their weird naming: these irq groups are called "Basic" (irqs routed to the ARM CPU), "1", and "2" (irqs routed from GPU to CPU). For example, <code>IRQ basic pending</code>, <code>IRQ pending 1</code>, <code>IRQ pending 2</code>.  The SoC manual has more dirty details. </p>
+</blockquote>
+<p>We are only interested in timer interrupts. The SoC manual, page 113 states that irq #1 and #3 are from the system timer. These irq sources belong to the irq group 1, which can be enabled using <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp3/include/peripherals/irq.h#L10">ENABLE_IRQS_1</a>. So <code>enable_interrupt_controller()</code> enables system timer IRQ at #1: </p>
+<!--- According to the documentation, interrupts are divided into 2 banks. The first bank consists of interrupts `0 - 31`, each of these interrupts can be enabled or disabled by setting different bits of `ENABLE_IRQS_1` register. There is also a corresponding register for the last 32 interrupts - `ENABLE_IRQS_2` and a register that controls some common interrupts together with ARM local interrupts - `ENABLE_BASIC_IRQS` (We will talk about ARM local interrupts in the next chapter of this lesson). --->
+
+<!--- The Peripherals manual, however, has a lot of mistakes and one of those is directly relevant to our discussion. Peripheral interrupt table (which is described at page 113 of the manual) should contain 4 interrupts from system timer at lines `0 - 3`. From reverse engineering Linux source code and reading [some other sources](http://embedded-xinu.readthedocs.io/en/latest/arm/rpi/BCM2835-System-Timer.html) I was able to figure out that timer interrupts 0 and 2 are reserved and used by GPU and interrupts 1 and 3 can be used for any other purposes. So here is the [function](https://github.com/fxlin/p1-kernel/blob/master/src/exp3/src/irq.c#L29) that enables system timer IRQ number 1.--->
+
+<pre><code>void enable_interrupt_controller()
+{
+    put32(ENABLE_IRQS_1, SYSTEM_TIMER_IRQ_1);
+}
+</code></pre>
+<h3 id="maskingunmasking-interrupts">Masking/unmasking interrupts</h3>
+<p>From time to time, the kernel must mask/unmask ALL interrupts, so that some critical code regions will never be interrupted. For example, what happens if an interrupt occurs right in the middle of <code>kernel_entry</code> macro? The CPU state would be corrupted. </p>
+<p>Upon entry to ANY exception/interrupt, the processor automatically masks all interrupts so that the kernel can save the CPU state atomically. The kernel then unmasks exceptions (often interrupts) it wants to handle during the execution of the interrupt handler. Right before exiting the exception handling (<code>eret</code>), the kernel masks all interrupts again for atomic CPU state restore. </p>
+<!-- Many people mistakenly think that interrupts must be masked for the whole duration of the exception handler. This isn't true - it is perfectly legal to unmask interrupts after you saved processor state and therefore it is also legal to have nested interrupts. We are not going to do this right now, but this is important information to keep in mind. -->
+
+<p>Note: it is perfectly legal to have nested interrupts, i.e. handling another interrupt in the middle of an interrupt handler. Nested interrupts are NOT common: for simple designs, many kernels intentionally keep interrupt handlers very short so they can mask interrupts throughout an interrupt handler without delaying future interrupts too much. However, handling <em>interrupts</em> during <em>exception</em> handlers is VERY common. Syscalls are executed as exception handlers, during which the kernel must be responsive to interrupts. </p>
+<p>The following two functions (irq.S) mask and unmask interrupts.</p>
+<pre><code>.globl enable_irq
+enable_irq:
+    msr    daifclr, #2
+    ret
+
+.globl disable_irq
+disable_irq:
+    msr    daifset, #2
+        ret
+</code></pre>
+<p>Explanation: ARM processor state (PSTATE) has 4 bits holding mask status for different types of interrupts. </p>
+<ul>
+<li><strong>D</strong>  Masks debug exceptions. These are a special type of synchronous exceptions. For obvious reasons, it is not possible to mask all synchronous exceptions, but it is convenient to have a separate flag that can mask debug exceptions.</li>
+<li><strong>A</strong> Masks <code>SErrors</code>. It is called <code>A</code> because <code>SErrors</code> sometimes are called asynchronous aborts.</li>
+<li><strong>I</strong> Masks <code>IRQs</code></li>
+<li><strong>F</strong> Masks <code>FIQs</code></li>
+</ul>
+<p>Now you can probably guess why registers that are responsible for changing interrupt mask status are called <code>daifclr</code> and <code>daifset</code>. Those registers set and clear interrupt mask status bits in the processor state.</p>
+<p>Why do we use constant value <code>2</code> in both of the functions? This is because we only want to set and clear the second (<code>I</code>) bit.</p>
+<h3 id="arms-generic-hardware-timer">Arm's generic hardware timer</h3>
+<p>We use the Arm generic timer, which is part of Arm64 core design (i.e. not defined by SoC). This is nice, as the generic timers exist for all Armv8 CPUs. Your experiences will apply to other Armv8 SoCs as well. Arm's <a href="https://developer.arm.com/architectures/learn-the-architecture/generic-timer/single-page">official webpage</a> (ARM062-1010708621-30) describes the use of generic timers. </p>
+<p>The following figure shows the generic timer hardware. In a nutshell, a global, chip-level hardware counter (i.e. "System Counter") drives per-core timer instances. As hardware boots, System Counter keeps incrementing, i.e. free running. Software can read the current System Counter. But System Counter alone does not generate interrupts. Software must program the timers so that they interrupt corresponding CPU cores at specific time intervals. </p>
+<blockquote>
+<p>Note: PE means CPU cores.</p>
+</blockquote>
+<p><img alt="" src="../images/1_and_3_System_counter_ST1.png" /></p>
+<p>As our kernel only deals with one core, we focus on one timer instance. </p>
+<p>How should the kernel program the timer? The hardware provides two core registers (among others) as two <strong>alternative</strong> ways for programming the same timer. </p>
+<ul>
+<li>CVAL, a 64-bit comparator. Roughly, this sets a "threshold" for System Counter: </li>
+<li>Example: The kernel writes a value X to CVAL. When System Counter exceeds X, the timer generates an interrupt.</li>
+<li>TVAL, a 32-bit <em>signed</em> timer value. Roughly, this sets a "delta" for System Counter: </li>
+<li>Example: The kernel writes a value X to TVAL. The hardware updates CVAL +=  the Current System Counter + TVAL. The timer generates an interrupt according to the new CVAL. </li>
+</ul>
+<p>The above brief description would suffice in our kernel experiment. Beyond them, TVAL has another less intuitive, "countdown" function (not used in this experiment but useful for timekeeping). Since the last write by software, TVAL decrements as System Counter increments. The moment TVAL counts down to 0 is when an interrupt fires. After that, TVAL will keep counting down to a negative value. </p>
+<p><strong>To summarize</strong>: If software needs a timer event in X ticks of the clock, the software can write X to TVAL periodically. Alternatively, if software wants an event when the system count reaches Y, software can write Y to CVAL. If software wants to know the remaining ticks until the next interrupt, the software reads from TVAL.</p>
+<h4 id="initialize-timer-timers">Initialize timer (timer.S)</h4>
+<p>By programming the timer device, We turn on the timer and allow it to generate interrupts. </p>
+<pre><code>gen_timer_init:
+    mov x0, #1
+    msr CNTP_CTL_EL0, x0
+    ret
+</code></pre>
+<p>This writes 1 to the control register (<code>CNTP_CTL_EL0</code>) of <strong>the EL1 physical timer</strong>. Google "ddi0595 CNTP_CTL_EL0" for the register definition. </p>
+<p>Note: some students observed that if at the time of writing to CNTP_CTL_EL0 the timer firing condition is met (i.e. TVAL is a negative value), an interrupt will be fired immediately. 
+If you experience the same thing, you should omit the spurious interrupt.</p>
+<blockquote>
+<p>How to interpret the register name "CNTP_CTL_EL0": </p>
+<p>CTL indicates this is a control register; </p>
+<p>CNTP_XXX_EL0 indicates that this is for the EL1 physical timer. Why _EL0? I guess it means that the timer is accessible to both EL1 and EL0. See the table below. </p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th><strong>Register</strong></th>
+<th><strong>Purpose</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;timer&gt;_CTL_EL&lt;x&gt;</code></td>
+<td>Control register</td>
+</tr>
+<tr>
+<td><code>&lt;timer&gt;_CVAL_EL&lt;x&gt;</code></td>
+<td>Comparator value</td>
+</tr>
+<tr>
+<td><code>&lt;timer&gt;_TVAL_EL&lt;x&gt;</code></td>
+<td>Timer value</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th><strong>Timer name</strong></th>
+<th><strong>Register prefix</strong></th>
+<th><strong><code>EL&lt;x&gt;</code></strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EL1 physical timer</td>
+<td>CNTP</td>
+<td><code>EL0</code></td>
+</tr>
+<tr>
+<td>EL1 virtual time</td>
+<td>CNTV</td>
+<td><code>EL0</code></td>
+</tr>
+<tr>
+<td>Non-secure EL2 physical timer</td>
+<td>CNTHP</td>
+<td><code>EL2</code></td>
+</tr>
+<tr>
+<td>Non-secure EL2 virtual timer</td>
+<td>CNTHV</td>
+<td><code>EL2</code></td>
+</tr>
+<tr>
+<td>EL3 physical timer</td>
+<td>CNTPS</td>
+<td><code>EL1</code></td>
+</tr>
+<tr>
+<td>Secure EL2 physical timer</td>
+<td>CNTHPS</td>
+<td><code>EL2</code></td>
+</tr>
+<tr>
+<td>Secure EL2 virtual timer</td>
+<td>CNTHVS</td>
+<td><code>EL2</code></td>
+</tr>
+</tbody>
+</table>
+<p>(From Arm's generic timer document:)</p>
+<p>The CNTPCT_EL0 system register reports the current system count value.</p>
+<blockquote>
+<p>CNTFRQ_EL0 reports the frequency of the system count. However, this register is not populated by hardware. The register is write-able at the highest implemented Exception level and readable at all Exception levels. Firmware, typically running at EL3, populates this register as part of early system initialization. Higher-level software, like an operating system, can then use the register to get the frequency.</p>
+</blockquote>
+<h4 id="turn-on-timer-interrupt-at-the-cpu-core">Turn on timer interrupt at the CPU core</h4>
+<p>We have to deal with yet another Rpi3 quirk. The Arm generic timer IRQs are wired to a per-core interrupt controller/register. For core 0, this is <code>TIMER_INT_CTRL_0</code> at 0x40000040; bit 1 is for physical timer at EL1 (CNTP). This register is documented in the <a href="https://www.raspberrypi.org/documentation/hardware/raspberrypi/bcm2836/QA7_rev3.4.pdf">manual</a> of BCM2836 (search for "Core timers interrupts"). Note the manual is NOT for the BCM2837 SoC used by Rpi3. I have no idea how community figured this out. </p>
+<pre><code>// irq.c 
+void enable_interrupt_controller()
+{
+    // Enables Core 0 Timers interrupt control for the generic timer 
+    put32(TIMER_INT_CTRL_0, TIMER_INT_CTRL_0_VALUE);
+}
+</code></pre>
+<p><strong>To summarize the above</strong>: we have to program three places in order to receive the timer interrupts: the timer device, the per-core interrupt controller, and the core itself (DAIF). </p>
+<h4 id="handing-timer-interrupts">Handing timer interrupts</h4>
+<p>The kernel gets an irq. The kernel check if it comes from the timer; if so, the kernel sets the timer for firing the next interrupt. </p>
+<pre><code>void handle_irq(void) {
+    // Each Core has its own pending local intrrupts register
+    unsigned int irq = get32(INT_SOURCE_0);
+    switch (irq) {
+        case (GENERIC_TIMER_INTERRUPT):
+            handle_generic_timer_irq();
+            break;
+    ...
+</code></pre>
+<p>The EL1h exception handler invokes the above function. The function reads <code>INT_SOURCE_0</code> (0x4000:0060), search for "Core interrupt sources" in the BCM2836 <a href="https://www.raspberrypi.org/documentation/hardware/raspberrypi/bcm2836/QA7_rev3.4.pdf">manual</a>), where bit 1 is for our CNTP timer. </p>
+<h4 id="reset-timer-timers">Reset timer (timer.S)</h4>
+<p>The kernel writes a delta value (1&lt;&lt;24) to TVAL, requesting an interrupt to fire after 1&lt;&lt;24 ticks. </p>
+<pre><code>gen_timer_reset:
+    mov x0, #1
+    lsl x0, x0, #24 
+    msr CNTP_TVAL_EL0, x0
+    ret
+</code></pre>
+<h3 id="fyi-other-timers-on-rpi3">FYI: other timers on Rpi3</h3>
+<p>There are other timers on Rpi3 which you may see from various online blogs/tutorials/forums. The information can be very confusing. The naming of timers does NOT help. I list them below together with Arm generic timers described above. I suggest you stay away from other timers because the experience will not be as useful. </p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Implemented by</th>
+<th>IRQ</th>
+<th>QEMU support? (v5.0 )</th>
+<th>Phys Addr</th>
+<th>Document</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>System Timer</td>
+<td>Broadcom (?)</td>
+<td>Global. In GPU irq space</td>
+<td>Implemented as bcm2835_systmr. However free running and <a href="https://lists.sr.ht/~philmd/qemu/patches/8811">cannot generate irq</a>.</td>
+<td>3f003000</td>
+<td>BCM2837</td>
+</tr>
+<tr>
+<td>ARM timer</td>
+<td>Arm ip (sp804)</td>
+<td>Global. In Arm core's private irq space ("Basic irqs")</td>
+<td>Unimplemented. See QEMU code bcm2835_peripherals.c</td>
+<td>3f00b400</td>
+<td>BCM2836</td>
+</tr>
+<tr>
+<td>Local timer</td>
+<td>Broadcom (?)</td>
+<td>Per core</td>
+<td><a href="https://forum.osdev.org/viewtopic.php?f=2&amp;t=33537">Partially implemented</a>. Can generate trigger irq but readback seems unsupported.</td>
+<td>40000034</td>
+<td>BCM2836</td>
+</tr>
+<tr>
+<td>Arm generic timer</td>
+<td>Arm, as part of armv8</td>
+<td>Per core</td>
+<td>Implemented</td>
+<td>40000040</td>
+<td>Armv8 doc +  BCM2836 for IRQ routing</td>
+</tr>
+</tbody>
+</table>
+<h4 id="fyi-programming-the-rpi3s-system-timer-not-used-in-this-experiment">FYI: Programming the Rpi3's system timer (not used in this experiment)</h4>
+<p>Raspberry Pi system timer is a very simple device. It has a counter that increases its value by 1 after each clock tick. It also has 4 interrupt lines that connect to the interrupt controller (so it can generate 4 different interrupts)  and 4 corresponding compare registers. When the value of the counter becomes equal to the value stored in one of the compare registers the corresponding interrupt is fired. That's why, before we will be able to use system timer interrupts, we need to initialize one of the compare registers with a non-zero value, the larger the value is - the later an interrupt will be generated. This is done in <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp3/src/timer.c#L8">timer_init</a> function.</p>
+<pre><code>const unsigned int interval = 200000;
+unsigned int curVal = 0;
+
+void timer_init ( void )
+{
+    curVal = get32(TIMER_CLO);
+    curVal += interval;
+    put32(TIMER_C1, curVal);
+}
+</code></pre>
+<p>The first line reads current counter value, the second line increases it and the third line sets the value of the compare register for the interrupt number 1. By manipulating <code>interval</code> value you can adjust how soon the first timer interrupt will be generated.</p>
+<p>Finally, we got to the timer interrupt handler. It is actually very simple.</p>
+<pre><code>void handle_timer_irq( void )
+{
+    curVal += interval;
+    put32(TIMER_C1, curVal);
+    put32(TIMER_CS, TIMER_CS_M1);
+    printf(&quot;Timer iterrupt received\n\r&quot;);
+}
+</code></pre>
+<p>Here we first update compare register so that that next interrupt will be generated after the same time interval. Next, we acknowledge the interrupt by writing 1 to the <code>TIMER_CS</code> register. In the documentation <code>TIMER_CS</code> is called "Timer Control/Status" register. Bits [0:3] of this register can be used to acknowledge interrupts coming from one of the 4 available interrupt lines.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>The last thing that you might want to take a look at is the <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp3/src/kernel.c#L7">kernel_main</a> function where all previously discussed functionality is orchestrated. After you compile and run the sample it should print "Timer interrupt received" message after an interrupt is taken. Please, try to do it by yourself and don't forget to carefully examine the code and experiment with it.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      
+    
+  </body>
+</html>

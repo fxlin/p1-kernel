@@ -1,0 +1,1563 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../../exp4b/rpi-os/">
+      
+      
+        <link rel="next" href="../../exp6/rpi-os/">
+      
+      
+      <link rel="icon" href="../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
+    
+    
+      
+        <title>exp5 - p1-kernel</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bcfcd587.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#5-user-processes-and-system-calls" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="p1-kernel" class="md-header__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            p1-kernel
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              exp5
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  OVERVIEW
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp0/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp0
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp1/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp1
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp2/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp2
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp3/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp3
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp4a/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4a
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp4b/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4b
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+    
+  
+  exp5
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp6/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp6
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../qemu/" class="md-tabs__link">
+        
+  
+    
+  
+  /qemu
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../gdb/" class="md-tabs__link">
+        
+  
+    
+  
+  /gdb
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../cheatsheet/" class="md-tabs__link">
+        
+  
+    
+  
+  /aarch64
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../ssh-proxy/" class="md-tabs__link">
+        
+  
+    
+  
+  /ssh
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../dump/" class="md-tabs__link">
+        
+  
+    
+  
+  /ker dump
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../jtag/" class="md-tabs__link">
+        
+  
+    
+  
+  /jtag
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp1/workflow/" class="md-tabs__link">
+        
+  
+    
+  
+  /rpi workflow
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="p1-kernel" class="md-nav__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    p1-kernel
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVERVIEW
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp0/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp0
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp1/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp1
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp2/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp3/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp3
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp4a/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4a
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp4b/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4b
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    exp5
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    exp5
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Objectives
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get the code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Roadmap
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#syscall-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syscall implementation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Syscall implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#switching-between-el0-and-el1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Switching between EL0 and EL1
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handling-synchronous-exceptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Handling synchronous exceptions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#executing-a-task-in-user-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Executing a task in user mode
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Executing a task in user mode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-1-forking-user-processes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 1: Forking user processes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Method 1: Forking user processes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#implementing-clone-in-kernel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementing clone in kernel
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-2-moving-an-existing-kernel-task-to-el0" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 2: Moving an existing kernel task to EL0
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Method 2: Moving an existing kernel task to EL0">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ret_from_fork-augmented" class="md-nav__link">
+    <span class="md-ellipsis">
+      ret_from_fork(), augmented
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exiting-a-task" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exiting a task
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp6/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp6
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../qemu/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /qemu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /gdb
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /aarch64
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ssh-proxy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ssh
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dump/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ker dump
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jtag/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /jtag
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp1/workflow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /rpi workflow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Objectives
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get the code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Roadmap
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#syscall-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syscall implementation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Syscall implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#switching-between-el0-and-el1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Switching between EL0 and EL1
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handling-synchronous-exceptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Handling synchronous exceptions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#executing-a-task-in-user-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Executing a task in user mode
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Executing a task in user mode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-1-forking-user-processes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 1: Forking user processes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Method 1: Forking user processes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#implementing-clone-in-kernel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementing clone in kernel
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-2-moving-an-existing-kernel-task-to-el0" class="md-nav__link">
+    <span class="md-ellipsis">
+      Method 2: Moving an existing kernel task to EL0
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Method 2: Moving an existing kernel task to EL0">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ret_from_fork-augmented" class="md-nav__link">
+    <span class="md-ellipsis">
+      ret_from_fork(), augmented
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exiting-a-task" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exiting a task
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="5-user-processes-and-system-calls">5: User processes and system calls</h1>
+<p><strong>READING TIME: 40MIN</strong></p>
+<p><img alt="" src="../figures/screen.gif" /></p>
+<h2 id="objectives">Objectives</h2>
+<p>Our kernel is evolving from an "embedded" kernel which often lacks user/kernel separation to a multiprogrammed kernel. </p>
+<ul>
+<li>
+<p>Run tasks in EL0</p>
+</li>
+<li>
+<p>Add the syscall mechanism</p>
+</li>
+<li>
+<p>Implement a few basic syscalls</p>
+</li>
+</ul>
+<p>NOTE: this experiment enables running user/kernel at different ELs. Yet, it does not NOT give each task its own address space — we are going to tackle this issue in lesson 6!</p>
+<h2 id="get-the-code">Get the code</h2>
+<p>Code location: p1-kernel/src/exp5</p>
+<p>Please: do a <code>git pull</code> even if you have cloned the p1-kenel repo previously, in case of upstream updates. </p>
+<h2 id="roadmap">Roadmap</h2>
+<ol>
+<li>Implement the syscall mechanism, in particular switch between EL0 and EL1 (you have already done something similar in previous experiments!)</li>
+<li>Implement two mechanisms that put user tasks to EL0: (a) forking an existing user task at EL0; (b) moving a kernel task EL1 -&gt; EL0</li>
+</ol>
+<h2 id="syscall-implementation">Syscall implementation</h2>
+<p>Each system call is a synchronous exception. A user program prepares all necessary arguments, and then runs <code>svc</code> instruction. Such exceptions are handled at EL1 by the kernel. The kernel validates all arguments, does the syscall, and exits from the exception. After that, the user task resumes at EL0 right after the <code>svc</code> instruction. </p>
+<ul>
+<li>EL0 files: sys.h and sys.S</li>
+<li>EL1 files: sys.h and sys.c</li>
+</ul>
+<p><img alt="" src="../figures/timeline-0.png" /></p>
+<p>We have 4 simple syscalls (cf. sys.h): </p>
+<ol>
+<li><code>write</code> outputs to UART. It accepts a buffer with the text to be printed as the first argument.</li>
+<li><code>clone</code> creates a new user thread. The location of the stack for the newly created thread is passed as the first argument.</li>
+<li><code>malloc</code> allocates a memory page for a user process. There is no analog of this syscall in Linux (and I think in any other OS as well.) The only reason that we have no virtual memory yet, and all user processes work with physical memory addresses. Each process needs a way to figure out which memory page can be used. <code>malloc</code> returns pointer to the newly allocated page or -1 in case of an error.</li>
+<li><code>exit</code> Each process must call this syscall after it finishes execution. It will do cleanup.</li>
+</ol>
+<p>An array <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp5/src/sys.c">sys_call_table</a> (sys.c) contains pointers to all syscall handlers. Each syscall has a "syscall number" — this is just an index in the <code>sys_call_table</code> array. All syscall numbers are defined <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp5/include/sys.h#L6">here</a> — they are used by the assembler code to look up syscall. </p>
+<p>Let's use <code>write</code> syscall as an example: </p>
+<pre><code>//sys.S, executed at the user level
+.globl call_sys_write
+call_sys_write:
+    mov w8, #SYS_WRITE_NUMBER
+    svc #0
+    ret
+</code></pre>
+<p>The wrapper stores the syscall number in the <code>w8</code> register and does <code>svc</code>. Convention: registers <code>x0</code> — <code>x7</code>are used for syscall arguments and <code>x8</code> is used to store syscall number. This allows a syscall to have up to 8 arguments.</p>
+<p>In commodity OSes, such wrapper functions are usually in user library such as <a href="https://www.gnu.org/software/libc/">glibc</a> but not in the kernel. </p>
+<h3 id="switching-between-el0-and-el1">Switching between EL0 and EL1</h3>
+<p>Our kernel should support switches between EL1/EL1, and between EL1/EL0. </p>
+<p>Previously, our kernel runs at EL1; when an interrupt occurs, it takes the interrupt at EL1. Now, we need to take exception (svc) from EL0 to EL1. To accommodate this, both <code>kernel_entry</code> and <code>kernel_exit</code> macros accepts an additional argument <code>el</code>, indicating the EL an exception is taken from. The information is required to properly save/restore stack pointer. </p>
+<pre><code class="language-assembly">// kernel_entry (entry.S)
+.if    \el == 0
+mrs    x21, sp_el0
+.else
+add    x21, sp, #S_FRAME_SIZE
+.endif 
+</code></pre>
+<pre><code class="language-assembly">// kernel_exit
+.if    \el == 0
+msr    sp_el0, x21
+.endif 
+...
+eret
+</code></pre>
+<p>Even for the same task, we are using 2 distinct stacks for EL0 and EL1. This is needed to separate user/kernel. </p>
+<p>Supported by CPU hardware, after taking an exception from EL0 to EL1, the CPU automatically starts use the SP for EL1. The SP for EL0 can be found in the <code>sp_el0</code> register. </p>
+<p>The value of this register must be stored and restored upon entering/exiting the kernel, even if the kernel does not  use <code>sp_el0</code> in the exception handler. Reason: we need to virtualize <code>sp_el0</code> for each task because each task has its own user stack. Try to visualize this in your mind. </p>
+<p>When we do <code>kernel_exit</code>,  the EL to return to (EL0 or EL1) is encoded in the <code>spsr_el1</code> register that was saved, e.g. when syscall enters the kernel. So we always return to the level from which the exception was taken.</p>
+<blockquote>
+<p>How did we treat SP when taking interrupts (from EL1)? Revisit the figures in previous experiments. </p>
+</blockquote>
+<!---- You may also ask why don't we restore the value of the `sp` register in the case when an exception was taken from EL1? That is because we are reusing the same kernel stack for the exception handler. Even if a context switch happens during an exception processing, by the time of `kernel_exit`, `sp` will be already switched by the `cpu_switch_to` function. (By the way, in Linux the behavior is different because Linux uses a different stack for interrupt handlers.) ---->
+
+<h3 id="handling-synchronous-exceptions">Handling synchronous exceptions</h3>
+<p>In the exception table, <code>el0_sync</code> is registered as the handler for sync exception taken at EL0. </p>
+<pre><code>// entry.S
+el0_sync:
+    kernel_entry 0
+    mrs    x25, esr_el1                // read the syndrome register
+    lsr    x24, x25, #ESR_ELx_EC_SHIFT // exception class
+    cmp    x24, #ESR_ELx_EC_SVC64      // SVC in 64-bit state
+    b.eq   el0_svc
+    handle_invalid_entry 0, SYNC_ERROR
+</code></pre>
+<ul>
+<li>
+<p>As for all exception handlers, <code>kernel_entry</code> macro is called. </p>
+</li>
+<li>
+<p><code>esr_el1</code> (Exception Syndrome Register) is checked. This register contains "exception class" field at offset <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp5/include/arm/sysregs.h#L46">ESR_ELx_EC_SHIFT</a>. If exception class is equal to <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp5/include/arm/sysregs.h#L47">ESR_ELx_EC_SVC64</a> this means that the current exception is caused by the <code>svc</code> instruction and it is a system call. In this case, we jump to <code>el0_svc</code> label and show an error message otherwise.</p>
+</li>
+</ul>
+<pre><code>// entry.S
+sc_nr   .req    x25                  // number of system calls
+scno    .req    x26                  // syscall number
+stbl    .req    x27                  // syscall table pointer
+
+el0_svc:
+    adr    stbl, sys_call_table      // load syscall table pointer
+    uxtw   scno, w8                  // syscall number in w8
+    mov    sc_nr, #__NR_syscalls
+    bl     enable_irq
+    cmp    scno, sc_nr               // check upper syscall limit
+    b.hs   ni_sys
+
+    ldr    x16, [stbl, scno, lsl #3] // address in the syscall table
+    blr    x16                       // call sys_* routine
+    b      ret_from_syscall
+ni_sys:
+    handle_invalid_entry 0, SYSCALL_ERROR
+</code></pre>
+<p><code>el0_svc</code> first loads the address of the syscall table in the <code>stbl</code> (it is just an alias to the <code>x27</code> register.) and syscall number in the <code>scno</code> variable. Then interrupts are enabled and syscall number is compared to the total number of syscalls in the system — if it is greater or equal an error message is shown. If syscall number falls within the required range, it is used as an index in the syscall table array to obtain a pointer to the syscall handler. Next, the handler is executed and after it finishes <code>ret_from_syscall</code> is called. </p>
+<p>Note, that we don't touch here registers <code>x0</code> – <code>x7</code> — they are transparently passed to the handler. (Why?)</p>
+<p>Fast forward to the completion of syscall. </p>
+<pre><code>ret_from_syscall:
+    bl    disable_irq
+    str   x0, [sp, #S_X0]             // returned x0
+    kernel_exit 0
+</code></pre>
+<p><code>ret_from_syscall</code> first disables interrupts. Then it saves the value of <code>x0</code> register on the stack. This is required because <code>kernel_exit</code> will restore all general purpose registers from their saved values, but <code>x0</code> now contains return value of the syscall handler and we want this value to be passed to the user code. Finally <code>kernel_exit</code> is called, which returns to the user code.</p>
+<h2 id="executing-a-task-in-user-mode">Executing a task in user mode</h2>
+<p>Atop that, the kernel implements two complementary ways for launching a user process. Overview: </p>
+<p><img alt="" src="../figures/timeline-1.png" /></p>
+<hr />
+<h3 id="method-1-forking-user-processes">Method 1: Forking user processes</h3>
+<p>At the user level, user_process() calls <code>call_sys_clone</code> to spawn a new task. </p>
+<pre><code>// sys.S
+.globl call_sys_clone
+call_sys_clone:
+    /* Save args for the child. They will be preserved throughout syscall  */
+    mov    x10, x0                    /*fn*/
+    mov    x11, x1                    /*arg*/
+    mov    x12, x2                    /*stack*/
+
+    /* Prep syscall args. Do the system call.  */
+    mov    x0, x2                     /* stack  */
+    mov    x8, #SYS_CLONE_NUMBER
+    svc    0x0
+
+    cmp    x0, #0
+    beq    thread_start
+    ret
+
+thread_start:
+    mov    x29, 0
+
+    /* Pick up the function arg and execute.  */
+    mov    x0, x11
+    blr    x10
+
+    /* We are done, pass the return value through x0.  */
+    mov    x8, #SYS_EXIT_NUMBER
+    svc    0x0
+</code></pre>
+<p>The <code>clone</code> wrapper above mimics the <a href="https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/aarch64/clone.S;h=e0653048259dd9a3d3eb3103ec2ae86acb43ef48;hb=HEAD#l35">coresponding function</a> from in the <code>glibc</code> library. </p>
+<ol>
+<li>x0-x3 contain syscall arguments. They are intended for the child task. Save fn and arg to x10-x11. Why? The kernel syscall handler <code>el0_svc</code> does not preserve x0-x3. The new task will pick up x10 and x11 in <code>thread_start</code>. </li>
+<li>Save the pointer to the new task's stack in x2, as expected by <code>sys_clone(unsigned long stack)</code>. </li>
+<li>Starts syscall via <code>svc</code>. </li>
+<li>Upon returning from syscall, checks return value in x0: </li>
+<li>if 0, we are executing inside the child task. In this case, execution goes to <code>thread_start</code> label.</li>
+<li>If not 0, we are executing in the parent task. x0 is the PID of the child task. </li>
+<li>thread_start executes in the new task with the give entry function (x10) and the arg to the function (x11). Note x29 (FP) is cleared for correct stack unwinding at the user level.</li>
+<li>After the function finishes, <code>exit</code> syscall is performed — it never returns.</li>
+</ol>
+<h4 id="implementing-clone-in-kernel">Implementing clone in kernel</h4>
+<p>Inside the kernel, clone() goes to is <code>sys_clone()</code> (sys.c). It just calls <code>copy_process()</code> . This function, however, has been modified since the last lesson. </p>
+<pre><code>int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg, unsigned long stack)
+{
+    preempt_disable();
+    struct task_struct *p;
+
+    p = (struct task_struct *) get_free_page();
+    if (!p) {
+        return -1;
+    }
+
+    struct pt_regs *childregs = task_pt_regs(p);
+    memzero((unsigned long)childregs, sizeof(struct pt_regs));
+    memzero((unsigned long)&amp;p-&gt;cpu_context, sizeof(struct cpu_context));
+
+    // new addition
+    if (clone_flags &amp; PF_KTHREAD) {
+        p-&gt;cpu_context.x19 = fn;
+        p-&gt;cpu_context.x20 = arg;
+    } else {
+        struct pt_regs * cur_regs = task_pt_regs(current);
+        *childregs = *cur_regs;
+        childregs-&gt;regs[0] = 0;
+        childregs-&gt;sp = stack + PAGE_SIZE;
+        p-&gt;stack = stack;
+    }
+    p-&gt;flags = clone_flags;
+    p-&gt;priority = current-&gt;priority;
+    p-&gt;state = TASK_RUNNING;
+    p-&gt;counter = p-&gt;priority;
+    p-&gt;preempt_count = 1; //disable preemtion until schedule_tail
+
+    p-&gt;cpu_context.pc = (unsigned long)ret_from_fork;
+    p-&gt;cpu_context.sp = (unsigned long)childregs;
+    int pid = nr_tasks++;
+    task[pid] = p;
+    preempt_enable();
+    return pid;
+}
+</code></pre>
+<p>If creating a new kernel thread, the function does the same thing as before. If creating a user thread, the function takes care of <code>pt_regs</code> as it is unique to a user thread -- the state saved/restored upon entering/exiting the kernel. </p>
+<pre><code>struct pt_regs * cur_regs = task_pt_regs(current);
+*childregs = *cur_regs;
+childregs-&gt;regs[0] = 0;
+childregs-&gt;sp = stack + PAGE_SIZE;
+p-&gt;stack = stack;
+</code></pre>
+<p>We populate the CPU context, i.e. <code>pt_regs</code>, for the new task. Note that <code>pt_regs</code> is always at the top of the stack page (recall the figure above), because when syscall enters/exits the kernel, the kernel stack is empty. </p>
+<p><code>x0</code> in the new state is set to <code>0</code>, because <code>x0</code> will be the return value of the <code>clone</code> syscall. We've just seen how clone wrapper function uses this value to determine whether we are in the parent or the child task. </p>
+<p>Next <code>sp</code> for the new task is set to point to the top of the new user stack page. We also save the pointer to the stack page in order to do a cleanup after the task finishes.</p>
+<h3 id="method-2-moving-an-existing-kernel-task-to-el0">Method 2: Moving an existing kernel task to EL0</h3>
+<p>Overview: upon its creation, the kernel task calls its main function, <code>kernel_process()</code>, which calls <code>move_to_user_mode()</code>. The later prepares CPU context for exiting to EL0. Then <code>kernel_process()</code> returns to <code>ret_from_fork</code> which invokes the familiar <code>kernel_exit</code>. Eventually, an <code>eret</code> instruction - boom! We land in EL0. </p>
+<p><strong>Code walkthrough</strong></p>
+<p>First create a process (i.e. a task) as we did before. This is a "kernel" process to execute at EL1. </p>
+<pre><code>// kernel.c
+int res = copy_process(PF_KTHREAD, (unsigned long)&amp;kernel_process, 0, 0);
+</code></pre>
+<p>The kernel process invokes <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp5/src/fork.c#Li47">move_to_user_mode()</a>, passing a function pointer to the <code>user_process</code> as the first argument. </p>
+<pre><code>void kernel_process() {
+    printf(&quot;Kernel process started. EL %d\r\n&quot;, get_el());
+    int err = move_to_user_mode((unsigned long)&amp;user_process);
+    ...
+</code></pre>
+<p>The <code>move_to_user_mode</code> function prepares pt_regs and the user stack, so the kernel process becomes a "legit" user process. </p>
+<pre><code>int move_to_user_mode(unsigned long pc)
+{
+    struct pt_regs *regs = task_pt_regs(current);
+    memzero((unsigned long)regs, sizeof(*regs));
+    regs-&gt;pc = pc;
+    regs-&gt;pstate = PSR_MODE_EL0t;
+    unsigned long stack = get_free_page(); //allocate new user stack
+    if (!stack) {
+        return -1;
+    }
+    regs-&gt;sp = stack + PAGE_SIZE;
+    current-&gt;stack = stack;
+    return 0;
+}
+</code></pre>
+<p><strong>pt_regs: the exception stack frame</strong> </p>
+<p>In the previous experiment: when an interrupt happens, <code>kernel_entry</code> saves CPU context to a <em>stack frame</em> marked as "saved regs", which is somewhere in the middle of a kernel task's stack. </p>
+<p><img alt="" src="../figures/pt_regs.png" /></p>
+<blockquote>
+<p>Dump pt_regs in GDB:</p>
+<p>```</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>p /x <em>(struct pt_regs </em>)((char *)current + 4096 - sizeof(struct pt_regs))
+$7 = {                                                            <br />
+regs = {[0x0] = 0x401fd0, [0x1] = 0x0, [0x2] = 0x401fe7, [0x3] = 0x401f40, [0x4] = 0x0 <repeats 25 times>, [0x1d] = 0x401fc0, [0x1e] = 0x8088c}, 
+sp = 0x401fc0,                                             <br />
+pc = 0x830cc,                                                       <br />
+pstate = 0x60000000 }                                               <br />
+```</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Check where syscall happens:                                                                  <br />
+```</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>info line *0x830cc                                                                      <br />
+Line 7 of "src/sys.S" starts at address 0x830cc <call_sys_write+8> and ends at 0x830d0 <call_sys_
+malloc>.                                                                                    <br />
+```</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>In this experiment, our kernel will additionally handle sync exceptions (syscalls). When a syscall happens, the CPU will create a stack frame in the same format called <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp5/include/fork.h#L21">pt_regs</a>. The name comes from Linux again. When syscall returns, the kernel unwinds <code>pt_regs</code>. </p>
+<p>For <em>the first time</em> return to EL0, <code>move_to_user_mode()</code> sets up <code>pt_regs</code>:</p>
+<ul>
+<li>
+<p><code>pt_regs.pc</code> This is the first instruction to be executed by the task once it lands in user mode via <code>eret</code>. </p>
+</li>
+<li>
+<p><code>pstate</code>. This specifies the CPU state for the task. Later, <code>kernel_exit</code> copies this field to <code>spsr_el1</code>. <code>eret</code> restores the CPU state from <code>pstate</code>. <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp5/include/fork.h#L9">PSR_MODE_EL0t</a> constant specifies that we will go to EL0. See <a href="https://developer.arm.com/docs/ddi0595/b/aarch64-system-registers/spsr_el1">manual</a>. </p>
+</li>
+<li>
+<p>Furthermore, <code>move_to_user_mode</code>  allocates a new page for the user stack and sets <code>sp</code> field to point to the page top. </p>
+</li>
+</ul>
+<p><strong>Where is pt_regs?</strong></p>
+<p>It is at the top of the stack. See the figure above. Right before <code>kernel_exit()</code>, the task's stack is unwound just to the beginning of <code>pt_regs</code>. Therefore, <code>kernel_exit()</code> will restore CPU regs from the stack. </p>
+<p><strong>task_pt_regs()</strong> calculates the address of a task's <code>pt_regs</code>. See the code below which is self-evident. Recall that THREAD_SIZE == 4KB which is the memory size for the task. </p>
+<pre><code>struct pt_regs * task_pt_regs(struct task_struct *tsk){
+    unsigned long p = (unsigned long)tsk + THREAD_SIZE - sizeof(struct pt_regs);
+    return (struct pt_regs *)p;
+}
+</code></pre>
+<h4 id="ret_from_fork-augmented">ret_from_fork(), augmented</h4>
+<p>New addition is made to the middle of the <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp5/src/entry.S#L188">ret_from_fork</a> function: </p>
+<pre><code>.globl ret_from_fork
+ret_from_fork:
+    bl    schedule_tail
+    cbz   x19, ret_to_user            // not a kernel thread, go to ret_to_user
+    mov   x0, x20
+    blr   x19
+    // kernel thread returns, and continues below
+ret_to_user:
+    bl disable_irq
+    kernel_exit 0
+</code></pre>
+<p>Why are x19 and x20? That is where <code>copy_process()</code> saves the <code>fn</code> and <code>arg</code> specified for a new user process. </p>
+<p>Now, after a kernel thread finishes, the execution jumps to <code>ret_to_user</code>, where it disables interrupts and performs exception return (kernel_exit), using previously prepared processor state.</p>
+<p>If you get confused, revisit the "overview" figure: </p>
+<p><img alt="" src="../figures/timeline-1.png" /></p>
+<h2 id="exiting-a-task">Exiting a task</h2>
+<p>Each user task calls the <code>exit</code> syscall at the end of its life cycle. In the current implementation, the <code>call_sys_clone</code> wrapper calls <code>exit</code>; see above.  Into the kernel, <code>exit</code> syscall goes to <code>exit_process()</code>, which deactivates a task. The function is listed below.</p>
+<pre><code>void exit_process(){
+    preempt_disable();
+    for (int i = 0; i &lt; NR_TASKS; i++){
+        if (task[i] == current) {
+            task[i]-&gt;state = TASK_ZOMBIE;
+            break;
+        }
+    }
+    if (current-&gt;stack) {
+        free_page(current-&gt;stack);
+    }
+    preempt_enable();
+    schedule();
+}
+</code></pre>
+<p>Following Linux convention, we are not deleting the task at once but set its state to <code>TASK_ZOMBIE</code> instead. This prevents the task from being selected and executed by the scheduler. In Linux such approach is used to allow parent process to query information about the child even after it finishes.</p>
+<p><code>exit_process</code> also deletes now unnecessary user stack and calls <code>schedule</code>. After <code>schedule</code> is called new task will be selected, that's why this system call never returns.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Now that the kernel can manage user tasks, we become much closer to the full process isolation. But one important step is still missing: all user tasks share the same physical memory and can easily read one another's data. In the next lesson, we are going to introduce virtual memory and fix this issue.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      
+    
+  </body>
+</html>

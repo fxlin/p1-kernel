@@ -1,0 +1,1445 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../../exp1/rpi-os/">
+      
+      
+        <link rel="next" href="../../exp3/rpi-os/">
+      
+      
+      <link rel="icon" href="../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
+    
+    
+      
+        <title>exp2 - p1-kernel</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bcfcd587.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#2-processor-initialization" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="p1-kernel" class="md-header__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            p1-kernel
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              exp2
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  OVERVIEW
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp0/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp0
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp1/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp1
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+    
+  
+  exp2
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp3/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp3
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp4a/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4a
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp4b/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4b
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp5/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp5
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp6/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp6
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../qemu/" class="md-tabs__link">
+        
+  
+    
+  
+  /qemu
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../gdb/" class="md-tabs__link">
+        
+  
+    
+  
+  /gdb
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../cheatsheet/" class="md-tabs__link">
+        
+  
+    
+  
+  /aarch64
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../ssh-proxy/" class="md-tabs__link">
+        
+  
+    
+  
+  /ssh
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../dump/" class="md-tabs__link">
+        
+  
+    
+  
+  /ker dump
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../jtag/" class="md-tabs__link">
+        
+  
+    
+  
+  /jtag
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp1/workflow/" class="md-tabs__link">
+        
+  
+    
+  
+  /rpi workflow
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="p1-kernel" class="md-nav__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    p1-kernel
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVERVIEW
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp0/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp0
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp1/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp1
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    exp2
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    exp2
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Objectives
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get the code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#background-exception-levels-el" class="md-nav__link">
+    <span class="md-ellipsis">
+      Background: Exception levels (EL)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Background: Exception levels (EL)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#switching-els" class="md-nav__link">
+    <span class="md-ellipsis">
+      Switching ELs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aside-enhanced-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Aside: enhanced debugging
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Aside: enhanced debugging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bring-up-printf" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bring up printf()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#qemu-gdb-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      QEMU + GDB debugging
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-walkthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code Walkthrough
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Code Walkthrough">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#finding-out-the-current-el" class="md-nav__link">
+    <span class="md-ellipsis">
+      Finding out the current EL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#switching-to-el1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Switching to EL1
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Switching to EL1">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sctlr_el1-system-control-register-el1" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCTLR_EL1, System Control Register (EL1)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hcr_el2-hypervisor-configuration-el2" class="md-nav__link">
+    <span class="md-ellipsis">
+      HCR_EL2, Hypervisor Configuration (EL2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scr_el3-secure-configuration-el3" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCR_EL3, Secure Configuration (EL3)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spsr_el3-saved-program-status-el3" class="md-nav__link">
+    <span class="md-ellipsis">
+      SPSR_EL3, Saved Program Status (EL3)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#elr_el3-exception-link-el3" class="md-nav__link">
+    <span class="md-ellipsis">
+      ELR_EL3, Exception Link (EL3)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp3/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp3
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp4a/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4a
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp4b/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4b
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp5/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp5
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp6/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp6
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../qemu/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /qemu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /gdb
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /aarch64
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ssh-proxy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ssh
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dump/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ker dump
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jtag/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /jtag
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp1/workflow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /rpi workflow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Objectives
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get the code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#background-exception-levels-el" class="md-nav__link">
+    <span class="md-ellipsis">
+      Background: Exception levels (EL)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Background: Exception levels (EL)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#switching-els" class="md-nav__link">
+    <span class="md-ellipsis">
+      Switching ELs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aside-enhanced-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Aside: enhanced debugging
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Aside: enhanced debugging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bring-up-printf" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bring up printf()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#qemu-gdb-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      QEMU + GDB debugging
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-walkthrough" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code Walkthrough
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Code Walkthrough">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#finding-out-the-current-el" class="md-nav__link">
+    <span class="md-ellipsis">
+      Finding out the current EL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#switching-to-el1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Switching to EL1
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Switching to EL1">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sctlr_el1-system-control-register-el1" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCTLR_EL1, System Control Register (EL1)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hcr_el2-hypervisor-configuration-el2" class="md-nav__link">
+    <span class="md-ellipsis">
+      HCR_EL2, Hypervisor Configuration (EL2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scr_el3-secure-configuration-el3" class="md-nav__link">
+    <span class="md-ellipsis">
+      SCR_EL3, Secure Configuration (EL3)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spsr_el3-saved-program-status-el3" class="md-nav__link">
+    <span class="md-ellipsis">
+      SPSR_EL3, Saved Program Status (EL3)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#elr_el3-exception-link-el3" class="md-nav__link">
+    <span class="md-ellipsis">
+      ELR_EL3, Exception Link (EL3)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="2-processor-initialization">2: Processor initialization</h1>
+<p><strong>READING TIME: 30 MIN</strong></p>
+<p><img alt="" src="../figures/run.png" /></p>
+<h2 id="objectives">Objectives</h2>
+<p>We are going to build: </p>
+<p>A baremetal program that can switch among CPU exception levels and print out the current level. </p>
+<p>Students will: </p>
+<ol>
+<li>Experiment with exception levels (ELs)</li>
+<li>Observe switches among ELs -- crucial for subsequent experiments!</li>
+<li>Tinker with the kernel, e.g. debugging</li>
+</ol>
+<h2 id="get-the-code">Get the code</h2>
+<p>Code location: p1-kernel/src/exp2</p>
+<p>Please: do a <code>git pull</code> even if you have cloned the p1-kenel repo previously, in case of upstream updates. </p>
+<h2 id="background-exception-levels-el">Background: Exception levels (EL)</h2>
+<p>ARMv8 defines 4 exception levels. An exception level is a processor execution mode in which only a subset of all operations and registers is available. </p>
+<p>The least privileged exception level, i.e. lowest level, is level 0. When processor operates at this level, it mostly uses only general purpose registers (X0 - X30) and stack pointer register (SP). EL0 also allows using <code>STR</code> and <code>LDR</code> instructions to load and store data to and from memory, among other instructions commonly used by a user program.</p>
+<p><img alt="" src="../figures/els.png" /></p>
+<p>Why exception levels? Because an OS needs to implement <em>isolation</em>. A user process should not be able to access other process's data. To achieve such behavior, a kernel always runs each user process at EL0. Operating at this exception level a process can only use it's own virtual memory and can't access any instructions that change ELs, MMUs, etc. </p>
+<p>The kernel itself usually works at EL1. While running at this exception level CPU gets access to the registers that allows configuring MMU as well as some system registers. </p>
+<p><strong>About EL2/3</strong>: </p>
+<p><em>EL2 is for virtual machines.</em> In this case the virtual machine hypervisor runs at EL2 and guest OSes run at EL1. This allows the hypervisor to isolate guest OSes in a similar way how OS isolates user processes.</p>
+<p><em>EL3 is for Arm TrustZone</em>. It is used for transitions from ARM "Secure World" to "Insecure world". This abstraction exist to provide full hardware isolation between the software running in two different "worlds". Application from an "Insecure world" can in no way access or modify information (both instruction and data) that belongs to "secure world", and this restriction is enforced at the hardware level. </p>
+<h3 id="switching-els">Switching ELs</h3>
+<p>In Arm architecture, there is no way a program can raise its own exception level without invoking code that is allowed to run on a higher level. This makes a perfect sense: otherwise, any program would be able to escape its assigned EL and makes unauthorized access to memory or registers. </p>
+<p>Current EL can be changed only if an <strong>exception</strong> is generated. Common causes of exceptions include:  </p>
+<ul>
+<li>software executes some illegal instruction (for example, tries to access memory location at a nonexisting address; </li>
+<li>software tries to divide an integer by 0; </li>
+<li>software executes special instructions (e.g. <code>svc</code>) to request exceptions. </li>
+</ul>
+<p>How about interrupts generated by IO? In Arm's lingo, interrupts are also handled as a special type of exceptions. </p>
+<p>Whenever an exception is generated the following sequence of steps takes place (In the description, the exception is <em>handled</em> at EL <code>n</code>, were <code>n</code> could be 1, 2 or 3).</p>
+<ol>
+<li>Address of the current instruction is saved in <code>ELR_ELn</code> (exception link register)</li>
+<li>Current processor state is stored in <code>SPSR_ELn</code> (Saved Program Status Register)</li>
+<li>NB: As some of you may know, other CPU hardware may automatically push registers on stack prior to exception handling. Armv8 does NOT do that. </li>
+<li>The CPU executes an exception handler at ELn.</li>
+<li>The exception handler calls <code>eret</code> instruction. This instruction restores processor state from <code>SPSR_ELn</code> and resumes execution starting from the address, stored in the <code>ELR_ELn</code>  register.</li>
+</ol>
+<p>There are more details, e.g. the exception handler software also needs to store the state of all general purpose registers and restore it back afterwards, as we will discuss this process in details in the upcoming experiment. For now, we need just to understand the process in general and remember the meaning of the <code>ELR_ELm</code> and <code>SPSR_ELn</code> registers.</p>
+<p>An important thing to know is that exception handler is not obliged to return to the same instruction where the exception originates. Both <code>ELR_ELm</code> and <code>SPSR_ELn</code> are writable and the exception handler can modify them in order to specify the instructions to execute right after the EL switch. We are going to use this technique to our advantage when we try to switch from EL3 to EL1 in our code.</p>
+<h2 id="aside-enhanced-debugging">Aside: enhanced debugging</h2>
+<h3 id="bring-up-printf">Bring up printf()</h3>
+<p>Right now, the kernel can only print some constant string on a screen, but what I need is some analog of <a href="https://en.wikipedia.org/wiki/Printf_format_string">printf</a> function. With <code>printf</code> I can easily display values of different registers and variables. Such functionality is essential for the kernel development because you don't have any other debugger support and <code>printf</code> becomes the only mean for figuring out what is going on inside Rpi3.</p>
+<p>Let's not reinvent the wheel and use one of  <a href="http://www.sparetimelabs.com/tinyprintf/tinyprintf.php">existing printf implementations</a> This function consists mostly from string manipulations and is not very interesting from a kernel developer point of view. The implementation that I used is very small and don't have external dependencies, that allows it to be easily integrated into the kernel. The only thing that I have to do is to define <code>putc</code>  function that can send a single character to the screen. This function is defined <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp2/src/mini_uart.c#L59">here</a> and it just uses already existing <code>uart_send</code> function. Also, we need to initialize the <code>printf</code> library and specify the location of the <code>putc</code> function. This is done in a single <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp2/src/kernel.c#L8">line of code</a>.</p>
+<h3 id="qemu-gdb-debugging">QEMU + GDB debugging</h3>
+<p>Reminder: GDB allows you to do single step, etc. It may help understand specific instructions. You can find extensive information online. </p>
+<h2 id="code-walkthrough">Code Walkthrough</h2>
+<h3 id="finding-out-the-current-el">Finding out the current EL</h3>
+<p>As we are equipped with the <code>printf</code> function, we can proceed to figure out at which exception level the kernel is booted. A small function that can answer this question looks like this.</p>
+<pre><code>.globl get_el
+get_el:
+    mrs x0, CurrentEL
+    lsr x0, x0, #2
+    ret
+</code></pre>
+<p>Here we use <code>mrs</code> instruction to read the value from <code>CurrentEL</code> system register into <code>x0</code> register. Then we shift this value 2 bits to the right (because the lowest 2 bits in the <code>CurrentEL</code> register are reserved and always have value 0). Finally the register <code>x0</code> contains an integer number indicating current exception level. Now the only thing that is left is to display this value, like <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp2/src/kernel.c#L10">this</a>.</p>
+<pre><code>    int el = get_el();
+    printf(&quot;Exception level: %d \r\n&quot;, el);
+</code></pre>
+<!--**Rpi3:** If you reproduce this experiment, you should see `Exception level: 3` on the screen. This means the CPU executes as the security monitor when it boots up.-->
+
+<!--**QEMU:** You will see `Exception level: 2` because this is how QEMU emulates the CPU: setting the initial EL as 2. Why?-->
+
+<h3 id="switching-to-el1">Switching to EL1</h3>
+<p>EL1 is intended for OS kernels. Strictly speaking, our kernel is not obliged to switch to EL1 when it boots up, but EL1 is a natural choice for us because this level has just the right set of privileges to implement all common OS tasks. It also will be an interesting exercise to see how switching exceptions levels works in action. Let's take a look at the source code that does this (boot.S). </p>
+<pre><code>master:
+    ldr    x0, =SCTLR_VALUE_MMU_DISABLED
+    msr    sctlr_el1, x0        
+
+    ldr    x0, =HCR_VALUE
+    msr    hcr_el2, x0
+
+    ldr    x0, =SCR_VALUE
+    msr    scr_el3, x0
+
+    ldr    x0, =SPSR_VALUE
+    msr    spsr_el3, x0
+
+    adr    x0, el1_entry        
+    msr    elr_el3, x0
+
+    eret                
+</code></pre>
+<p>The code configures a few system registers. Now we are going to examine those registers one by one. The register details are documented in <a href="https://developer.arm.com/docs/ddi0487/ca/arm-architecture-reference-manual-armv8-for-armv8-a-architecture-profile">the Armv8 architecture manual</a> which we will refer to as needed. </p>
+<h4 id="sctlr_el1-system-control-register-el1">SCTLR_EL1, System Control Register (EL1)</h4>
+<!----Page 2654 of AArch64-Reference-Manual--->
+
+<pre><code>    ldr    x0, =SCTLR_VALUE_MMU_DISABLED
+    msr    sctlr_el1, x0        
+</code></pre>
+<p>Here we set the value of the <code>sctlr_el1</code> system register. <code>sctlr_el1</code> is responsible for configuring different parameters of CPU when CPU operates at EL1. For example, it controls whether the cache is enabled and, what is most important for us, whether the MMU (Memory Management Unit) is turned on. <code>sctlr_el1</code> is accessible from all exception levels higher or equal than EL1 (you can infer this from <code>_el1</code> postfix) </p>
+<p><code>SCTLR_VALUE_MMU_DISABLED</code> constant is defined <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp2/include/arm/sysregs.h#L16">here</a> Individual bits of this value are defined like this:</p>
+<ul>
+<li><code>#define SCTLR_RESERVED                  (3 &lt;&lt; 28) | (3 &lt;&lt; 22) | (1 &lt;&lt; 20) | (1 &lt;&lt; 11)</code> Some bits in the description of <code>sctlr_el1</code> register are marked as <code>RES1</code>. Those bits are reserved for future usage and should be initialized with <code>1</code>.</li>
+<li><code>#define SCTLR_EE_LITTLE_ENDIAN          (0 &lt;&lt; 25)</code> Exception <a href="https://en.wikipedia.org/wiki/Endianness">Endianness</a>. This field controls endianess of explicit data access at EL1. We are going to configure the processor to work only with <code>little-endian</code> format.</li>
+<li><code>#define SCTLR_EOE_LITTLE_ENDIAN         (0 &lt;&lt; 24)</code> Similar to previous field but this one controls endianess of explicit data access at EL0, instead of EL1. </li>
+<li><code>#define SCTLR_I_CACHE_DISABLED          (0 &lt;&lt; 12)</code> Disable instruction cache. We are going to disable all caches for simplicity. You can find more information about data and instruction caches <a href="https://stackoverflow.com/questions/22394750/what-is-meant-by-data-cache-and-instruction-cache">here</a>.</li>
+<li><code>#define SCTLR_D_CACHE_DISABLED          (0 &lt;&lt; 2)</code> Disable data cache.</li>
+<li><code>#define SCTLR_MMU_DISABLED              (0 &lt;&lt; 0)</code> Disable MMU. MMU must be disabled until the lesson 6, where we are going to prepare page tables and start working with virtual memory.</li>
+</ul>
+<p>FYI - <a href="https://developer.arm.com/documentation/ddi0595/2021-12/AArch64-Registers/SCTLR-EL1--System-Control-Register--EL1-?lang=en">official doc</a></p>
+<h4 id="hcr_el2-hypervisor-configuration-el2">HCR_EL2, Hypervisor Configuration (EL2)</h4>
+<!--- Page 2487 of AArch64-Reference-Manual.  -->
+
+<pre><code>    ldr    x0, =HCR_VALUE
+    msr    hcr_el2, x0
+</code></pre>
+<p>We are NOT going to implement our own <a href="https://en.wikipedia.org/wiki/Hypervisor">hypervisor</a>. Still we need to use this register. Among other settings, bit 31 (RW) controls the execution state at EL1, being AArch64 (1) or AArch32 (0). This register also controls at which EL we will handle IRQ. </p>
+<p>In <code>sysregs.h</code> we set HCR_VALUE to be (1&lt;&lt;31). </p>
+<p><a href="https://developer.arm.com/documentation/100403/0200/register-descriptions/aarch64-system-registers/hcr-el2--hypervisor-configuration-register--el2">Official doc</a></p>
+<h4 id="scr_el3-secure-configuration-el3">SCR_EL3, Secure Configuration (EL3)</h4>
+<!----Page 2648 of AArch64-Reference-Manual --->
+
+<pre><code>    ldr    x0, =SCR_VALUE
+    msr    scr_el3, x0
+</code></pre>
+<p>This register is responsible for configuring security settings. For example, it controls whether all lower levels are executed in "secure" or "nonsecure" world. It also controls execution state at EL2. <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp2/include/arm/sysregs.h#L26">Here</a> we set that EL2 will execute at <code>AArch64</code> state, and all lower exception levels will be "non secure". </p>
+<p>This register has no counterpart at EL2. Therefore, we don't have to set it on qemu emulation. </p>
+<p><a href="https://developer.arm.com/docs/ddi0595/b/aarch64-system-registers/scr_el3">Official doc</a></p>
+<h4 id="spsr_el3-saved-program-status-el3">SPSR_EL3, Saved Program Status (EL3)</h4>
+<!-----------Page 389 of AArch64-Reference-Manual --------->
+
+<pre><code>    ldr    x0, =SPSR_VALUE
+    msr    spsr_el3, x0
+</code></pre>
+<!---This register should be already familiar to you - we mentioned it when discussed the process of changing exception levels.-->
+
+<p><code>spsr_el3</code> contains CPU state, that will be restored after we execute <code>eret</code> instruction.
+What is CPU state? It consists of the following information:</p>
+<ul>
+<li>
+<p><strong>Condition Flags</strong> Those flags contains information about previously executed executions: whether the result was negative (N flag), zero (A flag), has unsigned overflow (C flag) or has signed overflow (V flag). Values of those flags can be used in conditional branch instructions. For example, <code>b.eq</code> instruction will jump to the provided label only if the result of the last comparison operation is equal to 0. The processor checks this by testing whether Z flag is set to 1.</p>
+</li>
+<li>
+<p><strong>Interrupt disable bits</strong> Those bits allows to enable/disable different types of interrupts.</p>
+</li>
+<li>
+<p><strong>EL &amp; other information</strong>, required to fully restore the processor execution state after an exception is handled. </p>
+</li>
+</ul>
+<p>Usually <code>spsr_el3</code> is saved automatically by CPU hardware, when an exception is taken to EL3. Furthermore, this register is writable by our code, so we take advantage of this fact and manually prepare CPU state. <code>SPSR_VALUE</code> is prepared <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp2/include/arm/sysregs.h#L35">here</a> and we initialize the following fields:</p>
+<ul>
+<li><code>#define SPSR_MASK_ALL        (7 &lt;&lt; 6)</code> After we change EL to EL1 all types of interrupts will be masked (or disabled, which is the same).</li>
+<li><code>#define SPSR_EL1h        (5 &lt;&lt; 0)</code> This indicates to which EL the <code>eret</code> instruction will take the CPU to. It's EL1. About EL1h: At EL1 we can either use our own dedicated stack pointer or use EL0 stack pointer. <code>EL1h</code> mode means that we are using EL1 dedicated stack pointer. </li>
+</ul>
+<p><a href="https://developer.arm.com/docs/ddi0595/b/aarch64-system-registers/spsr_el3">Official doc</a></p>
+<h4 id="elr_el3-exception-link-el3">ELR_EL3, Exception Link (EL3)</h4>
+<!----- Page 351 of AArch64-Reference-Manual.---->
+
+<pre><code>    adr    x0, el1_entry        
+    msr    elr_el3, x0
+    eret                
+</code></pre>
+<p><code>elr_el3</code> holds the address, to which we are going to return after <code>eret</code> instruction will be executed. Here we set this address to the location of <code>el1_entry</code> label.</p>
+<p><a href="https://developer.arm.com/docs/ddi0595/b/aarch64-system-registers/elr_el3">Official doc</a></p>
+<h2 id="conclusion">Conclusion</h2>
+<p>That is pretty much it: when we enter <code>el1_entry</code> function the execution should be already at EL1 mode. </p>
+<p>Qemu.log: </p>
+<pre><code>Exception return from AArch64 EL2 to AArch64 EL1 PC 0x80038
+</code></pre>
+<p>The address 0x80038 should point to el1_entry. Check it out using <strong>addr2line</strong>. </p>
+<p>Our subsequent experiments will switch between EL1 (kernel) and EL0 (user) frequently. </p>
+<p>Go ahead and try it out! </p>
+<!--- add submission instructions --->
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      
+    
+  </body>
+</html>

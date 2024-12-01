@@ -1,0 +1,2206 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../../exp5/rpi-os/">
+      
+      
+        <link rel="next" href="../../qemu/">
+      
+      
+      <link rel="icon" href="../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
+    
+    
+      
+        <title>exp6 - p1-kernel</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bcfcd587.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#6-virtual-memory-vm" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="p1-kernel" class="md-header__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            p1-kernel
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              exp6
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+    
+  
+  OVERVIEW
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp0/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp0
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp1/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp1
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp2/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp2
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp3/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp3
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp4a/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4a
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp4b/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp4b
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp5/rpi-os/" class="md-tabs__link">
+        
+  
+    
+  
+  exp5
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+    
+  
+  exp6
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../qemu/" class="md-tabs__link">
+        
+  
+    
+  
+  /qemu
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../gdb/" class="md-tabs__link">
+        
+  
+    
+  
+  /gdb
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../cheatsheet/" class="md-tabs__link">
+        
+  
+    
+  
+  /aarch64
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../ssh-proxy/" class="md-tabs__link">
+        
+  
+    
+  
+  /ssh
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../dump/" class="md-tabs__link">
+        
+  
+    
+  
+  /ker dump
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../jtag/" class="md-tabs__link">
+        
+  
+    
+  
+  /jtag
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../exp1/workflow/" class="md-tabs__link">
+        
+  
+    
+  
+  /rpi workflow
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="p1-kernel" class="md-nav__button md-logo" aria-label="p1-kernel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 89 89">
+  <path d="M3.136,17.387l0,42.932l42.932,21.467l-42.932,-64.399Z" />
+  <path d="M21.91,8l42.933,64.398l-18.775,9.388l-42.932,-64.399l18.774,-9.387Z" style="fill-opacity: 0.5" />
+  <path d="M67.535,17.387l-27.262,18.156l21.878,32.818l5.384,2.691l0,-53.665Z" />
+  <path d="M67.535,17.387l0,53.666l18.774,-9.388l0,-53.665l-18.774,9.387Z" style="fill-opacity: 0.25" />
+</svg>
+
+    </a>
+    p1-kernel
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OVERVIEW
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp0/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp0
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp1/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp1
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp2/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp3/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp3
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp4a/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4a
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp4b/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp4b
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp5/rpi-os/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    exp5
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    exp6
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    exp6
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Objectives
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Roadmap
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get the code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#background-arm64-translation-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      Background: ARM64 translation process
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Background: ARM64 translation process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#page-table-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      Page table format
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-2mb-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section (2MB) mapping
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#page-descriptor-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      Page descriptor format
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-page-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring page attributes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kernel-vs-user-virtual-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kernel vs user virtual memory
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Kernel vs user virtual memory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#adjusting-kernel-addresses" class="md-nav__link">
+    <span class="md-ellipsis">
+      Adjusting kernel addresses
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kernel-boot-initializing-kernel-page-tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kernel boot: initializing kernel page tables
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Kernel boot: initializing kernel page tables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#allocating-installing-a-new-pgtable" class="md-nav__link">
+    <span class="md-ellipsis">
+      Allocating &amp; installing a new pgtable
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#populating-a-pmd-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      Populating a PMD table
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#putting-it-together-__create_page_tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Putting it together: __create_page_tables()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-page-translation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring page translation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compiling-loading-user-programs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compiling &amp; loading user programs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Compiling & loading user programs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aside-our-user-symbol-addresses" class="md-nav__link">
+    <span class="md-ellipsis">
+      Aside: our user symbol addresses
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-first-user-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating first user process
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Creating first user process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aside-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      Aside: TLB
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mapping-a-virtual-page-to-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mapping a virtual page to user
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forking-a-user-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      Forking a user process
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Forking a user process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-familiar-fork-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      The familiar fork() semantics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#demand-paging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Demand paging
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Demand paging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setting-up-page-faults" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting up page faults
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handling-page-faults" class="md-nav__link">
+    <span class="md-ellipsis">
+      Handling page faults
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../qemu/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /qemu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gdb/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /gdb
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /aarch64
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ssh-proxy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ssh
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dump/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /ker dump
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../jtag/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /jtag
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exp1/workflow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    /rpi workflow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Objectives
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      Roadmap
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#get-the-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Get the code
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#background-arm64-translation-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      Background: ARM64 translation process
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Background: ARM64 translation process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#page-table-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      Page table format
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#section-2mb-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      Section (2MB) mapping
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#page-descriptor-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      Page descriptor format
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-page-attributes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring page attributes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kernel-vs-user-virtual-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kernel vs user virtual memory
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Kernel vs user virtual memory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#adjusting-kernel-addresses" class="md-nav__link">
+    <span class="md-ellipsis">
+      Adjusting kernel addresses
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kernel-boot-initializing-kernel-page-tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kernel boot: initializing kernel page tables
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Kernel boot: initializing kernel page tables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#allocating-installing-a-new-pgtable" class="md-nav__link">
+    <span class="md-ellipsis">
+      Allocating &amp; installing a new pgtable
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#populating-a-pmd-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      Populating a PMD table
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#putting-it-together-__create_page_tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Putting it together: __create_page_tables()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-page-translation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring page translation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compiling-loading-user-programs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compiling &amp; loading user programs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Compiling & loading user programs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aside-our-user-symbol-addresses" class="md-nav__link">
+    <span class="md-ellipsis">
+      Aside: our user symbol addresses
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-first-user-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating first user process
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Creating first user process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aside-tlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      Aside: TLB
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mapping-a-virtual-page-to-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mapping a virtual page to user
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forking-a-user-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      Forking a user process
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Forking a user process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-familiar-fork-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      The familiar fork() semantics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#demand-paging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Demand paging
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Demand paging">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setting-up-page-faults" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting up page faults
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handling-page-faults" class="md-nav__link">
+    <span class="md-ellipsis">
+      Handling page faults
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="6-virtual-memory-vm">6: Virtual memory (VM)</h1>
+<p><strong>READING TIME: 1HR</strong></p>
+<h2 id="objectives">Objectives</h2>
+<p>Make our tiny kernel capable of: </p>
+<ol>
+<li>enforcing separate virtual address spaces, and </li>
+<li>user-level demand paging. </li>
+</ol>
+<!--- todo: show a gif screenshot --->
+
+<h2 id="roadmap">Roadmap</h2>
+<p>Prior to this experiment, our kernel can run and schedule user processes, but the isolation between them is not complete - all processes and the kernel itself share the same memory. This allows any process to easily access somebody else's data and even kernel data. And even if we assume that all our processes are not malicious, there is another drawback: before allocating memory each process need to know which memory regions are already occupied - this makes memory allocation for a process more complicated.</p>
+<p>We take the following steps. </p>
+<ul>
+<li>Set up a pgtable for kernel. Using linear mapping. </li>
+<li>Turn on MMU shortly after kernel boots. This is a common kernel design. </li>
+<li>Set up pgtables for user processes</li>
+<li>Implement fork() for user processes</li>
+<li>Implement demand paging </li>
+</ul>
+<h2 id="get-the-code">Get the code</h2>
+<p>Code location: p1-kernel/src/exp6</p>
+<p>Please: do a <code>git pull</code> even if you have cloned the p1-kenel repo previously, in case of upstream updates. </p>
+<h2 id="background-arm64-translation-process">Background: ARM64 translation process</h2>
+<p>The Arm's document is well written. ("Armv8-A Address Translation", <a href="https://developer.arm.com/documentation/100940/0101/">link</a>)</p>
+<h3 id="page-table-format">Page table format</h3>
+<p>This experiment introduces VM to our kernel. With VM, we can formally call tasks "processes". Each task will have its own address space. They issue memory access with virtual addresses. The MMU transparently translates virtual addresses to physical addresses. The MMU uses page table (or pgtable, or "translation table" in ARM's manual). </p>
+<p>The following diagram summarizes ARM64 address translation with uses 4-level pgtables. </p>
+<pre><code>                           Virtual address                                                                 Physical Memory
++-----------------------------------------------------------------------+                                +-----------------_+
+|         | PGD Index | PUD Index | PMD Index | PTE Index | Page offset |                                |                  |
++-----------------------------------------------------------------------+                                |                  |
+63        47     |    38      |   29     |    20    |     11      |     0                                |     Page N       |
+                 |            |          |          |             +--------------------+           +----&gt;+------------------+
+                 |            |          |          +---------------------+            |           |     |                  |
+          +------+            |          |                                |            |           |     |                  |
+          |                   |          +----------+                     |            |           |     |------------------|
++------+  |        PGD        |                     |                     |            +----------------&gt;| Physical address |
+|TTBRx |----&gt;+-------------+  |           PUD       |                     |                        |     |------------------|
++-EL1--+  |  |  entry #511 |  | +-&gt;+-------------+  |          PMD        |                        |     |                  |
+          |  +-------------+  | |  |     #511    |  | +-&gt;+-------------+  |          PTE           |     +------------------+
+          +-&gt;| PUD address |----+  +-------------+  | |  |   #511      |  | +-&gt;+--------------+    |     |                  |
+             +-------------+  +---&gt;| PMD address |----+  +-------------+  | |  |      #511    |    |     |                  |
+             |  entry #0   |       +-------------+  +---&gt;| PTE address |----+  +-------------_+    |     |                  |
+             +-------------+       |       #0    |       +-------------+  +---&gt;| Page address |----+     |                  |
+                                   +-------------+       |     #0      |       +--------------+          |                  |
+                                                         +-------------+       |      #0      |          |                  |
+                                                                               +--------------+          +------------------+
+</code></pre>
+<p>Notable points: </p>
+<ul>
+<li>Page tables have a hierarchical structure, i.e. a tree.  An item in any of the tables contains an address of the next table in the hierarchy.</li>
+</ul>
+<blockquote>
+<p>Note: strictly speaking a pgtable means a contiguous array of entries at any of the four levels. So a tree has many pgtables. Some documents casually use "pgtable" to refer to an entire pgtable tree. Be careful. </p>
+</blockquote>
+<ul>
+<li>There are 4 levels in the table hierarchy: PGD (Page Global Directory), PUD (Page Upper Directory), PMD (Page Middle Directory), PTE (Page Table Entry). PTE is the last table in the hierarchy and it points to the actual page in the physical memory. </li>
+</ul>
+<blockquote>
+<p>Don't read too much into the terms, which just represent lv1, 2, ... pgtables. Them terms come from the Linux kernel (x86), not ARM64. Over years, they became a common lingo among kernel hackers. </p>
+</blockquote>
+<ul>
+<li>
+<p>Besides holding a physical address, each pgtable item holds extra bits crucial for translation. Will examine the format below. </p>
+</li>
+<li>
+<p>MMU starts memory translation process by locating the base address of PGD. MMU locates the base address from the <code>TTBRx_EL1</code> register which should be set by the kernel. TTBR = translation table base register.</p>
+</li>
+<li>
+<p>bits [63-48] = 0xffff (all 1s). MMU uses <code>ttbr1_el1</code>. This is meant for the kernel space. </p>
+</li>
+<li>bits [63-48] = 0x0 (all 0s). MMU uses <code>ttbr0_el1</code>. This is meant for the user process. </li>
+<li>
+<p>Each process has its own address space. Therefore, it has its own copy of page table tree, starting from PGD. Therefore, the kernel keeps a separate PGD base address for each process. That is, the kernel virtualizes PGD for processes. During a context switch, the kernel loads the PGD base of the next process to <code>ttbr0_el1</code>.</p>
+</li>
+<li>
+<p>MMU walks the pgtable tree to look up the physical address. A virtual address uses only 48 out of 64 available bits.  When doing a translation, MMU splits an address into 4 parts:</p>
+</li>
+<li>9 bits [39 - 47] contain an index in the PGD table. MMU uses this index to find the location of the PUD.</li>
+<li>9 bits [30 - 38] contain an index in the PUD table. MMU uses this index to find the location of the PMD.</li>
+<li>9 bits [21 - 29] contain an index in the PMD table. MMU uses this index to find the location of the PTE.</li>
+<li>9 bits [12 - 20] contain an index in the PTE table. MMU uses this index to find a page in the physical memory.</li>
+<li>
+<p>Bits [0 - 11] contain an offset in the physical page. MMU uses this offset to determine the exact position in the previously found page that corresponds to the original virtual address.</p>
+</li>
+<li>
+<p>Memory for a user process is always allocated in pages. A page is a contiguous memory region 4KB in size (ARM processors support larger pages, but 4KB is the most common case and we are going to limit our discussion only to this page size).</p>
+</li>
+</ul>
+<p><strong>Exercise: how large is a page table?</strong> From the diagram above we know that index in a page table occupies 9 bits (this is true for all page table levels). This means that each page table contains <code>2^9 = 512</code> items. Each item in a page table is an address of either the next page table in the hierarchy or a physical page in case of PTE. As we are using a 64-bit processor, each address must be 64 bit or 8 bytes in size. </p>
+<p>This means that each pgtable is <code>512 * 8 = 4096</code> bytes or 4 KB. <strong>A pgtable is exactly a page!</strong> This might give you an intuition why MMU designers chose such numbers.</p>
+<h3 id="section-2mb-mapping">Section (2MB) mapping</h3>
+<p>This is specific to ARM64 for mapping large, continuous physical memory. Instead of 4 KB pages, we directly map 2MB blocks called sections. This eliminates one level of translation. The translation diagram, in this case, looks like the following.</p>
+<pre><code>                           Virtual address                                               Physical Memory
++-----------------------------------------------------------------------+              +-----------------_+
+|         | PGD Index | PUD Index | PMD Index |      Section offset     |              |                  |
++-----------------------------------------------------------------------+              |                  |
+63        47     |    38      |   29     |    20            |           0              |    Section N     |
+                 |            |          |                  |                    +----&gt;+------------------+
+                 |            |          |                  |                    |     |                  |
+          +------+            |          |                  |                    |     |                  |
+          |                   |          +----------+       |                    |     |------------------|
++------+  |        PGD        |                     |       +-------------------------&gt;| Physical address |
+| TTBRx|----&gt;+-------------+  |           PUD       |                            |     |------------------|
++--EL1-+  |  |             |  | +-&gt;+-------------+  |            PMD             |     |                  |
+          |  +-------------+  | |  |             |  | +-&gt;+-----------------+     |     +------------------+
+          +-&gt;| PUD address |----+  +-------------+  | |  |                 |     |     |                  |
+             +-------------+  +---&gt;| PMD address |----+  +-----------------+     |     |                  |
+             |             |       +-------------+  +---&gt;| Section address |-----+     |                  |
+             +-------------+       |             |       +-----------------+           |                  |
+                                   +-------------+       |                 |           |                  |
+                                                         +-----------------+           |                  |
+                                                                                       +------------------+
+</code></pre>
+<p>As you can see the difference here is that now PMD contains a pointer to the physical section. Also, the offset occupies 21 bits instead of 12 bits (this is because we need 21 bits to encode a 2MB range)</p>
+<h3 id="page-descriptor-format">Page descriptor format</h3>
+<p>An item in a page table is called "descriptor". A description has a special format as mandated by MMU hardware. A descriptor contains an address of either next page table or a physical page.</p>
+<p><strong>The key thing to understand</strong>: each descriptor always points to something that is <strong>page-aligned</strong> (either a physical page, a section or the next page table in the hierarchy). This means that last 12 bits of the address, stored in a descriptor, will always be 0. MMU uses those bits to store additional information  ("attributes") for translation. </p>
+<pre><code>                           Descriptor format
+`+------------------------------------------------------------------------------------------+
+ | Upper attributes | Address (bits 47:12) | Lower attributes | Block/table bit | Valid bit |
+ +------------------------------------------------------------------------------------------+
+ 63                 47                     11                 2                 1           0
+</code></pre>
+<ul>
+<li><strong>Bit 0</strong> This bit must be set to 1 for all valid descriptors. If MMU encounter non-valid descriptor during translation process a synchronous exception is generated. If this invalid bit was set by kernel on purpose, the kernel shall handle this exception, allocate a new page, and prepare a correct descriptor (We will look in details on how this works a little bit later)</li>
+<li><strong>Bit 1</strong> This bit indicates whether the current descriptor points to a next page table in the hierarchy (we call such descriptor a "<strong>table descriptor</strong>") or it points instead to a physical page or a section (such descriptors are called "<strong>block descriptors</strong>").</li>
+<li><strong>Bits [11:2]</strong> Those bits are ignored for table descriptors. For block descriptors they contain some attributes that control, for example, whether the mapped page is readable/writeable (AP), executable (XN), etc. Here also comes the MemAttr bits. See below. </li>
+<li><strong>Bits [47:12]</strong>. This is the place where the address that a descriptor points to is stored. As I mentioned previously, only bits [47:12] of the address need to be stored, because all other bits are always 0.</li>
+<li><strong>Bits [63:48]</strong> Another set of attributes.</li>
+</ul>
+<p>See <a href="https://armv8-ref.codingbelief.com/en/chapter_d4/d43_3_memory_attribute_fields_in_the_vmsav8-64_translation_table_formats_descriptors.html#">Arm's official page</a>. </p>
+<h3 id="configuring-page-attributes">Configuring page attributes</h3>
+<p>As I mentioned in the previous section, each block descriptor contains a set of attributes (called MemAttr, bits[5:2]) that controls various virtual page parameters, notably cacheability or shareability. However, the attributes that are most important for our discussion are NOT encoded in the descriptor. Instead, ARM processors implement a trick for compressing descriptor attributes commonly used. (The days of simpler ARM hardware were gone)</p>
+<p><strong>Memory attribute indirection</strong> </p>
+<p>ARMv8 architecture introduces <code>mair_el1</code> register (Search for "mair_el1 ddi0595" for definition). This register consists of 8 slots, each spanning 8 bits. Each slot configures a common set of attributes. A descriptor then specifies just an index of the <code>mair</code> slot, instead of specifying all attributes directly. This allows using only 3 bits in the descriptor to reference a <code>mair</code> slot. We are using only a few of available attribute options. <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/include/arm/mmu.h#L11">Here</a> is the code that prepares values for the <code>mair</code> register.</p>
+<pre><code>// arm/mmu.h
+/*
+ * Memory region attributes:
+ *
+ *   n = AttrIndx[2:0]
+ *            n    MAIR
+ *   DEVICE_nGnRnE    000    00000000
+ *   NORMAL_NC        001    01000100
+ */
+#define MT_DEVICE_nGnRnE         0x0
+#define MT_NORMAL_NC            0x1
+#define MT_DEVICE_nGnRnE_FLAGS        0x00
+#define MT_NORMAL_NC_FLAGS          0x44
+#define MAIR_VALUE            (MT_DEVICE_nGnRnE_FLAGS &lt;&lt; (8 * MT_DEVICE_nGnRnE)) | (MT_NORMAL_NC_FLAGS &lt;&lt; (8 * MT_NORMAL_NC))
+</code></pre>
+<p>Here we are using only 2 out of 8 available slots in the <code>mair</code> registers. The first one corresponds to device memory (IO registers) and second to normal non-cacheable memory. <code>MT_DEVICE_nGnRnE</code> and <code>MT_NORMAL_NC</code> are indexes that we are going to use in block descriptors, <code>MT_DEVICE_nGnRnE_FLAGS</code> and <code>MT_NORMAL_NC_FLAGS</code> are values that we are storing in the first 2 slots of the <code>mair_el1</code> register.</p>
+<h2 id="kernel-vs-user-virtual-memory">Kernel vs user virtual memory</h2>
+<p>After the MMU is switched on, each memory access issued by kernel must use virtual address instead of physical. One consequence is that the kernel itself must maintain its own set of page tables. One possible solution could be to reload <code>ttbr</code> (pointing to the PGD base) each time we switch from user to kernel mode. Reloading <code>ttbr</code> can be costly. (Why?) This makes syscalls and page faults expensive. </p>
+<p>Commodity kernels therefore avoid frequent reloads of PGD base. A kernel splits the virtual address space into 2 parts: user portion and kernel portion. When switching among user tasks, the kernel only changes the mapping of the user portion while keeping the kernel mapping unchanged. </p>
+<blockquote>
+<p>This classic kernel design turns out to lead to most severe security holes in recent years. Google "spectre and meltdown". </p>
+</blockquote>
+<p>On 32-bit CPUs, a kernel usually allocate first 3 GB of the address space for user and reserve last 1 GB for the kernel. 64-bit architectures are much more favorable in this regard because of huge virtual address space (how large?). And even more: ARMv8 architecture comes with a native feature that can be used to easily implement user/kernel address split.</p>
+<p>ARM64 defines 2 <code>TTBR</code> registers for holding PGD base addresses: </p>
+<ul>
+<li>TTBR0_EL1 points to a user PGD; </li>
+<li>TTBR1_EL1 points to the kernel PGD. </li>
+</ul>
+<p>MMU uses only 48 bits out of 64 bits in the virtual addresses for translation. MMU uses the upper 16 bits in a given virtual address to decide whether it uses TTBR0 or TTBR1. </p>
+<ul>
+<li><strong>User virtual addresses</strong>: upper 16 bits == 0. MMU uses the PGD base stored in TTBR0_EL1.  This value shall be changed according to process switch. </li>
+<li><strong>Kernel virtual addresses</strong>: upper 16 bits == <code>0xffff</code>.  MMU uses the PGD base stored in TTBR1_EL1. This value shall remain unchanged throughout the life of the kernel. </li>
+</ul>
+<p>The CPU also enforces that software at EL0 can never access virtual addresses started with <code>0xffff</code>. Doing so triggers a synchronous exception.  </p>
+<p>Here is a picture the memory layout. Source: Arm's document "ARMv8-A Address Translation". </p>
+<p><img alt="addrspace" src="../addrspace.jpg" /></p>
+<h3 id="adjusting-kernel-addresses"><strong>Adjusting kernel addresses</strong></h3>
+<p>All absolute kernel addresses must start with <code>0xffff...</code>. There are 2 places in the kernel source code shall be changed. </p>
+<ul>
+<li>
+<p>In the <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/src/linker.ld#L3">linker script</a> we specify base address of the image as <code>0xffff000000000000</code>. This will make the linker think that our image is going to be loaded at <code>0xffff000000000000</code> address, and therefore whenever it needs to generate an absolute address it will make it right. (There are a few more changes to the linker script, but we will discuss them later.) </p>
+</li>
+<li>
+<p>We hardcode absolute kernel base addresses in the <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/include/peripherals/base.h#L7">header</a> where we define device base address. After switching on MMU, kernel has to access all IO via virtual addresses. We can map them starting from <code>0xffff00003F000000</code>. In the next section we will explore in detail the code that creates this mapping.</p>
+</li>
+</ul>
+<h2 id="kernel-boot-initializing-kernel-page-tables">Kernel boot: initializing kernel page tables</h2>
+<p><strong>Important: the linker is completely oblivious to kernel physical address</strong>, e.g. the physical base (0x0 or 0x80000) where the kernel will be loaded. Two Implications: </p>
+<ol>
+<li>the linker links all kernel symbols at virtual addresses starting from <code>0xffff000000000000</code>; </li>
+<li>Before kernel boots and before it turns on MMU, the kernel will operate on physical addresses starting from 0x0 (or 0x80000 for QEMU). </li>
+</ol>
+<!--- show a figure of kernel memory map --->
+
+<p>Keep this key constraint in mind. See below. </p>
+<hr />
+<p>Right after kernel switches to EL1 and clears the BSS, the kernel populates its pgtables via  <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/src/boot.S#L92">__create_page_tables</a> function. </p>
+<pre><code>// boot.S
+__create_page_tables:
+    mov    x29, x30                        // save return address
+</code></pre>
+<p>First, the function saves <code>x30</code> (LR). As we are going to call other functions from <code>__create_page_tables</code>, <code>x30</code> will be overwritten. 
+As we know that no code will use <code>x29</code> during <code>__create_page_tables</code> execution, preserving LR in <code>x29</code> works fine.</p>
+<blockquote>
+<p>Q: What could go wrong if we push x30 to stack here? </p>
+</blockquote>
+<pre><code>// boot.S
+    adrp    x0, pg_dir // adrp: form PC-relative address to 4KB page 
+    mov    x1, #PG_DIR_SIZE
+    bl     memzero
+</code></pre>
+<p>pg_dir is the virtual base address of the pgtables. Its actual value is set by the linker. Refer to the linker script (e.g. linker-qemu.ld) for details. </p>
+<p>Next, we clear the initial page tables area. An important thing to understand here is where this area is located (x0) and how do we know its size (x1)? </p>
+<ul>
+<li>
+<p>Initial page tables area is defined in the <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/src/linker.ld#L20">linker script</a> - this means that we are allocating the spot for this area in the kernel image itself. </p>
+</li>
+<li>
+<p>Calculating the size of this area is a little bit trickier. First, we need to understand the structure of the initial kernel page tables. We know that all our mappings are all inside 1 GB region (this is the size of RPi3 physical memory). One PGD descriptor can cover <code>2^39 = 512 GB</code>  and one PUD descriptor can cover <code>2^30 = 1 GB</code> of continuous virtual mapping area. (Those values are calculated based on the PGD and PUD indexes location in the virtual address.) This means that we need just one PGD and one PUD to map the whole RPi memory, and even more - both PGD and PUD will contain a single descriptor (of course we still need to allocate at least one page for them each). If we have a single PUD entry there also must be a single PMD table, to which this entry will point. (Single PMD entry covers 2 MB, there are 512 items in a PMD, so in total the whole PMD table covers the same 1 GB of memory that is covered by a single PUD descriptor.)
+  Next, we know that we need to map 1 GB region of memory, which is a multiple of 2 MB. This allows us to keep things simple -- using section mapping. This means that we don't need PTE at all. So in total, we need 3 pages: one for PGD, PUD and PMD - this is precisely the size of the initial page table area.</p>
+<blockquote>
+<p>Q: here, MMU is off and everything should be physical address. How could the kernel possibly address functions/variables like memzero, which are  linked at virtual addresses? (Hint: check the disassembly of the kernel binary)</p>
+<!---bl memzero, 0x94001246, bl #0x4918 -->
+</blockquote>
+</li>
+</ul>
+<h3 id="allocating-installing-a-new-pgtable">Allocating &amp; installing a new pgtable</h3>
+<p>Now we are going to step outside <code>__create_page_tables</code> function and take a look on 2 essential macros: <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/src/boot.S#L68">create_table_entry</a> and <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/src/boot.S#L77">create_block_map</a>.</p>
+<p><code>create_table_entry</code> is responsible for allocating a new page table (In our case either PGD or PUD) The source code is listed below.</p>
+<pre><code>// boot.S
+    .macro    create_table_entry, tbl, virt, shift, tmp1, tmp2
+    lsr    \tmp1, \virt, #\shift
+    and    \tmp1, \tmp1, #PTRS_PER_TABLE - 1            // table index
+    add    \tmp2, \tbl, #PAGE_SIZE
+    orr    \tmp2, \tmp2, #MM_TYPE_PAGE_TABLE
+    str    \tmp2, [\tbl, \tmp1, lsl #3]
+    add    \tbl, \tbl, #PAGE_SIZE                    // next level table page
+    .endm
+</code></pre>
+<p>This macro accepts the following arguments.</p>
+<ul>
+<li><code>tbl</code> - a pointer to a memory region where new table has to be allocated.</li>
+<li><code>virt</code> - virtual address that we are currently mapping.</li>
+<li><code>shift</code> - shift that we need to apply to the virtual address in order to extract current table index. (39 in case of PGD and 30 in case of PUD)</li>
+<li><code>tmp1</code>, <code>tmp2</code> - temporary registers.</li>
+</ul>
+<p>This macro is very important, so we are going to spend some time understanding it.</p>
+<pre><code>    lsr    \tmp1, \virt, #\shift
+    and    \tmp1, \tmp1, #PTRS_PER_TABLE - 1            // table index
+</code></pre>
+<p>The first two lines of the macro are responsible for extracting table index from the virtual address. We are applying right shift first to strip everything to the right of the index and then using <code>and</code> operation to strip everything to the left.</p>
+<hr />
+<pre><code>    add    \tmp2, \tbl, #PAGE_SIZE
+</code></pre>
+<p>Then the address of the next page table is calculated. Here we are using the convention that all our initial page tables are located in one continuous memory region. We simply assume that the next page table in the hierarchy will be adjacent to the current page table. </p>
+<hr />
+<pre><code>    orr    \tmp2, \tmp2, #MM_TYPE_PAGE_TABLE
+</code></pre>
+<p>Next, a pointer to the next page table in the hierarchy is converted to a table descriptor. (A descriptor must have 2 lower bits set to <code>1</code>)</p>
+<hr />
+<pre><code>    str    \tmp2, [\tbl, \tmp1, lsl #3]
+</code></pre>
+<p>Then the descriptor is stored in the current page table. We use previously calculated index to find the right spot in the table.</p>
+<hr />
+<pre><code>    add    \tbl, \tbl, #PAGE_SIZE                    // next level table page
+</code></pre>
+<p>Finally, we change <code>tbl</code> parameter to point to the next page table in the hierarchy. This is convenient because now we can call <code>create_table_entry</code> one more time for the next table in the hierarchy without making any adjustments to the <code>tbl</code> parameter. This is precisely what we are doing in the <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/src/boot.S#L63">create_pgd_entry</a> macro, which is just a wrapper that allocates both PGD and PUD.</p>
+<h3 id="populating-a-pmd-table">Populating a PMD table</h3>
+<p>Next important macro is<code>create_block_map</code>. As you might guess this macro is responsible for populating entries of the PMD table. It looks like the following.</p>
+<pre><code>// boot.S
+    .macro    create_block_map, tbl, phys, start, end, flags, tmp1
+    lsr    \start, \start, #SECTION_SHIFT
+    and    \start, \start, #PTRS_PER_TABLE - 1            // table index
+    lsr    \end, \end, #SECTION_SHIFT
+    and    \end, \end, #PTRS_PER_TABLE - 1                // table end index
+    lsr    \phys, \phys, #SECTION_SHIFT
+    mov    \tmp1, #\flags
+    orr    \phys, \tmp1, \phys, lsl #SECTION_SHIFT            // table entry
+9999:    str    \phys, [\tbl, \start, lsl #3]                // store the entry
+    add    \start, \start, #1                    // next entry
+    add    \phys, \phys, #SECTION_SIZE                // next block
+    cmp    \start, \end
+    b.ls    9999b
+    .endm
+</code></pre>
+<p>Parameters here are a little bit different.</p>
+<ul>
+<li><code>tbl</code> - a pointer to the PMD table.</li>
+<li><code>phys</code> - the start of the physical region to be mapped.</li>
+<li><code>start</code> - virtual address of the first section to be mapped.</li>
+<li><code>end</code> - virtual address of the last section to be mapped.</li>
+<li><code>flags</code> - flags that need to be copied into lower attributes of the block descriptor.</li>
+<li><code>tmp1</code> - temporary register.</li>
+</ul>
+<p>More about "SIZE": </p>
+<ul>
+<li>SECTION_SIZE: default 2MB. A "section" is ARM's term for its 2MB page, i.e. when a translation table has 3 levels. </li>
+<li>PAGE_SIZE: default 4KB. A page is 4KB, which is x86 convention and then adopted by almost all CPUs. </li>
+</ul>
+<p>Now, let's examine the source.</p>
+<pre><code>    lsr    \start, \start, #SECTION_SHIFT
+    and    \start, \start, #PTRS_PER_TABLE - 1            // table index
+</code></pre>
+<p>Those 2 lines extract the table index from <code>start</code> virtual address. This is done exactly in the same way as we did it before in the <code>create_table_entry</code> macro.</p>
+<hr />
+<pre><code>    lsr    \end, \end, #SECTION_SHIFT
+    and    \end, \end, #PTRS_PER_TABLE - 1                // table end index
+</code></pre>
+<p>The same thing is repeated for the <code>end</code> address. Now both <code>start</code> and <code>end</code> contains not virtual addresses, but indexes in the PMD table, corresponding to the original addresses.</p>
+<hr />
+<pre><code>    lsr    \phys, \phys, #SECTION_SHIFT
+    mov    \tmp1, #\flags
+    orr    \phys, \tmp1, \phys, lsl #SECTION_SHIFT            // table entry
+</code></pre>
+<p>Next, block descriptor is prepared and stored in the <code>tmp1</code> variable. In order to prepare the descriptor <code>phys</code> parameter is first shifted to right then shifted back and merged with the <code>flags</code> parameter using <code>orr</code> instruction. If you wonder why do we have to shift the address back and forth - the answer is that this clears first 21 bit in the <code>phys</code> address and makes our macro universal, allowing it to be used with any address, not just the first address of the section.</p>
+<hr />
+<pre><code>9999:    str    \phys, [\tbl, \start, lsl #3]                // store the entry
+    add    \start, \start, #1                    // next entry
+    add    \phys, \phys, #SECTION_SIZE                // next block
+    cmp    \start, \end
+    b.ls    9999b  // jump back if &quot;Unsigned Less than or equal&quot;
+</code></pre>
+<p>The final part of the function is executed inside a loop. Here we first store current descriptor at the right index in the PMD table. Next, we increase current index by 1 and update the descriptor to point to the next section. We repeat the same process until current index becomes equal to the last index.</p>
+<hr />
+<h3 id="putting-it-together-__create_page_tables">Putting it together: __create_page_tables()</h3>
+<p>Now, when you understand how <code>create_table_entry</code> and <code>create_block_map</code> macros work, it will be straightforward to understand the rest of the <code>__create_page_tables</code> function.</p>
+<pre><code>// boot.S
+    adrp    x0, pg_dir
+    mov    x1, #VA_START
+    create_pgd_entry x0, x1, x2, x3
+</code></pre>
+<p>Here we create both PGD and PUD. We configure them to start mapping from <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/include/mm.h#L6">VA_START</a> virtual address. Because of the semantics of the <code>create_table_entry</code> macro, after <code>create_pgd_entry</code>  finishes <code>x0</code> will contain the address of the next table in the hierarchy - namely PMD.</p>
+<hr />
+<pre><code>    /* Mapping kernel and init stack*/
+    mov     x1, xzr                            // start mapping from physical offset 0
+    mov     x2, #VA_START                        // first virtual address
+    ldr    x3, =(VA_START + DEVICE_BASE - SECTION_SIZE)        // last virtual address
+    create_block_map x0, x1, x2, x3, MMU_FLAGS, x4
+</code></pre>
+<p>Next, we create virtual mapping of the whole memory, excluding device registers region. We use <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/include/arm/mmu.h#L24">MMU_FLAGS</a> constant as <code>flags</code> parameter - this marks all sections to be mapped as normal noncacheable memory. (Note, that <code>MM_ACCESS</code> flag is also specified as part of <code>MMU_FLAGS</code> constant. Without this flag each memory access will generate a synchronous exception.)</p>
+<hr />
+<pre><code>    /* Mapping device memory*/
+    mov     x1, #DEVICE_BASE                    // start mapping from device base address
+    ldr     x2, =(VA_START + DEVICE_BASE)                // first virtual address
+    ldr    x3, =(VA_START + PHYS_MEMORY_SIZE - SECTION_SIZE)    // last virtual address
+    create_block_map x0, x1, x2, x3, MMU_DEVICE_FLAGS, x4
+</code></pre>
+<p>Then device registers region is mapped. This is done exactly in the same way as in the previous code sample, with the exception that we are now using different start and end addresses and different flags.</p>
+<hr />
+<pre><code>    mov    x30, x29                        // restore return address
+    ret
+</code></pre>
+<p>Finally, the function restored link register and returns to the caller.</p>
+<h3 id="configuring-page-translation">Configuring page translation</h3>
+<p>Now page tables are created and we are back to the <code>el1_entry</code> function. But there is still some work to be done before we can switch on the MMU. </p>
+<pre><code>    mov    x0, #VA_START
+    add    sp, x0, #LOW_MEMORY
+</code></pre>
+<p>We are updating init task stack pointer. Now it uses a virtual address, instead of a physical one. Therefore it could be used only after MMU is on. Recall that our kernel uses linear mapping therefore an offset is simply applied. </p>
+<hr />
+<pre><code>    adrp    x0, pg_dir
+    msr    ttbr1_el1, x0
+</code></pre>
+<p><code>ttbr1_el1</code> is updated to point to the previously populated PGD table.</p>
+<blockquote>
+<p>Q: Isn't pg_dir a virtual address (e.g. ffff000000083000) set by the linker? ttbr shall expect a physical address, right? How could this work?
+</p>
+</blockquote>
+<hr />
+<pre><code>    ldr    x0, =(TCR_VALUE)
+    msr    tcr_el1, x0
+</code></pre>
+<p><code>tcr_el1</code> of Translation Control Register is responsible for configuring some general parameters of the MMU. (For example, here we configure that both kernel and user page tables should use 4 KB pages.)</p>
+<hr />
+<pre><code>    ldr    x0, =(MAIR_VALUE)
+    msr    mair_el1, x0
+</code></pre>
+<p>We already discussed <code>mair</code> register in the "Configuring page attributes" section. Here we just set its value.</p>
+<hr />
+<pre><code>    ldr    x2, =kernel_main
+
+    mov    x0, #SCTLR_MMU_ENABLED
+    msr    sctlr_el1, x0 // BOOM!
+
+    br     x2
+</code></pre>
+<p><code>msr    sctlr_el1, x0</code> is the line where MMU is actually enabled. Now we can jump to the <code>kernel_main</code> function. **From this moment onward kernel runs on virtual addresses completely. **</p>
+<p>An interesting question is why can't we just execute <code>br kernel_main</code> instruction? Indeed, we can't. Before the MMU was enabled we have been working with physical memory, the kernel is loaded at a physical offset 0 - this means that current program counter (PC) is very close to 0. Switching on the MMU doesn't update PC. <code>br kernel_main</code> uses offset relative to the current PC and jumps to the place were <code>kernel_main</code> would have been if we don't turn on the MMU. </p>
+<blockquote>
+<p>Example: in generating the kernel binary, the linker starts from base address <code>0xffff000000000000</code> as controlled by our linker script. It assigns the instruction "br kernel_main" to address 0xffff000000000080; it assigns kernel_main to 0xffff000000003190. The instruction "br kernel_main" will be a relative jump, and will be emitted as "br #0x3110" (we  can verify this by disassembling the kernel binary). 
+At run time, when we reach "br kernel_main", PC is 0x80. Executing the instruction will update PC is to 0x3190. As MMU is on now, CPU fetches instruction at 0x3190 via MMU. A translation fault!</p>
+</blockquote>
+<p><code>ldr x2, =kernel_main</code> does not suffer from the problem. CPU loads <code>x2</code> with the link address of <code>kernel_main</code>, e.g. 0xffff000000003190. Different from <code>br kernel_main</code> which uses PC-based offset, <code>br x2</code> jumps to an absolute address stored in x2 (this is called long jmp). Therefore, PC will be updated with the link address of <code>kernel_main</code> which can be translated via MMU. In other words, by executing a long jmp, we "synchronize" the PC value with virtual addresses. </p>
+<p>Another question: why <code>ldr x2, =kernel_main</code> itself must be executed before we turn on the MMU? The reason is that <code>ldr</code> also uses <code>pc</code> relative offset.  See the <a href="http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0802b/LDR_reg_gen.html">manual</a>. On my build, it emitted as <code>ldr x2, #0x10c</code>. So if we execute this instruction <em>after</em> MMU is on but <em>before</em> we "synchronize" PC, MMU will give another translation fault.</p>
+<h2 id="compiling-loading-user-programs">Compiling &amp; loading user programs</h2>
+<p>Commodity kernels load user programs as ELF from filesystems. We won't be building a filesystem or ELF loader in this experiment. As a workaround, we will embed user programs in the kernel binary at link time, and load them at run time. For easy loading, we will store the user program in a separate ELF section of the kernel binary. Here is the relevant section of the linker script that is responsible for doing this.</p>
+<pre><code>//linker-qemu.ld (or linker.ld)
+    . = ALIGN(0x00001000);
+    user_begin = .;
+    .text.user : { build/user* (.text) }
+    .rodata.user : { build/user* (.rodata) }
+    .data.user : { build/user* (.data) }
+    .bss.user : { build/user* (.bss) }
+    user_end = .;
+</code></pre>
+<p>I made a convention: user level source code should be defined in C source files named as "userXXX". The linker script then can isolate all user related code in a continuous region, of which the start and end are marked with  <code>user_begin</code> and <code>user_end</code> symbols. At run time, the kernel simply copies everything between <code>user_begin</code> and <code>user_end</code> to the newly allocated process address space, thus simulating loading a user program. A simple hack, but suffice for our current purpose. </p>
+<h3 id="aside-our-user-symbol-addresses">Aside: our user symbol addresses</h3>
+<p>As user programs will be linked as part the kernel binary, the linker will place all user symbols (functions &amp; variables) in the kernel's address space (0xffff000000000000 onwards). You can verify this by, e.g. <code>nm kernel8.elf|grep " user_"</code>. How could such user programs work?</p>
+<p>We rely on an assumption: our user programs are simple enough; they always address memory with register-relative offsets but not absolute address. You can verify this by disassembly. However, if our programs, e.g. call functions via pointers, the entailed long jmp will target absolute virtual address inside kernel and will trigger exception. </p>
+<p>This assumption can't go a long way. The right solution would be linking user programs and kernel separately. </p>
+<p>Right now there are 2 files that are compiled in the user region.</p>
+<ul>
+<li><a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/src/user_sys.S">user_sys.S</a> This file contains definitions of the syscall wrapper functions. The RPi OS still supports the same syscalls as in the previous lesson, with the exception that now instead of <code>clone</code> syscall we are going to use <code>fork</code> syscall. The difference is that <code>fork</code> copies process virtual memory, and that is something we want to try doing.</li>
+<li><a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/src/user.c">user.c</a> User program source code. Almost the same as we've used in the previous lesson.</li>
+</ul>
+<h2 id="creating-first-user-process">Creating first user process</h2>
+<p>As it was the case in the previous lesson, <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/src/fork.c#L44">move_to_user_mode</a> function is responsible for creating the first user process. We call this function from a kernel thread. Here is how we do this.</p>
+<pre><code>void kernel_process(){
+    printf(&quot;Kernel process started. EL %d\r\n&quot;, get_el());
+    unsigned long begin = (unsigned long)&amp;user_begin;
+    unsigned long end = (unsigned long)&amp;user_end;
+    unsigned long process = (unsigned long)&amp;user_process;
+    int err = move_to_user_mode(begin, end - begin, process - begin);
+    if (err &lt; 0){
+        printf(&quot;Error while moving process to user mode\n\r&quot;);
+    }
+}
+</code></pre>
+<hr />
+<p>Now we need 3 arguments to call <code>move_to_user_mode</code>: a pointer to the beginning of the user code area, size of the area and offset of the startup function inside it. This information is calculated based on the previously discussed <code>user_begin</code>  and <code>user_end</code> symbols (as global variables).</p>
+<p><code>move_to_user_mode</code> function is listed below.</p>
+<pre><code>int move_to_user_mode(unsigned long start, unsigned long size, unsigned long pc)
+{
+    struct pt_regs *regs = task_pt_regs(current);
+    regs-&gt;pstate = PSR_MODE_EL0t;
+    regs-&gt;pc = pc;
+    regs-&gt;sp = 2 *  PAGE_SIZE;
+    unsigned long code_page = allocate_user_page(current, 0);
+    if (code_page == 0)    {
+        return -1;
+    }
+    memcpy(code_page, start, size);
+    set_pgd(current-&gt;mm.pgd);
+    return 0;
+}
+</code></pre>
+<p>Now let's try to inspect in details what is going on here.</p>
+<pre><code>    struct pt_regs *regs = task_pt_regs(current);
+</code></pre>
+<p>As it was the case in the previous lesson, we obtain a pointer to <code>pt_regs</code> area and set <code>pstate</code>, so that after <code>kernel_exit</code> we will end up in EL0.</p>
+<pre><code>    regs-&gt;pc = pc;
+</code></pre>
+<p><code>pc</code> now points to the offset of the startup function in the user region.</p>
+<pre><code>    regs-&gt;sp = 2 *  PAGE_SIZE;
+</code></pre>
+<p>We made a simple convention that our user program will not exceed 1 page in size. We allocate the second page to the stack.</p>
+<pre><code>    unsigned long code_page = allocate_user_page(current, 0);
+    if (code_page == 0)    {
+        return -1;
+    }
+</code></pre>
+<p><code>allocate_user_page</code> <em>reserves</em> 1  memory page and maps it to the virtual address, provided as a second argument. In the process of mapping it populates page tables, associated with the current process. We will investigate in details how this function works later in this chapter.</p>
+<pre><code>    memcpy(code_page, start, size);
+</code></pre>
+<p>Next, we are going to copy the whole user region to the new address space (in the page that we have just mapped), starting from offset 0, so the offset in the user region will become an actual virtual address of the starting point.</p>
+<pre><code>    set_pgd(current-&gt;mm.pgd);
+</code></pre>
+<p>Finally, we call <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/src/utils.S#L24">set_pgd</a>, which updates <code>ttbr0_el1</code> register and thus activates the current process translation tables.</p>
+<h3 id="aside-tlb">Aside: TLB</h3>
+<p>If you take a look at the <code>set_pgd</code> function you will see that after it sets <code>ttbr0_el1</code> it also clears <a href="https://en.wikipedia.org/wiki/Translation_lookaside_buffer">TLB</a> (Translation lookaside buffer). TLB is a cache that is designed specifically to store the mapping between physical and virtual pages. The first time some virtual address is mapped into a physical one this mapping is stored in TLB. Next time we need to access the same page we no longer need to perform full page table walk. Therefore it makes perfect sense that we invalidate TLB after updating page tables - otherwise our change will not be applied for the pages already stored in the TLB.</p>
+<p>Usually, we try to avoid using all caches for simplicity, but without TLB any memory access would become extremely inefficient, and I don't think that it is even possible to completely disable TLB. Besides, TLB doesn't add any other complexity to the OS, in spite of the fact that we must clean it after switching <code>ttbr0_el1</code>.</p>
+<h3 id="mapping-a-virtual-page-to-user">Mapping a virtual page to user</h3>
+<p>We have seen previously how <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/src/mm.c#L14">allocate_user_page</a> function is used - now it is time to see what is inside it.</p>
+<pre><code>unsigned long allocate_user_page(struct task_struct *task, unsigned long va) {
+    unsigned long page = get_free_page();
+    if (page == 0) {
+        return 0;
+    }
+    map_page(task, va, page);
+    return page + VA_START;
+}
+</code></pre>
+<p>This function allocates a new page, maps it to the provided virtual address and returns a pointer to the page. When we say "a pointer" now we need to distinguish between 3 things: a pointer to a physical page, a pointer inside kernel address space and a pointer inside user address space - all these 3 different pointers can lead to the same location in memory. </p>
+<p>In our case <code>page</code> variable is a physical pointer (note its "unsigned long" type -- not a C pointer!) and the return value is a pointer inside kernel address space. This pointer can be easily calculated because we linearly map the whole physical memory starting at <code>VA_START</code> virtual address. Through the pointer, our kernel copies the user program to the page. Does our kernel have a virtual mapping for the new page? We do not have to worry, because kernel maps the entire physical memory in <code>boot.S</code>. </p>
+<hr />
+<p>User mapping is still required to be created and this happens in the <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/src/mm.c#L62">map_page</a> function, which we will explore next.</p>
+<pre><code>void map_page(struct task_struct *task, unsigned long va, unsigned long page){
+    unsigned long pgd;
+    if (!task-&gt;mm.pgd) {
+        task-&gt;mm.pgd = get_free_page();
+        task-&gt;mm.kernel_pages[++task-&gt;mm.kernel_pages_count] = task-&gt;mm.pgd;
+    }
+    pgd = task-&gt;mm.pgd;
+    int new_table;
+    unsigned long pud = map_table((unsigned long *)(pgd + VA_START), PGD_SHIFT, va, &amp;new_table);
+    if (new_table) {
+        task-&gt;mm.kernel_pages[++task-&gt;mm.kernel_pages_count] = pud;
+    }
+    unsigned long pmd = map_table((unsigned long *)(pud + VA_START) , PUD_SHIFT, va, &amp;new_table);
+    if (new_table) {
+        task-&gt;mm.kernel_pages[++task-&gt;mm.kernel_pages_count] = pmd;
+    }
+    unsigned long pte = map_table((unsigned long *)(pmd + VA_START), PMD_SHIFT, va, &amp;new_table);
+    if (new_table) {
+        task-&gt;mm.kernel_pages[++task-&gt;mm.kernel_pages_count] = pte;
+    }
+    map_table_entry((unsigned long *)(pte + VA_START), va, page);
+    struct user_page p = {page, va};
+    task-&gt;mm.user_pages[task-&gt;mm.user_pages_count++] = p;
+}
+</code></pre>
+<p><code>map_page</code> in some way duplicates what we've been doing in the <code>__create_page_tables</code> function: it allocates and populates a page table hierarchy. There are 3 important difference, however: now we are doing this in C, instead of assembler. <code>map_page</code> maps a single page, instead of the whole memory, and use normal page mapping, instead of section mapping.</p>
+<hr />
+<p>There are 2 important functions involved in the process:  <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/src/mm.c#L47">map_table</a> and <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/src/mm.c#L40">map_table_entry</a>. </p>
+<p><code>map_table</code> is listed below.</p>
+<pre><code>unsigned long map_table(unsigned long *table, unsigned long shift, unsigned long va, int* new_table) {
+    unsigned long index = va &gt;&gt; shift;
+    index = index &amp; (PTRS_PER_TABLE - 1);
+    if (!table[index]){
+        *new_table = 1;
+        unsigned long next_level_table = get_free_page();
+        unsigned long entry = next_level_table | MM_TYPE_PAGE_TABLE;
+        table[index] = entry;
+        return next_level_table;
+    } else {
+        *new_table = 0;
+    }
+    return table[index] &amp; PAGE_MASK;
+}
+</code></pre>
+<p>This function has the following arguments.</p>
+<ul>
+<li><code>table</code> This is a pointer to the parent page table. This page table is assumed to be already allocated, but might be empty.</li>
+<li><code>shift</code> This argument is used to extract table index from the provided virtual address.</li>
+<li><code>va</code> Virtual address itself.</li>
+<li><code>new_table</code> This is an output parameter. It is set to 1 if a new child table has been allocated and left 0 otherwise.</li>
+</ul>
+<p>You can think of this function as an analog of the <code>create_table_entry</code> macro. It extracts table index from the virtual address and prepares a descriptor in the parent table that points to the child table. Unlike <code>create_table_entry</code> macro we don't assume that the child table should be adjacent into memory with the parent table - instead, we rely on <code>get_free_table</code> function to return whatever page is available. It also might be the case that child table was already allocated (This might happen if child page table covers the region where another page has been allocated previously.). In this case we set <code>new_table</code> to 0 and read child page table address from the parent table.</p>
+<p><code>map_page</code> calls <code>map_table</code> 3 times: once for PGD, PUD and PMD. The last call allocates PTE and sets a descriptor in the PMD. Next, <code>map_table_entry</code> is called. You can see this function below.</p>
+<pre><code>void map_table_entry(unsigned long *pte, unsigned long va, unsigned long pa) {
+    unsigned long index = va &gt;&gt; PAGE_SHIFT;
+    index = index &amp; (PTRS_PER_TABLE - 1);
+    unsigned long entry = pa | MMU_PTE_FLAGS;
+    pte[index] = entry;
+}
+</code></pre>
+<hr />
+<p><code>map_table_entry</code> extracts PTE index from the virtual address and then prepares and sets PTE descriptor. It is similar to what we've been doing in the <code>create_block_map</code> macro. </p>
+<p>That's it about user page tables allocation, but <code>map_page</code> is responsible for one more important role: it keeps track of the pages that have been allocated during the process of virtual address mapping. All such pages are stored in the <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/include/sched.h#L53">kernel_pages</a> array. We need this array to be able to clean up allocated pages after a task exits. There is also <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/include/sched.h#L51">user_pages</a> array, which is also populated by the <code>map_page</code> function. This array store information about the correspondence between process virtual pages any physical pages. We need this information in order to be able to copy process virtual memory during <code>fork</code> (More on this later).</p>
+<h2 id="forking-a-user-process">Forking a user process</h2>
+<p>Let's summarize where we are so far: we've seen how first user process is created, its page tables populated, code &amp; data copied to the proper location and stack initialized. After all of this preparation, the process is ready to run. The code that is executed inside user process is listed below.</p>
+<pre><code>void loop(char* str)
+{
+    char buf[2] = {&quot;&quot;};
+    while (1){
+        for (int i = 0; i &lt; 5; i++){
+            buf[0] = str[i];
+            call_sys_write(buf);
+            user_delay(1000000);
+        }
+    }
+}
+
+void user_process() 
+{
+    call_sys_write(&quot;User process\n\r&quot;);
+    int pid = call_sys_fork();
+    if (pid &lt; 0) {
+        call_sys_write(&quot;Error during fork\n\r&quot;);
+        call_sys_exit();
+        return;
+    }
+    if (pid == 0){
+        loop(&quot;abcde&quot;);
+    } else {
+        loop(&quot;12345&quot;);
+    }
+}
+</code></pre>
+<h3 id="the-familiar-fork-semantics">The familiar fork() semantics</h3>
+<p>The code itself is very simple as we expect. Unlike <code>clone</code>, when doing <code>fork</code> we don't need to provide the function that needs to be executed in a new process. Also, the <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/src/user_sys.S#L26">fork wrapper function</a> is much easier than the <code>clone</code> one. All of this is possible because of the fact that <code>fork</code> makes a full copy of the process virtual address space, so the fork wrapper function return twice: one time in the original process and one time in the new one. At this point, we have two identical processes, with identical stacks and <code>pc</code> positions. The only difference is the return value of the <code>fork</code> syscall: it returns child PID in the parent process and 0 in the child process. Starting from this point both processes begin completely independent life and can modify their stacks and write different things using same addresses in memory - all of this without affecting one another.</p>
+<h3 id="implementation">Implementation</h3>
+<p>Now let's see how <code>fork</code> system call is implemented. <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/src/fork.c#L7">copy_process</a> function does most of the job.</p>
+<pre><code>int copy_process(unsigned long clone_flags, unsigned long fn, unsigned long arg)
+{
+    preempt_disable();
+    struct task_struct *p;
+
+    unsigned long page = allocate_kernel_page();
+    p = (struct task_struct *) page;
+    struct pt_regs *childregs = task_pt_regs(p);
+
+    if (!p)
+        return -1;
+
+    if (clone_flags &amp; PF_KTHREAD) {
+        p-&gt;cpu_context.x19 = fn;
+        p-&gt;cpu_context.x20 = arg;
+    } else {
+        struct pt_regs * cur_regs = task_pt_regs(current);
+        *childregs = *cur_regs;
+        childregs-&gt;regs[0] = 0;
+        copy_virt_memory(p);
+    }
+    p-&gt;flags = clone_flags;
+    p-&gt;priority = current-&gt;priority;
+    p-&gt;state = TASK_RUNNING;
+    p-&gt;counter = p-&gt;priority;
+    p-&gt;preempt_count = 1; //disable preemtion until schedule_tail
+
+    p-&gt;cpu_context.pc = (unsigned long)ret_from_fork;
+    p-&gt;cpu_context.sp = (unsigned long)childregs;
+    int pid = nr_tasks++;
+    task[pid] = p;
+
+    preempt_enable();
+    return pid;
+}
+</code></pre>
+<p>This function looks almost exactly the same as in the previous lesson with one exception: when copying user processes, now, instead of modifying new process stack pointer and program counter, we instead call <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/src/mm.c#L87">copy_virt_memory</a>. <code>copy_virt_memory</code> looks like this.</p>
+<pre><code>int copy_virt_memory(struct task_struct *dst) {
+    struct task_struct* src = current;
+    for (int i = 0; i &lt; src-&gt;mm.user_pages_count; i++) {
+        unsigned long kernel_va = allocate_user_page(dst, src-&gt;mm.user_pages[i].virt_addr);
+        if( kernel_va == 0) {
+            return -1;
+        }
+        memcpy(kernel_va, src-&gt;mm.user_pages[i].virt_addr, PAGE_SIZE);
+    }
+    return 0;
+}
+</code></pre>
+<p>It iterates over <code>user_pages</code> array, which contains all pages, allocated by the current process. Note, that in <code>user_pages</code> array we store only pages that are actually available to the process and contain its code or data; we don't include here page table pages, which are stored in <code>kernel_pages</code> array. Next, for each page, we allocate another empty page and copy the original page content there. We also map the new page using the same virtual address, that is used by the original one. This is how we get the exact copy of the original process address space.</p>
+<p>All other details of the forking procedure work exactly in the same way, as they have been in the previous lesson.</p>
+<blockquote>
+<p>Q: does our fork() implement COW? </p>
+</blockquote>
+<!--- ### Nope... it copies over all pages & contents. --->
+
+<h2 id="demand-paging">Demand paging</h2>
+<p>If you go back and take a look at the <code>move_to_user_mode</code> function, you may notice that we only map a single page, starting at offset 0. But we also assume that the second page will be used as a stack. Our kernel will map stack page, as well as any other page that a process needs to access as soon as it will be requested for the first time. Now we are going to explore the inner-workings of this mechanism.</p>
+<h3 id="setting-up-page-faults">Setting up page faults</h3>
+<p>When a process tries to access some address which belongs to the page that is not yet mapped, a synchronous exception is generated. This is the second type of synchronous exception that we are going to support (the first type is an exception generated by the <code>svc</code> instruction which is a system call). Synchronous exception handler now looks like the following.</p>
+<pre><code>// entry.S
+el0_sync:
+    kernel_entry 0
+    mrs    x25, esr_el1                // read the syndrome register
+    lsr    x24, x25, #ESR_ELx_EC_SHIFT        // exception class
+    cmp    x24, #ESR_ELx_EC_SVC64            // SVC in 64-bit state
+    b.eq    el0_svc
+    cmp    x24, #ESR_ELx_EC_DABT_LOW        // data abort in EL0
+    b.eq    el0_da
+    handle_invalid_entry 0, SYNC_ERROR
+</code></pre>
+<p>Here we use <code>esr_el1</code> register to determine exception type. If it is a page fault exception (or, which is the same, data access exception) <code>el0_da</code> function is called.</p>
+<pre><code>// entry.S
+el0_da:
+    bl    enable_irq
+    mrs    x0, far_el1
+    mrs    x1, esr_el1
+    bl    do_mem_abort
+    cmp x0, 0
+    b.eq 1f
+    handle_invalid_entry 0, DATA_ABORT_ERROR
+1:
+    bl disable_irq
+    kernel_exit 0
+</code></pre>
+<p><code>el0_da</code> redirects the main work to the <a href="https://github.com/fxlin/p1-kernel/blob/master/src/exp6/src/mm.c#L101">do_mem_abort</a> function. This function takes two arguments</p>
+<ol>
+<li>The memory address which we tried to access. This address is taken from <code>far_el1</code>  register (Fault address register)</li>
+<li>The content of the <code>esr_el1</code> (Exception syndrome register)</li>
+</ol>
+<h3 id="handling-page-faults">Handling page faults</h3>
+<p><code>do_mem_abort</code> is listed below.</p>
+<pre><code>// mm.c
+int do_mem_abort(unsigned long addr, unsigned long esr) {
+    unsigned long dfs = (esr &amp; 0b111111);
+    if ((dfs &amp; 0b111100) == 0b100) {
+        unsigned long page = get_free_page();
+        if (page == 0) {
+            return -1;
+        }
+        map_page(current, addr &amp; PAGE_MASK, page);
+        ind++;
+        if (ind &gt; 2){
+            return -1;
+        }
+        return 0;
+    }
+    return -1;
+}
+</code></pre>
+<p>In order to understand this function, you need to know a little bit about the specifics of that <code>esr_el1</code> register. Bits [32:26] of this register are called "Exception Class". We check those bits in the <code>el0_sync</code> handler to determine whether it is a syscall, or a data abort exception or potentially something else. Exception class determines the meaning of bits [24:0] - those bits are usually used to provide additional information about the exception. The meaning of [24:0] bits in case of the data abort exception is described on the page 2460 of the <code>AArch64-Reference-Manual</code>. In general, data abort exception can happen in many different scenarios (it could be a permission fault, or address size fault or a lot of other things). We are only interested in a translation fault which happens when some of the page tables for the current virtual address are not initialized.
+So in the first 2 lines of the <code>do_mem_abort</code> function, we check whether the current exception is actually a translation fault. If yes we allocate a new page and map it to the requested virtual address. All of this happens completely transparent for the user program - it doesn't notice that some of the memory accesses were interrupted and new page tables were allocated in the meantime.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>This was a long and difficult chapter, but I hope it was useful as well. Virtual memory is really one of the most fundamental pieces of any operating system and I am glad we've passed through this chapter and, hopefully, started to understand how it works at the lowest level. With the introduction of virtual memory we now have full process isolation, but the RPi OS is still far from completion. It still doesn't support file systems, drivers, signals and interrupt waitlists, networking and a lot of other useful concepts, and we will continue to uncover them in the upcoming lessons.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      
+    
+  </body>
+</html>
